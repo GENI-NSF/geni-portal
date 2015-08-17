@@ -57,7 +57,6 @@ if (! $user->portalIsAuthorized()) {
   print "</p>";
   return 0;
 }
-
 include("tool-breadcrumbs.php");
 
 if (get_preference($user->urn(), "show_map") == "true") {

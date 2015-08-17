@@ -5,7 +5,6 @@
 /* General */
 
 body {
-	box-shadow: none;
 	margin: 0px;
 }
 
@@ -35,13 +34,6 @@ body {
 
 #tablist {
   text-align: center;
-  box-shadow: none;
-}
-
-#content button, input[type=submit], input[type=button] {
-  box-shadow: none;
-  margin: 4px;
-  padding: 5px;
 }
 
 #content table {
@@ -52,7 +44,11 @@ body {
   margin-bottom: 20px;
   line-height: 1.2em;
   margin-left: 5px;
-  box-shadow: none;
+}
+
+.card {
+  padding: 5px;
+  width: 100%;
 }
 
 .tablecontainer {
@@ -64,92 +60,21 @@ body {
   width: 750px !important;
 }
 
-#content li {
-  font-size: 1em;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 5px;
-  color: #5F584E;
-}
-
 #content pre {
   padding: 5px;
   padding-left: 5px;
   margin-left: 5px;
   border-left: 10px solid #E5E5E5;
-  box-shadow: none;
   overflow: auto;
 }
 
-/* Header and navigation */
-
-#header {
-  width: 100%;
-  min-width: 0px;
-  box-shadow: none;
-  margin-top: 0px;
-  border: none;
+#sliceactionbar h2 {
+  display: block !important;
 }
 
-#header-top {
-  height: 0px;
-  border-left: 0px;
-  background-color: #111111;
-  background-image: none;
-}
-
-#metanav {
-  padding: 0px;
-  color: #5F584E;
-  z-index: 5;
-}
-
-#metanav a {
-  color: #5F584E;
-}
-
-#metanav li { 
-  border-right: 2px solid #5F584E;
-}
-
-#metanav ul {
-  padding: 5px;
-  background-color: #E5E5E5;
-  float: none;
-  text-align: center;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px; /* future proofing */
-  -khtml-border-radius: 0px; /* for old Konqueror browsers */
-}
-
-#mainnav {
-  background: #5F584E;
-  border-top: 5px solid #5F584E;
-  border-bottom: 5px solid #5F584E;
-  margin: 0;
-  padding: 5px 0px;
-  width: 100%;
-  clear: both;
-  overflow-x: scroll;
-}
-
-#mainnav > ul {
-	padding: 0px;
-  text-align: center;	
-}
-
-#mainnav > ul {
-	border: none;
-}
-
-#mainnav li { 
-  border-left: 2px solid #ffffff;
-  padding: 0em;
-}
-
-#mainnav li:first-child {
-	border: none;
+#sliceactionbar div {
+  display: block !important;
+  margin: 5px auto;
 }
 
 /* Footer */

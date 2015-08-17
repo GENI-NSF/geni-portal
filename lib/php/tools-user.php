@@ -50,20 +50,20 @@ END;
 }
 ?>
 
-<h1>Profile</h1>
+<script src='cards.js'></script>
 
-  <div id='tablist'>
-		<ul class='tabs'>
-			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#ssh'>SSH Keys</a></li>
-			<li><a href='#ssl'>SSL</a></li>
-			<li><a href='#omni'>Configure <code>omni</code></a></li>
-			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
-			<li><a href='#tools'>Tools</a></li>
-			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
-      <li style="border-right: none"><a href='#preferences'>Portal Preferences</a></li>
-		</ul>
-  </div>
+<div class='nav2'>
+	<ul class='tabs'>
+		<li><a class='tab' data-tabindex=1 href='#accountsummary'>Account Summary</a></li>
+		<li><a class='tab' data-tabindex=2 href='#ssh'>SSH Keys</a></li>
+		<li><a class='tab' data-tabindex=3 href='#ssl'>SSL</a></li>
+		<li><a class='tab' data-tabindex=4 href='#omni'>Configure <code>omni</code></a></li>
+		<li><a class='tab' data-tabindex=5 href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+		<li><a class='tab' data-tabindex=6 href='#tools'>Manage Accounts</a></li>
+		<li><a class='tab' data-tabindex=7 href='#outstandingrequests'>Outstanding Requests</a></li>
+    <li><a class='tab' data-tabindex=8 href='#preferences'>Preferences</a></li>
+	</ul>
+</div>
 		
 <?php
 
@@ -79,7 +79,7 @@ END;
  *----------------------------------------------------------------------
  */
 // BEGIN SSH tab
-echo "<div id='ssh'>";
+echo "<div class='card' id='ssh'>";
 print "<h2>SSH Keys</h2>\n";
 $keys = $user->sshKeys();
 
@@ -175,13 +175,13 @@ else
     }
     print "</table></div>\n";
     print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Download your private key.</li>";
     print "<li>On Windows, just point your SSH client (not PuTTY) to the downloaded private key.</li>";
     print "<li>On Linux and Mac, open a terminal.</li>";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Store your key under ~/.ssh/ :";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>If the directory does not exist, create it:</li>";
     print "<pre>mkdir ~/.ssh</pre>";
     print "<li>Move the key to ~/.ssh/ :</li>";
@@ -190,12 +190,12 @@ else
     print "<pre>chmod 0600 ~/.ssh/id_geni_ssh_rsa</pre>";
     print "</ul>";
     print "<li>Your SSH command will be something like:</li>";
-    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname]</pre>";
+    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname] -p [port]</pre>";
     print "</ul>";
     print "</ul>";
     print "<p>";
     print "<p>For PuTTY users:";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Download PuTTY key.";
     print "<li>In PuTTY, create a new session that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
     print "<li>Under the authentication menu, point the key field to the downloaded PuTTY key file.</li>";
@@ -220,7 +220,7 @@ echo "</div>";
  *----------------------------------------------------------------------
  */
 // BEGIN SSL tab
-echo "<div id='ssl'>";
+echo "<div class='card' id='ssl'>";
 print "<h2>SSL Certificate</h2>\n";
 print "<p>";
 if (! isset($ma_url)) {
@@ -288,7 +288,7 @@ if (! $has_certificate) {
 echo "</div>";
 
 // BEGIN outstand requests tab
-echo "<div id='outstandingrequests'>";
+echo "<div class='card' id='outstandingrequests'>";
 print "<h2>Outstanding Requests</h2>";
 
 // Show outstanding requests BY this user
@@ -356,7 +356,7 @@ if (isset($reqs) && count($reqs) > 0) {
 echo "</div>";
 
 // BEGIN account summary tab
-echo "<div id='accountsummary'>";
+echo "<div class='card' id='accountsummary'>";
 $disable_account_details = "";
 if($in_lockdown_mode) {
   $disable_account_details = "disabled";
@@ -381,7 +381,6 @@ print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
 print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 print "<tr><th>GENI OpenID URL</th><td>" . $openid_url . "</td></tr>\n";
 print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
-print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
 if ($user->phone() != "")
   print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
@@ -414,7 +413,7 @@ echo "</div>";
 //print "<h1>My Stuff</h1>\n";
 
 // BEGIN rspecs tab
-echo "<div id='rspecs'>";
+echo "<div class='card' id='rspecs'>";
 /*----------------------------------------------------------------------
  * RSpecs
  *----------------------------------------------------------------------
@@ -434,7 +433,7 @@ echo "</div>";
  */
 
 // BEGIN omni tab
-echo "<div id='omni'>";
+echo "<div class='card' id='omni'>";
 
 // Does the user have an outside certificate?
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
@@ -509,7 +508,7 @@ echo "</div>";
 -->
 <?php
 // BEGIN tools tab
-echo "<div id='tools'>";
+echo "<div class='card' id='tools'>";
 
 $disable_authorize_tools = "";
 if($in_lockdown_mode) {
@@ -519,15 +518,19 @@ if($in_lockdown_mode) {
 /* Only show the tools authorization page if we're not in full
  * speaks-for mode.
  */
+print '<h2>Manage accounts</h2>';
 if (!$speaks_for_enabled) {
   print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
 }
 
-print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
-if (! isset($disable_irods) or $user->hasAttribute('enable_irods'))
+if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) {
   $irodsdisabled = "";
-print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
+}
+print "<a class='button' href='irods.php' $irodsdisabled>Manage iRODS Account</a><br><br>\n";
+print "<a class='button' href='savi.php'>Create SAVI Account</a><br><br>\n";
+print "<a class='button' href='wimax-enable.php'>Manage Wireless Account</a>\n";
+
 // END tools tab
 echo "</div>";
 
@@ -535,6 +538,7 @@ echo "</div>";
   echo "</div>";
 
 ?>
+
 <script type="text/javascript">
   $(document).ready(function(){
     $("#showmapcheck").change(function(){
@@ -551,7 +555,7 @@ echo "</div>";
 </script>
 
 <?php 
-echo "<div id='#preferences'>";
+echo "<div class='card' id='preferences'>";
 echo "<h2>Portal preferences</h2>";
 $checked = '';
 if(get_preference($user->urn(), 'show_map') == "true"){
@@ -560,7 +564,5 @@ if(get_preference($user->urn(), 'show_map') == "true"){
 echo "Show map on homepage? <input id='showmapcheck' type='checkbox' value='showmap' $checked/><br><br>";
 echo "<button disabled onclick='save_preferences(\"{$user->urn()}\")' id='saveprefs'>Save preferences</button>";
 echo "</div>";
-
-include "tabs.js"; 
 
 ?>

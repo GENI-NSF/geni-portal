@@ -41,8 +41,8 @@
 }
 
 #content #renewtext {
-  padding: 0;
-  border-top: 0;
+/*  padding: 0;
+  border-top: 0;*/
   border-bottom: 0;
 }
 
@@ -54,7 +54,7 @@
 #content #am_name_list {
   width: 230px;
   vertical-align: top;
-  border-right: 1px solid white;
+  /*border-right: 1px solid white;*/
 }
 
 #content #status_table .hidden {
@@ -155,6 +155,7 @@
   left: 0;
   z-index: 2;
   background: none repeat scroll 0 0 #E5E5E5;
+  box-shadow: none !important;
 }
 
 #status_table .hide > div {
@@ -193,6 +194,10 @@
   text-transform: none;
 }
 
+#status_table td {
+  background-color: #F9F9F9;
+}
+
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
 	text-align: left;
 }
@@ -218,7 +223,7 @@
 }
 
 #status_table tbody tr:nth-child(2) td {
-  border-bottom: 1px solid #FFFFFF;
+  border-bottom: 1px solid #C2C2C2;
   padding: 2px 0 6px 15px;
 }
 
@@ -237,3 +242,9 @@
 #jacks-app, #jacks-status {
   padding: 5px 0px !important;
 }
+
+#actions_table > tbody > tr > td {
+  background-color: #F9F9F9 !important;
+  border: 1px solid #C2C2C2;
+}
+

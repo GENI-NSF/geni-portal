@@ -144,7 +144,7 @@ if (! isset($name) or is_null($name) or $name == '') {
 } else {
   $_SESSION['lastmessage'] = "Edited project $name: $result";
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+// show_header('GENI Portal: Projects', $TAB_PROJECTS);
 relative_redirect('project.php?project_id='.$project_id . "&result=" . $result);
 
 include("footer.php");
