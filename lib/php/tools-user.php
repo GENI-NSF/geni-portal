@@ -541,14 +541,21 @@ echo "</div>";
 
 <script type="text/javascript">
   $(document).ready(function(){
-    $("#showmapcheck").change(function(){
+    $(".preferenceselect").change(function(){
       $("#saveprefs").prop("disabled", false);
     });
   });
   function save_preferences(user_urn) {
-    params = {user_urn: user_urn, show_map: $('#showmapcheck').prop("checked")};
+    params = { 
+      user_urn: user_urn,
+    <?php
+      foreach($possible_prefs as $pref_name => $pref_values) {
+        echo "$pref_name: $('#default_{$pref_name}').val(), \n";
+      }        
+    ?>
+    };
     $.post("do-update-user-preferences", params, function(data){
-      alert(data);
+      $("#preferencesuccess").html(data);
       $("#saveprefs").prop("disabled", true);
     });
   }
@@ -557,12 +564,25 @@ echo "</div>";
 <?php 
 echo "<div class='card' id='preferences'>";
 echo "<h2>Portal preferences</h2>";
-$checked = '';
-if(get_preference($user->urn(), 'show_map') == "true"){
-  $checked = "checked";
-} 
-echo "Show map on homepage? <input id='showmapcheck' type='checkbox' value='showmap' $checked/><br><br>";
-echo "<button disabled onclick='save_preferences(\"{$user->urn()}\")' id='saveprefs'>Save preferences</button>";
+
+$preference_descriptions = array(
+  "homepage_view" => "Default homepage style (for slices and projects)"
+  // "slice_view" => "Default view for slices"
+);
+
+foreach($possible_prefs as $pref_name => $pref_values) {
+  print $preference_descriptions[$pref_name];
+  print "<select id='default_{$pref_name}' class='preferenceselect'>";
+  foreach ($pref_values as $pref_value) {
+    $user_value = get_preference($user->urn(), $pref_name);
+    $selected = $pref_value == $user_value ? "selected" : "";
+    print "<option value='$pref_value' $selected data-user-val='$user_value'>$pref_value</option>";
+  }
+  print "</select><br>";
+}
+
+echo "<button disabled onclick='save_preferences(\"{$user->urn()}\")' id='saveprefs' style='margin-right: 20px;'>Save preferences</button>";
+echo "<span id='preferencesuccess'></span>";
 echo "</div>";
 
 ?>
