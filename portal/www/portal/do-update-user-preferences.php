@@ -27,6 +27,7 @@ require_once("db_utils.php");
 require_once("ma_constants.php");
 require_once("ma_client.php");
 require_once("util.php");
+require_once("user-preferences.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -38,28 +39,36 @@ if (array_key_exists('user_urn', $_REQUEST)) {
 }
 
 function set_preferences($user_urn, $preferences) {
-  $actual_prefs = array('show_map'); 
+  global $possible_prefs;
   $conn = portal_conn();
+  $success_string = "";
   foreach ($preferences as $pref_name => $pref_value) {
-    if (in_array($pref_name, $actual_prefs)) {
-      $user_urn = $conn->quote($user_urn, "text");
-      $pref_name = $conn->quote($pref_name, "text");
-      $pref_value = $conn->quote($pref_value, "text");
-      $sql = "UPDATE user_preferences SET preference_value=$pref_value "
-           . "WHERE user_urn=$user_urn and preference_name=$pref_name; "
-           . "INSERT INTO user_preferences (user_urn, preference_name, preference_value) "
-           . "SELECT $user_urn, $pref_name, $pref_value "
-           . "WHERE NOT EXISTS (SELECT 1 FROM user_preferences WHERE user_urn=$user_urn and preference_name=$pref_name);";
-      $db_response = db_execute_statement($sql, "Update user preferences");
-      $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
-      if($db_error == ""){
-        print "Preferences saved.";
+    if (array_key_exists($pref_name, $possible_prefs)) {
+      if(in_array($pref_value, $possible_prefs[$pref_name])) {
+        $user_urn = $conn->quote($user_urn, "text");
+        $pref_name = $conn->quote($pref_name, "text");
+        $pref_value = $conn->quote($pref_value, "text");
+        $sql = "UPDATE user_preferences SET preference_value=$pref_value "
+             . "WHERE user_urn=$user_urn and preference_name=$pref_name; "
+             . "INSERT INTO user_preferences (user_urn, preference_name, preference_value) "
+             . "SELECT $user_urn, $pref_name, $pref_value "
+             . "WHERE NOT EXISTS (SELECT 1 FROM user_preferences WHERE user_urn=$user_urn and preference_name=$pref_name);";
+        $db_response = db_execute_statement($sql, "Update user preferences");
+        $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
+        if($db_error == ""){
+          $success_string = "Preferences saved.";
+        } else {
+          print "Error while saving preferences. Please try again.";
+          error_log("DB error when updating user_preferences table: " . $db_error);
+        }
       } else {
-        print "Error while saving preferences: \n " . $db_error;
-        error_log("DB error when updating user_preferences table: " . $db_error);
+        error_log("Tried to set $pref_name to invalid value $pref_value for user $user_urn");
       }
+    } else {
+      error_log("Tried to set invalid preference $pref_name for user $user_urn");
     }
   }
+  print $success_string;
 }
 
 ?>

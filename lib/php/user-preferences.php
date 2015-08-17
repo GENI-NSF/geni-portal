@@ -33,10 +33,15 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   exit();
 }
 
+$possible_prefs = array(
+  "homepage_view" => array("cards", "table")
+  // "slice_view" => array("graphical", "aggregate", "geographic")
+);
+
 function get_preference($user_urn, $preference) {
-  $actual_prefs = array('show_map'); 
+  global $possible_prefs;
   $conn = portal_conn();
-  if (in_array($preference, $actual_prefs)) {
+  if (array_key_exists($preference, $possible_prefs)) {
     $sql = "SELECT * from user_preferences "
     . "where user_urn = " . $conn->quote($user_urn, 'text')
     . "and preference_name = " . $conn->quote($preference, 'text');
