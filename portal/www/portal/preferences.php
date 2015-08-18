@@ -28,7 +28,7 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Preferences', $TAB_PROFILE);
+show_header('GENI Portal: Preferences');
 
 ?>
 

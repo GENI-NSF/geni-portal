@@ -35,7 +35,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
   $is_pi = true;
 }
 
-show_header('GENI Portal: Profile', $TAB_PROFILE);
+show_header('GENI Portal: Profile');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 

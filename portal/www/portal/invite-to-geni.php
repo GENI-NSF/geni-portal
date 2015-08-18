@@ -70,7 +70,7 @@ You log in with your home university or college username, or request a GENI-spec
 Thank you,\n" . $user->prettyName() . "\n";
 }
 
-show_header('GENI Portal: Home', $TAB_HOME);
+show_header('GENI Portal: Home');
 
 include("tool-breadcrumbs.php");
 

@@ -34,7 +34,7 @@ if (key_exists("system_error", $_GET)) {
   $system_error = true;
 }
 
-show_header('GENI Portal: Home',  $TAB_SLICES, false);
+show_header('GENI Portal: Home', false);
 $header = "Error";
 print "<h1>$header</h1>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";

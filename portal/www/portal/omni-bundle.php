@@ -89,7 +89,7 @@ if (count($keys) == 0) {
 /**
  * START OF OUTPUT IS HERE
  */
-show_header('GENI Portal: omni bundle', $TAB_PROFILE);
+show_header('GENI Portal: omni bundle');
 include("tool-breadcrumbs.php");
 echo '<h1>Download Omni Configuration Data</h1>';
 foreach ($warnings as $warning) {

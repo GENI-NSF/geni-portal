@@ -105,7 +105,7 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 // put header and breadcrumb here
-show_header('GENI Portal: Send Problem Report',  $TAB_SLICES);
+show_header('GENI Portal: Send Problem Report');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 echo "<h1>Send Problem Report</h1>";

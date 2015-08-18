@@ -341,7 +341,7 @@ function no_am_error() {
 
 function show_page_header() {
   // print header/breadcrumbs since we know slice information
-  show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
+  show_header('GENI Portal: Add Resources to Slice (Results)');
   include("tool-breadcrumbs.php");
   echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
 }

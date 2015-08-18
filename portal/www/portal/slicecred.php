@@ -64,7 +64,7 @@ if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $
 $outside_key = db_fetch_outside_private_key_cert($user->account_id);
 if (! $outside_key) {
   include("header.php");
-  show_header('GENI Portal: Slices', $TAB_SLICES);
+  show_header('GENI Portal: Slices');
   include("tool-breadcrumbs.php");
   print "<h2>Cannot Download Slice Credential</h2>\n";
   print "This page allows you to download a slice credential file,"

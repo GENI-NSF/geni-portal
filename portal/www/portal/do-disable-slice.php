@@ -52,7 +52,7 @@ if (isset($slice) && ! is_null($slice)) {
 // FIXME
 $_SESSION['lastmessage'] = "Asked to disable slice $slice_name - NOT IMPLEMENTED";
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 relative_redirect('dashboard.php#slices');
 
 include("footer.php");

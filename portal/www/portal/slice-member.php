@@ -45,14 +45,14 @@ $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 if ($slice == "None") {
-  show_header('GENI Portal: Slices', $TAB_SLICES);
+  show_header('GENI Portal: Slices');
   include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find slice</h2>";
   include("footer.php");
   exit();
 }
 if ($member == "None") {
-  show_header('GENI Portal: Slices', $TAB_SLICES);
+  show_header('GENI Portal: Slices');
   include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find member</h2>";
   include("footer.php");
@@ -70,7 +70,7 @@ if ($user->account_id != $member_id) {
 $slices_for_member = get_slices_for_member($sa_url, $user, $member_id, true, null);
 //error_log("SLICE ATTRIBS = " . print_r($attributes, true));
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . ", Member: " . "<i>" . $member_name . "</i>" . "</h1>\n";
 

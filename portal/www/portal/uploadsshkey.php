@@ -60,7 +60,7 @@ if (array_key_exists('file', $_FILES)) {
 
 if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
-  show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
+  show_header('GENI Portal: Profile', 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
   print("<h1>Upload SSH Public Key</h1>\n");
   if ($error != NULL) {

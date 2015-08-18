@@ -211,6 +211,7 @@ function draw_table($projects, $lead_names, $attribs_by_project, $show_actions)
     $error_entry = "<td id=\"$error_entry_id\"></td>";
 
     echo "<tr><td>$proj_href</td><td id=\"group-$proj_id\">$group_name</td><td>$lead_name</td>$purpose_entry $actions_entry $error_entry</tr>";
+
   }
 
   echo "</table>";
@@ -244,6 +245,9 @@ $lead_names = lookup_member_names_for_rows($ma_url, $user, $projects,
 
 // Get the user's SSH keys to make sure they'll be able to log in
 $sshkeys = $user->sshKeys();
+  show_header('GENI Portal: Wireless Account Setup');
+  include('tool-breadcrumbs.php');
+  include("tool-showmessage.php");
 
 // Break up projects into those I can modify and those I cannot.
 $my_projects = array();

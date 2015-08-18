@@ -36,7 +36,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
   relative_redirect('edit-project.php');
 }
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 
 include("tool-lookupids.php");
 include("tool-breadcrumbs.php");

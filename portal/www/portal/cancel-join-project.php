@@ -67,7 +67,7 @@ if (! isset($request) || is_null($request)) {
     error_log("cancel-p-req: And no project_id. Fail");
   }
   if (! isset($request) || is_null($request)) {
-    show_header('GENI Portal: Projects', $TAB_PROJECTS);
+    show_header('GENI Portal: Projects');
     include("tool-breadcrumbs.php");
     print "<h2>Error canceling project request</h2>\n";
     if (isset($request_id)) {
@@ -109,7 +109,7 @@ if (! isset($request) || is_null($request)) {
 
 if ($user->account_id != $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]) {
   error_log("cancel-p-reg got member_id != request's requestor. Member " . $user->account_id . " != " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " for request " . $request['id']);
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
   print "Request " . $request['id'] . " is not from you!<br/><br/>\n";
@@ -125,7 +125,7 @@ $member_name = $user->prettyName();
 //error_log("REQ = " . print_r($request, true));
 if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
   error_log("cancel-p-req: Non join request in request " . $request['id'] . ": " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
   print "Request " . $request['id'] . " is not a join request, but a " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] . "<br/>\n";
@@ -137,7 +137,7 @@ if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN)
 
 if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] != CS_CONTEXT_TYPE::PROJECT) {
   error_log("cancel-p-req: Not a project, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
   print "Request not a project request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] . "<br/>\n";
@@ -216,7 +216,7 @@ if (isset($submit)) {
     relative_redirect('home.php');
 }
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 
 include("tool-breadcrumbs.php");
 

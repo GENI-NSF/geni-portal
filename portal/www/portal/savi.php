@@ -49,7 +49,7 @@ if ($cert == NULL || strlen($cert) == 0) {
 
 // error_log("CERT = " . print_r($cert, true));
 
-show_header('SAVI Testbed', $TAB_HOME);
+show_header('SAVI Testbed');
 
 ?>
 <h1>SAVI Testbed</h1>

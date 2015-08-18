@@ -30,7 +30,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 skip_km_authorization();
-show_header('GENI Portal: Contact Us', $TAB_HELP);
+show_header('GENI Portal: Contact Us');
 include("tool-breadcrumbs.php");
 $hostname = $_SERVER['SERVER_NAME'];
 // Links to wiki, help, tutorials

@@ -346,7 +346,7 @@ $jfed_script_text = $jfedret[0];
 $jfed_button_start = $jfedret[1];
 $jfed_button_part2 = $jfedret[2];
 
-show_header('GENI Portal: Slices', $TAB_SLICES, true, true);
+show_header('GENI Portal: Slices', true, true);
 // include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
@@ -444,6 +444,7 @@ print "</div>";
 print "</div>";
 
 if ($renew_slice_privilege) {
+  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<div id='renewbox' class='card' style='display: none;'><tr>";
   print "<table style='box-shadow: none; margin: 0px; width: auto;'>";
   print "<td style='border-bottom:none; padding: 0px 10px;'>";
@@ -453,18 +454,15 @@ if ($renew_slice_privilege) {
   print "</div>";
   print "</td>";
   print "<td id='renewbutton' style='border-bottom:none; padding: 0px 10px;'>";
-  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   print " maxlength='20' value=\"$slice_date_expiration\"/>\n";
   print "<button id='actualrenewbutton' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
   print "<a class='button' id='cancelrenew'>Cancel</a>";
-  print "</form>\n";
   print "</td>";
+  print "</tr></table></div>\n";
+  print "</form>\n";
 }
-
-print "</tr></table></div>\n";
-
 
 ?>
 
