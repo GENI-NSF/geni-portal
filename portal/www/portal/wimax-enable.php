@@ -245,9 +245,6 @@ $lead_names = lookup_member_names_for_rows($ma_url, $user, $projects,
 
 // Get the user's SSH keys to make sure they'll be able to log in
 $sshkeys = $user->sshKeys();
-  show_header('GENI Portal: Wireless Account Setup');
-  include('tool-breadcrumbs.php');
-  include("tool-showmessage.php");
 
 // Break up projects into those I can modify and those I cannot.
 $my_projects = array();
