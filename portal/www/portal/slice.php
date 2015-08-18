@@ -818,15 +818,18 @@ echo "</div>";
   <script type="text/javascript">
     $(document).ready(function(){ getLogs(24); });
     function getLogs(hours){
-      url = "do-get-logs.php?hours="+hours+"&slice_id=" + <?php echo "\"" . $slice_id . "\""; ?>; 
-      $.get(url, function(data) {
-        $('#log_table').html(data);
+      $.get("do-get-logs.php?hours="+hours, function(data) {
+        if (data.split("<html").length == 1) {
+          $('#logtable').html(data);
+        } else {
+          location.reload();
+        }
       });
     }
   </script>
 
   <div class="tablecontainer">
-    <table id="log_table"></table>
+    <table id="logtable"></table>
   </div>
   </div>
 </div>
