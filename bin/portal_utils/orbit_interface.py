@@ -31,6 +31,7 @@
 import os
 import subprocess
 import sys
+from syslog import syslog
 import tempfile
 import xml.dom.minidom
 
@@ -119,6 +120,8 @@ class ORBIT_Interface:
     def __init__(self, base_orbit_url):
         self._base_orbit_url = base_orbit_url
         self._DEVNULL = open(os.devnull, 'w')
+    
+    MAX_TIMEOUT = "20" # Number of seconds to wait for a curl command to complete
 
 
     # Does given string contain one of the defined errors?
@@ -132,13 +135,19 @@ class ORBIT_Interface:
     # Return value from CURL on URL
     def get_curl_output(self, query_url):
         raw_curl_output = ""
+
         try:
+            out_file, out_filename = tempfile.mkstemp()
             raw_curl_output = \
-                subprocess.check_output(["curl", "-k", query_url], 
-                                        stderr=self._DEVNULL)
+                subprocess.check_output(["timeout", self.MAX_TIMEOUT, "curl", "-k", query_url], 
+                                        stderr = out_file
+                                        )
+            os.unlink(out_filename)
         except subprocess.CalledProcessError as e:
-            print "Error invoking CURL on %s: Error %s" % \
-                (query_url, e.returncode)
+            error_text = open(out_filename, 'r').read()
+            os.unlink(out_filename)
+            syslog("Error invoking CURL on %s: Error %s Msg %s" % \
+                (query_url, e.returncode, error_text))
             sys.exit(e.returncode)
         return raw_curl_output
 
@@ -151,7 +160,7 @@ class ORBIT_Interface:
         output = self.get_curl_output(url)
         code = self.find_error_code(output)
         if code and code not in tolerated_error_codes:
-            print "Error in %s call: %s" % (method, output)
+            syslog("Error in %s call: %s" % (method, output))
             sys.exit(code)
     
 
@@ -166,7 +175,8 @@ class ORBIT_Interface:
     def remove_user_from_group(self, group_name, user_name):
         self.invoke_orbit_method("removeMemberFromGroup",
                                  "groupname=%s&username=%s" %  \
-                                     (group_name, user_name))
+                                     (group_name, user_name), 
+                                 [CODES.ERROR5])
 
     # Change ORBIT group admin
     def change_group_admin(self, group_name, admin_name):
@@ -177,16 +187,16 @@ class ORBIT_Interface:
     # Enable ORBIT user
     def enable_user(self, user_name):
         self.invoke_orbit_method("enableUser", 
-                                 "username=%s" % user_name, [CODES.ERROR6])
+                                 "username=%s" % user_name, [CODES.ERROR5, CODES.ERROR6])
 
     # Disable ORBIT user
     def disable_user(self, user_name):
         self.invoke_orbit_method("disableUser", 
-                                 "username=%s" % user_name, [CODES.ERROR6])
+                                 "username=%s" % user_name, [CODES.ERROR6, CODES.ERROR5])
 
     # Delete ORBIT group
     def delete_group(self, group_name):
-        self.invoke_orbit_method("deleteGroup", "groupname=%s"% group_name)
+        self.invoke_orbit_method("deleteGroup", "groupname=%s"% group_name, [CODES.ERROR7])
 
 
 # Get ORBIT group/user info
@@ -221,8 +231,8 @@ class ORBIT_Interface:
             user_name = user_node.getAttribute('username')
             group_name = user_node.getAttribute('groupname')
             if group_name not in groups:
-                print "Group %s for user %s not defined" % \
-                    (group_name, user_name)
+                syslog("Group %s for user %s not defined" % \
+                    (group_name, user_name))
             group = groups[group_name]['users'].append(user_name)
         return groups
 
@@ -248,20 +258,25 @@ class ORBIT_Interface:
         ldif_arg = "ldif=@%s" % out_filename
         output = ""
         try:
-            output = subprocess.check_output(["curl", "-k", "-PUT", "-H", 
+            err_file, err_filename = tempfile.mkstemp()
+            output = subprocess.check_output(["timeout", self.MAX_TIMEOUT, 
+                                              "curl", "-k", "-PUT", "-H", 
                                               "Content-type: multipart/form-data", 
                                               "-F", ldif_arg, save_user_url],
-                                             stderr=self._DEVNULL)
-        except subprocess.CaledProcessError as e:
-            print "Error invoking curl LDIF saveUser command: %s: Error %s" \
-                (save_user_url, e.returncode)
+                                             stderr=err_file)
+            os.unlink(err_filename)
+        except subprocess.CalledProcessError as e:
+            error_text = open(err_filemame, 'r'). read()
+            syslog("Error invoking curl LDIF saveUser command: %s: Error %s Msg %s" \
+                (save_user_url, e.returncode, error_text))
+            os.unlink(err_fileame)
             sys.exit(e.returncode)
 
 #        print "OUTPUT = %s" % output
         error_code = self.find_error_code(output)
         if error_code and error_code not in [CODES.ERROR1]:
-            print "Error in saveUser call: %s" % output
-            sys.exit(0)
+            syslog("Error in saveUser call: %s" % output)
+            sys.exit(error_code)
 
             os.unlink(out_filename)
        

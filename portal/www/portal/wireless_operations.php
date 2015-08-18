@@ -61,26 +61,27 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 // Invoke geni-sync-wireless tool on given project
 function sync_object($object_type, $object_name)
 {
+  # Should only provide error information on stderr: put stdout to syslog
   $cmd = "geni-sync-wireless $object_type $object_name";
-  //  error_log("SYNC(cmd) " . $cmd);
+  error_log("SYNC(cmd) " . $cmd);
   $descriptors = array(0 => array("pipe", "r",), 
 		 1 => array("pipe", "w"), 
 		 2 => array("pipe", "w"));
   $process = proc_open($cmd, $descriptors, $pipes);
-  $out = stream_get_contents($pipes[1]);
-  $err = stream_get_contents($pipes[2]);
+  $std_output = stream_get_contents($pipes[1]); # Should be empty
+  $err_output = stream_get_contents($pipes[2]);
   fclose($pipes[1]);
   fclose($pipes[2]);
   $proc_value = proc_close($process);
-  $full_output = $out . $err;
+  $full_output = $std_output . $err_output;
 
-  //  error_log("OUT = " . $out);
-  //  error_log("ERR = " . $err);
-  //  error_log("PROC_VALUE = " . $proc_value);
-  
   foreach(split("\n", $full_output) as $line) {
+    if(strlen(trim($line)) == 0) continue;
     error_log("SYNC(output) " . $line);
   }
+
+  if ($proc_value != RESPONSE_ERROR::NONE)
+    error_log("WIRELESS SYNC error: $proc_value");
 
   return $proc_value;
 }
@@ -123,13 +124,6 @@ function perform_wireless_disable($sa_url, $user, $project_id, $project_name)
   $result = generate_response($error_code, "", array());
   return $result;
 }
-
-
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
-}
-
 
 if(
    !array_key_exists('operation', $_GET) || 

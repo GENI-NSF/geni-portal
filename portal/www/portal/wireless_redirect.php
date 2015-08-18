@@ -28,11 +28,33 @@
 
 require_once('user.php');
 require_once('wireless_operations.php');
+require_once('/etc/geni-ch/settings.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
+
+if (isset($portal_analytics_enable) && $portal_analytics_enable) {
+  echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+  echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+  echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+  echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+      
+  if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+    /* Use the following tracking IDs depending on which server this will be running on
+       portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+       portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+    */
+    $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+  }
+      
+  echo $portal_analytics_string;
+      
+  echo "ga('send', 'pageview');";
+  echo '</script>';
+}
+
 
 $witest_url = "http://witestlab.poly.edu/site/index.php";
 $orbit_url = 'https://geni.orbit-lab.org/';

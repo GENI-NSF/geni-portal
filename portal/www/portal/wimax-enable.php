@@ -39,7 +39,7 @@ $wimax_url = get_first_service_of_type(SR_SERVICE_TYPE::WIMAX_SITE);
 // error_log("WIMAX_URL " . print_r($wimax_url, true));
 
 
-show_header('GENI Portal: Wireless Account Setup', $TAB_PROFILE);
+show_header('GENI Portal: Wireless Account Setup');
 include('tool-breadcrumbs.php');
 include("tool-showmessage.php");
 
@@ -157,7 +157,7 @@ function draw_table($projects, $lead_names, $attribs_by_project, $show_actions)
     $lead_name = $lead_names[$lead_id];
     $expired = convert_boolean($project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 
-    error_log("PN = $proj_name EXP = $expired");
+    //    error_log("PN = $proj_name EXP = $expired");
 
 
     $group_name = "";

@@ -39,6 +39,7 @@ import logging
 import xml.dom.minidom
 import optparse
 import sys
+from syslog import syslog
 from portal_utils.orbit_interface import ORBIT_Interface
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
@@ -49,20 +50,20 @@ def parse_args(argv):
                                    "sense of projects/groups and members")
     parser.add_option("--holdingpen_group", 
                       help="Name of ORBIT 'holding pen' that is the primary"+\
-                      " group for all GENI users in wimax-enabled projects", 
+                      " group for all GENI users in wimax-enabled projects [default: %default]", 
                       default="geni-HOLDINGPEN")
     parser.add_option("--holdingpen_admin", 
-                      help="GENI username of admin of ORBIT 'holding pen'",
+                      help="GENI username of admin of ORBIT 'holding pen' [default: %default]",
                       default="agosain")
     parser.add_option("--project", help="specific project name to sync", 
                       default=None)
     parser.add_option("--user", help="specific username to sync", default=None)
     parser.add_option("--cleanup", 
-                      help="delete obsolete groups and group memberships", 
+                      help="delete obsolete groups and group memberships [default: %default]", 
                       dest='cleanup', action='store_true',
                       default=False)
     parser.add_option("--settings_file", 
-                      help="location of settings.php file containing db_dsn (database URL) variable",
+                      help="location of settings.php file containing db_dsn (database URL) variable [default: %default]",
                       default="/etc/geni-ch/settings.php")
     parser.add_option("-v", "--verbose", help="Print verbose debug info", 
                       dest = 'verbose', action='store_true',
@@ -72,7 +73,7 @@ def parse_args(argv):
 
     # User and project options are mutually exclusive
     if options.project and options.user:
-        print "Only one of --project, --user allowed";
+        syslog( "Only one of --project, --user allowed")
         sys.exit()
 
     return options,args
@@ -156,15 +157,19 @@ class WirelessProjectManager:
         self.error("No $db_dsn entry in settings file")
         
     # Print error and exit
-    def error(self, msg): print msg; sys.exit()
+    def error(self, msg): syslog(msg); sys.exit()
 
     # Get pretty name from member data
     def get_pretty_name(self, member_info):
         if 'displayName' in member_info:
             return member_info['displayName']
-        else:
+        elif 'first_name' in member_info and \
+                'last_name' in member_info:
             return "%s %s" % (member_info['first_name'], 
                               member_info['last_name'])
+        else:
+            return member_info['email_address']
+        
 
     # Turn GENI name to ORBIT name (add geni- prefix)
     def to_orbit_name(self, name): return "geni-%s" % name
@@ -190,8 +195,8 @@ class WirelessProjectManager:
     def synchronize(self):
 
         now = datetime.datetime.now()
-        print "Synchronizing GENI wimax-enabled projects/users with ORBIT: %s"\
-            % datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
+        syslog("Synchronizing GENI wimax-enabled projects/users with ORBIT: %s"\
+            % datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S'))
 
         # Grab project info for GENI wimax-enabled projects
         # Filtering to given project if set with --project
@@ -208,10 +213,10 @@ class WirelessProjectManager:
         self._orbit_groups, self._orbit_users = \
             self._orb.get_orbit_groups_and_users()
         if self._options.verbose:
-            print "GENI PROJECTS = %s" % self._geni_projects
-            print "GENI MEMBERS = %s" % self._geni_members
-            print "ORBIT GROUPS = %s" % self._orbit_groups
-            print "ORBIT USERS = %s" % self._orbit_users
+            syslog("GENI PROJECTS = %s" % self._geni_projects)
+            syslog("GENI MEMBERS = %s" % self._geni_members)
+            syslog("ORBIT GROUPS = %s" % self._orbit_groups)
+            syslog("ORBIT USERS = %s" % self._orbit_users)
 
         # Make sure the holdingpen gorup and admin exist
         self.ensure_holdingpen_group_and_admin()
@@ -267,21 +272,26 @@ class WirelessProjectManager:
                 self._orb.ldif_for_group_admin(self._options.holdingpen_group,
                                          holdingpen_admin_username,
                                          self._options.holdingpen_group)
-            print "Creating holdingpen group: %s" % \
-                self._options.holdingpen_group
+            syslog("Creating holdingpen group: %s" % \
+                self._options.holdingpen_group)
 
         if holdingpen_admin_username not in self._orbit_users:
+            user_irodsname = None
+            if 'irods_username' in holdingpen_admin_info:
+                user_irodsname = holdingpen_admin['irods_username']
+
             ldif_text = ldif_text + \
                 self._orb.ldif_for_user(holdingpen_admin_username,
-                                  self._options.holdingpen_group,
-                                  admin_pretty_name,
-                                  holdingpen_admin_info['first_name'],
-                                  holdingpen_admin_info['email_address'],
-                                  holdingpen_admin_info['last_name'],
-                                  holdingpen_admin_ssh_keys,
-                                  self.holdingpen_group_description, None)
-            print "Creating holdingpen admin: %s" % \
-                holdingpen_admin_username
+                                        self._options.holdingpen_group,
+                                        admin_pretty_name,
+                                        holdingpen_admin_info['first_name'],
+                                        holdingpen_admin_info['email_address'],
+                                        holdingpen_admin_info['last_name'],
+                                        holdingpen_admin_ssh_keys,
+                                        self.holdingpen_group_description, 
+                                        user_irodsname)
+            syslog("Creating holdingpen admin: %s" % \
+                holdingpen_admin_username)
 
         if ldif_text != "":
             self._orb.saveUser(ldif_text)
@@ -299,15 +309,20 @@ class WirelessProjectManager:
                 member_pretty_name = self.get_pretty_name(member_info)
                 member_ssh_keys = member_info['ssh_keys']
                 if len(member_ssh_keys) == 0:
-                    print "Skipping user with no ssh keys: %s" % username
+                    syslog("Skipping user with no ssh keys: %s" % username)
                     continue
-                print "Creating ORBIT user: %s" % orbit_username
+                syslog("Creating ORBIT user: %s" % orbit_username)
                 first_name = ""
                 if 'first_name' in member_info: 
                     first_name = member_info['first_name']
+                elif 'email_address' in member_info:
+                    first_name = member_info['email_address']
                 last_name = ""
                 if 'last_name' in member_info: 
                     last_name = member_info['last_name']
+                irodsname = None
+                if 'irods_username' in member_info:
+                    irodsname = member_info['irods_username']
                 ldif_text = \
                     self._orb.ldif_for_user(orbit_username,
                                             self._options.holdingpen_group,
@@ -317,7 +332,7 @@ class WirelessProjectManager:
                                             last_name,
                                             member_ssh_keys,
                                             self.holdingpen_group_description,
-                                            None)
+                                            irodsname)
                 self._orb.saveUser(ldif_text)
 
     
@@ -329,7 +344,7 @@ class WirelessProjectManager:
             project_description = project_info['project_description']
             orbit_group_name = self.to_orbit_name(project_name)
             if orbit_group_name not in self._orbit_groups:
-                print "Creating ORBIT group: %s" % orbit_group_name
+                syslog( "Creating ORBIT group: %s" % orbit_group_name)
                 lead_id = project_info['lead_id']
                 lead_username = self._geni_members[lead_id]['username']
                 orbit_lead_username = self.to_orbit_name(lead_username)
@@ -364,14 +379,14 @@ class WirelessProjectManager:
                 geni_username = member_info['username']
                 orbit_username = self.to_orbit_name(geni_username)
                 if orbit_username not in group_info['users']:
-                    print "Adding user %s to group %s" % (orbit_username, 
-                                                          orbit_group_name)
+                    syslog("Adding user %s to group %s" % (orbit_username, 
+                                                          orbit_group_name))
                     self._orb.add_user_to_group(orbit_group_name, orbit_username)
                     users_to_enable.add(orbit_username)
 
         # Enable all users that have been added to groups
         for user_to_enable in users_to_enable:
-            print "Enabling user: %s" % user_to_enable
+            syslog("Enabling user: %s" % user_to_enable)
             self._orb.enable_user(user_to_enable)
 
     # Make sure the lead of the project is the corresponding group admin
@@ -384,8 +399,8 @@ class WirelessProjectManager:
             orbit_lead_username = self.to_orbit_name(lead_username)
             orbit_group_admin = self._orbit_groups[orbit_group_name]['admin']
             if orbit_group_admin != orbit_lead_username:
-                print "Change admin of group %s from %s to %s" % \
-                    (orbit_group_name, orbit_group_admin, orbit_lead_username)
+                syslog("Change admin of group %s from %s to %s" % \
+                    (orbit_group_name, orbit_group_admin, orbit_lead_username))
                 self._orb.change_group_admin(orbit_group_name, orbit_lead_username)
 
     # Delete members of a group that aren't members of corresponding project
@@ -410,8 +425,8 @@ class WirelessProjectManager:
                     if orbit_username not in self._deleted_orbit_members:
                         self._deleted_orbit_members[orbit_username] = []
                     self._deleted_orbit_members[orbit_username].append(group_name)
-                    print "Removing %s from group %s" % \
-                        (orbit_username, group_name)
+                    syslog("Removing %s from group %s" % \
+                        (orbit_username, group_name))
                     self._orb.remove_user_from_group(group_name, orbit_username)
 
     # Delete groups that don't correspond to projects
@@ -423,7 +438,7 @@ class WirelessProjectManager:
             if group_name == self._options.holdingpen_group: continue
             geni_project_info = self.lookup_geni_project(geni_project_name)
             if not geni_project_info:
-                print "Removing group %s" % group_name
+                syslog("Removing group %s" % group_name)
                 self._orb.delete_group(group_name)
                 self._deleted_orbit_groups.append(group_name)
 
@@ -454,7 +469,7 @@ class WirelessProjectManager:
             # group, disable user
             if user_in_some_deleted_group and \
                     not user_in_some_non_deleted_group:
-                print "Disabling user: %s" % orbit_username
+                syslog("Disabling user: %s" % orbit_username)
                 self._orb.disable_user(orbit_username)
 
     # Lookup GENI project by name
@@ -490,7 +505,6 @@ class WirelessProjectManager:
         for row in project_rows:
             project_ids.append(row.project_id)
             projects[row.project_id] = {
-                'lead_id' : row.lead_id,
                 'lead_id' : row.lead_id,
                 'project_name' : row.project_name,
                 'project_description' : row.project_purpose,
