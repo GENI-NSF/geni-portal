@@ -203,12 +203,12 @@ body {
   padding: 0px;
 }
 
-#slicetools li button {
+.submenu li button {
   border: 0px;
-  background-color: #FFFFFF;
+  background-color: #FFFFFF !important;
   display: block;
   text-decoration: none !important;
-  color: #303030;
+  color: #303030 !important;
   width: 100%;
   margin: 0px;
   height: 30px;
