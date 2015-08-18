@@ -263,6 +263,11 @@ class WirelessProjectManager:
             self.to_orbit_name(self._options.holdingpen_admin)
         holdingpen_admin_ssh_keys = holdingpen_admin_info['ssh_keys']
 
+        # The holdingpen admin must have SSH keys
+        if holdingpen_admin_ssh_keys == None or \
+                len(holdingpen_admin_ssh_keys) == 0:
+            self.error("Holdingpen admin must have SSH keys")
+
         ldif_text = ""
         if self._options.holdingpen_group not in self._orbit_groups:
             ldif_text = ldif_text + \
