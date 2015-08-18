@@ -30,6 +30,7 @@ require_once("pa_client.php");
 require_once("util.php");
 require_once("proj_slice_member.php");
 require_once("tool-jfed.php");
+require_once("util.php");
 include("services.php");
 
 // String to disable button or other active element
@@ -169,27 +170,6 @@ function make_slice_table($slicelist) {
     }
     print "</table>\n";
     print "</div>";
-}
-
-/* returns a color based on how close the date is to now 
-   red = < 1 day
-   orange =  < 2 days 
-   green = > 2 days      */
-function get_urgency_color($exp_date){
-  $now = new DateTime('now');
-  $exp_datetime = new DateTime($exp_date);
-  if ($exp_datetime < $now) {
-    return "red; text-decoration: underline;";
-  } 
-  $interval = date_diff($exp_datetime, $now);
-  $num_hours = $interval->days * 24 + $interval->h;
-  if ($num_hours < 24) { 
-    return "red";
-  } else if ($num_hours < 48) {
-    return "orange";
-  } else {
-    return "green";
-  }
 }
 
 function list_slice($slice,$user) {

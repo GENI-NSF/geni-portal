@@ -180,6 +180,52 @@ function dateOnlyUIFormat($dateString) {
   return $prettyDateString;
 }
 
+// Convert $num_hours into days if $num_hours is large
+function get_time_diff_string($num_hours) {
+  if ($num_hours < 1) {
+    return "less than 1 hour";
+  } else if ($num_hours == 1 ) {
+    return "1 hour";
+  } else if ($num_hours < 48) {
+    return "$num_hours hours";
+  } else {
+    $num_days =  $num_hours / 24;
+    $num_days = (int) $num_days;
+    return "$num_days days";
+  }
+}
+
+// Return the difference in hours between now and $exp_date
+function get_time_diff($exp_date) {
+  $now = new DateTime('now');
+  $exp_datetime = new DateTime($exp_date);
+  $interval = date_diff($exp_datetime, $now);
+  $num_hours = $interval->days * 24 + $interval->h;
+  return $num_hours;
+}
+
+// Return a red if $num_hours is small, an orange if medium, a green if large 
+function get_urgency_color($num_hours) {
+  if ($num_hours < 24) { 
+    return "#EE583A";
+  } else if ($num_hours < 48) {
+    return "#FBC02D";
+  } else {
+    return "#339933";
+  }
+}
+
+// Return name of icons by same ideas as get_urgency_color
+function get_urgency_icon($num_hours) {
+  if ($num_hours < 24) { 
+    return "report";
+  } else if ($num_hours < 48) {
+    return "warning";
+  } else {
+    return "check_circle";
+  }
+}
+
 function rfc3339Format($date_string)
 {
   $date_dt = new DateTime($date_string);
