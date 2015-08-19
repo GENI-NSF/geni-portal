@@ -31,13 +31,6 @@ body {
   float: left;
 }
 
-.expirationicon {
-  height: 16px;
-  width: 16px;
-  vertical-align: middle;
-  margin-left: 5px; 
-}
-
 /* Reference classes for depth effect */ 
 .shadow1 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -54,7 +47,6 @@ body {
 /* HEADER */
 
 #dashboardheader {
-  /*margin-bottom: 20px;*/
   vertical-align: middle;
   background-color: #FFFFFF;
   height: 50px;
@@ -417,7 +409,6 @@ ul.instructions {
   margin-left: 30px;
 }
 
-/* inline table should not have large left margin */
 #content table table {
   margin-left: 0px;
 }
@@ -451,9 +442,7 @@ ul.instructions {
   font-style: italic;
 }
 
-/*
-  BREADCRUMB CONTAINER
-*/
+/* BREADCRUMB CONTAINER */
 
 #breadcrumb {
   font-weight: bold;
@@ -520,7 +509,6 @@ ul.instructions {
   border-bottom: none;
 }
 
-
 /* MAPS */
 
 #geoviewmap #map1 {
@@ -542,75 +530,6 @@ ul.instructions {
   color: #FFFFFF;
   text-decoration: none;
   border-bottom: 0px;
-}
-
-#maptext {
-  color: #616161;
-  font-weight: normal;
-  padding: 5px;
-}
-
-#maptext h1 {
-  font-weight: bold;
-  color: #F57F21;
-  font-size: 1em;
-  margin: 5px;
-  line-height: 1.2em;
-}
-
-#maptext p {
-  font-size: 0.7em;
-  margin: 5px;
-  padding-left: 15px;
-  padding-top: 7px;
-  padding-bottom: 10px;
-  line-height: 1.2em;
-}
-
-#maptext ul {
-  margin-left: 0px;
-}
-
-#maptext li {
-  font-size: 0.7em;
-  margin: 5px;
-  line-height: 0.7em;
-}
-
-.olPopupContent {
-    overflow: auto;
-    padding: 0px;
-}
-
-#OpenLayers_Control_MaximizeDiv {
-  display: none !important;
-}
-
-
-
-#OpenLayers_Control_Zoom_5 a {
-  color: #FFFFFF !important;
-  border-bottom: none !important;
-}
-
-#OpenLayers_Control_Zoom_5 a:hover {
-  color: #FB8C00 !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-#OpenLayers_Control_Attribution_7 {
-  padding: 5px;
-  z-index: 1000;
-  bottom: 0.2em !important;
-  overflow: hidden;
-  color: #616161;
-  font-size: 0.8em !important;
-  text-align: right;
-}
-
-#OpenLayers_Control_Attribution_7 a {
-  color: #616161;
 }
 
 /* FOOTER */
@@ -828,22 +747,6 @@ ul.instructions {
   font-size: 1.1em !important;
 }
 
-.starter {
-  color: #000000;
-  font-weight: bold;
-  border: 1px solid black;
-  margin: 10px;
-  padding: 10px;
-}
-
-.starter .done a {
-  color: green;
-}
-
-.starter .notdone a {
-  color: red;
-}
-
 .deemphasize {
   color: gray;
 }
@@ -936,22 +839,6 @@ table .notapply {
 .xml td {
   font-family: 'Droid Sans Mono', monospace !important;
   font-weight: normal !important;
-}
-
-#resourcemap {
-  margin: 0;
-  padding: 0;
-  max-width: 1000px;
-}
-
-#resourcemap td {
-  margin: 0;
-  padding: 0;
-}
-
-#resourcemap tr {
-  margin: 0;
-  padding: 0;
 }
 
 #maintenance_alert {

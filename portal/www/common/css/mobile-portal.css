@@ -24,10 +24,6 @@ body {
 	overflow-x: scroll;
 }
 
-#resourcemap {
-  display: none;
-}
-
 #breadcrumb {
   display: none;
 }
@@ -54,10 +50,6 @@ body {
 .tablecontainer {
   width: 100%;
   overflow-x: scroll;
-}
-
-.slicetable {
-  width: 750px !important;
 }
 
 #content pre {
