@@ -186,7 +186,7 @@ if (count($all_projects) == 0) {
 
     // Make filters for slice section, we'll add project names to this as we go through projects
     $slice_filters = "<ul class='selectorcontainer'>";
-    $slice_filters = "<li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
+    $slice_filters .= "<li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
     $slice_filters .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
     $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Categories</li>";
     $slice_filters .= "<li data-value='-ALL-'>All slices</li>";
@@ -213,7 +213,7 @@ if (count($all_projects) == 0) {
         // The new slice button and manage project buttons specific to each project
         if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
           $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'>";
-          $create_slice_button = "<i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+          $create_slice_button .= "<i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
         } else {
           $create_slice_button = "";
         }
