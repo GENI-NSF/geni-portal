@@ -131,8 +131,10 @@ if (count($my_slice_objects) > 0) {
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
     print "<p><i>You do not have access to any slices in this project.</i></p>";
+    print "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a>";
   } else {
     print "<p><i>You do not have access to any slices.</i></p>";
+    print "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a>";
   }
 }
 
