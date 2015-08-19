@@ -122,7 +122,6 @@ function show_header($title, $load_user=1, $show_cards=false){
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
   echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
-  echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400|Material+Icons" rel="stylesheet" type="text/css">';
 
   if(isset($portal_analytics_enable)) {
