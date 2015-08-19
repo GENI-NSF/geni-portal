@@ -133,7 +133,7 @@ if (! isset($request) || is_null($request)) {
   }
 }
 if (! isset($request) || is_null($request)) {
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
   include("tool-breadcrumbs.php");
   print "<h2>Error handling project request</h2>\n";
   if (isset($request_id)) {
@@ -178,7 +178,7 @@ foreach ($requests as $request) {
   if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
     error_log("handle-p-req: Non join request in request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . ": " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
     if ($rcnt == 1) {
-      show_header('GENI Portal: Projects', $TAB_PROJECTS);
+      show_header('GENI Portal: Projects');
       include("tool-breadcrumbs.php");
       print "<h2>Error handling project request</h2>\n";
       print "Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " is not a join request, but a " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] . "<br/>\n";
@@ -193,7 +193,7 @@ foreach ($requests as $request) {
   if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] != CS_CONTEXT_TYPE::PROJECT) {
     error_log("handle-p-req: Not a project request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]);
     if ($rcnt == 1) {
-      show_header('GENI Portal: Projects', $TAB_PROJECTS);
+      show_header('GENI Portal: Projects');
       include("tool-breadcrumbs.php");
       print "<h2>Error handling project request</h2>\n";
       print "Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " not a project join request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] . "<br/>\n";
@@ -283,7 +283,7 @@ $member_names = lookup_member_names_for_rows($ma_url, $user,
 
 // FIXME: Allow per request deny text from here?
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 include("tool-breadcrumbs.php");
 
 print "<h2>Handle Project Request: ". $project_name . "</h2>";

@@ -82,7 +82,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
 $header = "ListResources";
 
 require_once("header.php");
-show_header('GENI Portal: Debug',  $TAB_DEBUG);
+show_header('GENI Portal: Debug');
 print "<h2>$header</h2>\n";
 print $slivers_output;
 

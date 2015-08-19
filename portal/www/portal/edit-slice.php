@@ -74,7 +74,7 @@ if (isset($slice)) {
   relative_redirect("home.php");
 }
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 
 print "<h1>Edit GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";

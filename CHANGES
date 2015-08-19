@@ -4,6 +4,28 @@
 
 = GENI Portal Release Notes =
 
+== 3.2 ==
+ * Move SR certs from geni-portal to geni-ch (geni-ch #102).
+ * Fix bug where login screen gets embedded in logs card on session timeout (#1460)
+ * Allow for sorting of slices by project name on dashboard (#1497)
+ * Update slice page to use new tab/cards style (#1509)
+ * Make "has n slices" a link to the slice card showing those slices (#1511)
+ * Make project names on slice cards a link to that project (#1512)
+ * Update profile page to use new tab/cards style (#1513)
+ * Update project page to use new tab/cards style (#1514)
+ * Move alerts above main content, below header (#1516)
+ * Fix formatting of the aggregate view on the slice page (#1518)
+ * Show links to profile pages in header even when "$load_user" false (#1519)
+ * Add link to projects tab from new slice page when not in any projects (#1524)
+ * Fix php warnings about undefined indices on admin page (#1535)
+ * Remove references to map initialization code in cards.js (#1544)
+ * Allow for switching between arbitrary cards in cards.js (#1545)
+ * Fixed broken renew button on the (new) slice page (#1549)
+ * Fix issue where the "last_seen" table was not being populated (#1550)
+ * Clean up code in header.php, remove references to old header tabs (#1553)
+ * Fix bug where login screen gets embedded in slices and projects logs cards
+   on session timeout (#1557)
+
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)
 

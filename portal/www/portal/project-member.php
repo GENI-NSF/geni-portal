@@ -46,7 +46,7 @@ $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 if ($project == "None" or is_null($project)) {
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
 
   include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find project</h2>";
@@ -54,7 +54,7 @@ if ($project == "None" or is_null($project)) {
   exit();
 }
 if ($member == "None" or is_null($member) or $member_name == "NONE" or is_null($member_name)) {
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
 
   include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find member</h2>";
@@ -76,7 +76,7 @@ if (! is_null($slice_members) && count($slice_members) > 0) {
 // error_log("SLICE_MEMBERS = " . print_r($slice_members, true));
 //error_log("SA = " .  print_r($slice_attributes, true));
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 
 include("tool-breadcrumbs.php");
 print "<h1>GENI Project: " . "<i>" . $project_name . "</i>" . ", Member: " . "<i>" . $member_name . "</i>" . "</h1>\n";

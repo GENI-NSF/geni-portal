@@ -31,8 +31,15 @@ $(document).ready(function(){
     $("#map").hide();
   }
 
-  if(window.location.hash == "#map") {
-    map_init("/common/map/current.json", [42, -72], 3);
+  var old_callback = get_callback;
+  get_callback = function (tab_name) {
+    if (tab_name == "#map") {
+      return function(){
+        map_init("/common/map/current.json", [42, -72], 3);
+      }
+    } else {
+      return old_callback(tab_name);
+    }
   }
   
   // Make header links and new selectors show dropdown when you hover on them
@@ -133,7 +140,11 @@ function update_selector(selector, newval) {
 // Retrieve all the GENI logs for the user in the past hours hours
 function get_logs(hours){
   $.get("do-get-logs.php?hours="+hours, function(data) {
-    $('#logtable').html(data);
+    if (data.split("<html").length == 1) {
+      $('#logtable').html(data);
+    } else {
+      location.reload();
+    }
   });
 }
 
@@ -229,6 +240,14 @@ function show_slices(selection, sortby) {
   if($("." + class_name).length == 0) {
     $("#slicearea").append("<h6 style='margin:15px;' class='noslices'><i>" + no_slice_msg + "</i></h6>");
   }
+}
+
+// Shows the slices for project projectname
+
+function show_slices_for_project(projectname) { 
+  update_selector($("#slicefilterswitch"), projectname);
+  switch_to_card("#slices");
+  update_slices();
 }
 
 // Determines if a selection for show_slices is a project name or a category

@@ -105,7 +105,7 @@ function get_users_projects($user) {
   if ($has_projects) {
     $select = "<select name='project_id' form='createsliceform'>$options</select>";
   } else {
-    $select = '<i>You are not a member of any project where you can create a slice.</i>';
+    $select = '<i>You are not a member of any project where you can create a slice. </i><a href="dashboard.php#projects">View projects</a>';
   }
   return $select;
 }
@@ -133,7 +133,7 @@ if ($slice_name) {
 
 // If here, present the form
 require_once("header.php");
-show_header('GENI Portal: Slices', '');
+show_header('GENI Portal: Slices');
 if ($message) {
   print "<i>" . $message . "</i>\n";
 }

@@ -32,7 +32,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 unset($slice);
 include("tool-lookupids.php");
 
-show_header('GENI Portal: Geo View', $TAB_SLICES, true, true);
+show_header('GENI Portal: Geo View', true, true);
   
 ?>
 

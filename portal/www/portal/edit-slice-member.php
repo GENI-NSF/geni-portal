@@ -207,7 +207,7 @@ foreach($all_project_member_details as $apmd) {
 // Then non-members
 usort($all_project_member_row_elements, 'compare_project_member_row_elements');
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 

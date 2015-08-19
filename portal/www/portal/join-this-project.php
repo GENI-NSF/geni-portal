@@ -47,7 +47,7 @@ include("tool-lookupids.php");
 if (! isset($project) || is_null($project)) {
   error_log("No project set?");
   if (isset($project_id)) {
-    show_header('GENI Portal: Projects', $TAB_PROJECTS);
+    show_header('GENI Portal: Projects');
     include("tool-breadcrumbs.php");
     print "<h2>Error Joining a project</h2>\n";
     print "Unknown project ID $project_id<br/>\n";
@@ -172,7 +172,7 @@ Thank you,\n" . $user->prettyName() . "\n";
        //       "-f $email");
 
   // Put up a page saying we sent the request
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  show_header('GENI Portal: Projects');
   include("tool-breadcrumbs.php");
   print "<h1>Join Project <i>$project_name</i></h1>\n";
   
@@ -189,7 +189,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   
 }
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 include("tool-breadcrumbs.php");
 print "<h1>Join Project <i>$project_name</i></h1>\n";
 

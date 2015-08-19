@@ -50,7 +50,7 @@ if (is_null($key_id)) {
 
 $GENI_TITLE = "Download PuTTY Key";
 $load_user = TRUE;
-show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
+show_header('GENI Portal: Profile', $load_user);
 include("tool-breadcrumbs.php");
 
 print "<h1>Download PuTTY Key</h1>";

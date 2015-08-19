@@ -64,7 +64,7 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 $keys = $user->sshKeys();
 
-show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 

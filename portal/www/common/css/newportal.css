@@ -95,6 +95,10 @@ body {
   transition-duration: 500ms;
 }
 
+.card.nopadding {
+  padding: 0px;
+}
+
 .card.loadingright {
   -webkit-transform: translate(100%);
   transform: translate(100%);
@@ -183,6 +187,50 @@ body {
   display: block;
   text-decoration: none;
   color: #303030;
+}
+
+#slicetools {
+  width: 100px;
+  margin: 22px 0px;
+}
+
+#slicetools .selectorshown {
+  width: 100px;
+}
+
+#slicetools li {
+  width: 100px;
+  padding: 0px;
+}
+
+#slicetools li button {
+  border: 0px;
+  background-color: #FFFFFF;
+  display: block;
+  text-decoration: none !important;
+  color: #303030;
+  width: 100%;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  box-shadow: none;
+  padding: 0px;
+}
+
+#actualrenewbutton {
+  background-color: #42A5F5 !important;
+  color: #FFFFFF !important;
+}
+
+#actualrenewbutton:hover {
+  background-color: #2196F3 !important;
+}
+
+#sliceactionbar {
+  padding: 10px 20px;
+  height: 50px;
+  display: table;
 }
 
 /* MAIN CONTENT */
@@ -339,6 +387,7 @@ body {
 #content a:hover {
   background-color: #E5E5E5;
   color: #303030;
+  cursor: pointer;
 }
 
 /* Tables */
@@ -825,7 +874,7 @@ ul.instructions {
 }
 
 input.date {
-  width: 14em;
+  width: 6em;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
@@ -903,9 +952,10 @@ table .notapply {
 
 #maintenance_alert {
   border-radius: 0px;
-  margin: 0px !important;
-  margin-bottom: -20px !important;
-  border-right: 1px solid #E5E5E5; 
+  margin: 20px auto 0px auto !important;
+  width: calc(95% - 50px); 
+  max-width: 1350px;
+  min-width: 750px;
 }
 
 /* for IE browsers that want to put a border around linked images */

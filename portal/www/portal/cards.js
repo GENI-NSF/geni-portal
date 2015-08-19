@@ -23,46 +23,52 @@
 
 // cards.js: enable switching between tabs with nice animations
 
+get_callback = function(tab_name) {
+  return function(){};
+}
+
+// Switch to card with id new_active
+function switch_to_card(new_active) {
+  active.removeClass('activesection');
+  oldindex = active.attr('data-tabindex');
+  content.hide();
+
+  var state = {location: new_active};
+  history.pushState(state, '', new_active);
+  
+  active = $("ul.tabs a[href='" + new_active + "']");
+  newindex = active.attr('data-tabindex');
+  active.addClass('activesection');
+  content = $(new_active);
+  loadingdirection = oldindex < newindex ? "loadingright" : "loadingleft";
+  content.addClass(loadingdirection);
+  content.show();
+
+  content.each(function(index, element) {
+    setTimeout(function() {
+      element = $(element);
+      element.removeClass(loadingdirection);
+    }, 0);
+  });
+  callback = get_callback(new_active);
+  callback();
+}
+
 $(document).ready(function() {
-  var active, content;
   $('ul.tabs').each(function() {
     var links = $(this).find('a');
     active = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
     active.addClass('activesection');
     content = $(active.attr('href'));
+    callback = get_callback(active.attr('href'));
+    callback();
 
     links.not(active).each(function() {
       $($(this).attr('href')).hide();
     });
 
-
     $(this).on('click', 'a', function(e) {
-      active.removeClass('activesection');
-      oldindex = active.attr('data-tabindex');
-
-      content.hide();
-
-      var new_active = $(this).attr('href');
-      var state = {location: new_active};
-      history.pushState(state, '', new_active);
-      active = $(this);
-      newindex = active.attr('data-tabindex');
-      active.addClass('activesection');
-      content = $($(this).attr('href'));
-      loadingdirection = oldindex < newindex ? "loadingright" : "loadingleft"
-      content.show();
-      content.addClass(loadingdirection);
-      content.show();
-
-      content.each(function(index, element) {
-        setTimeout(function() {
-          element = $(element);
-          element.removeClass(loadingdirection);
-        }, 0);
-        if(new_active == "#map") {
-          map_init("/common/map/current.json", [42, -72], 3);
-        }
-      });
+      switch_to_card($(this).attr('href'));
       e.preventDefault();
     });
   });
@@ -84,9 +90,6 @@ $(document).ready(function() {
         active.addClass('activesection');
         content = $(active.attr('href'));
         content.show();
-        if(active == "#map") {
-          map_init("/common/map/current.json", [42, -72], 3);
-        }
       });
     }
   });
