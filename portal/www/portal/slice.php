@@ -42,6 +42,7 @@ require_once('status_constants.php');
 require_once('maintenance_mode.php');
 require_once('am_client.php');
 require_once("tool-jfed.php");
+require_once("user-preferences.php");
 
 function cmp($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
@@ -335,9 +336,23 @@ include("tool-showmessage.php");
 
 <div class='nav2'>
   <ul class='tabs'>
-    <li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>
-    <li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>
-    <li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>
+<?php
+  $default_slice_tab = get_preference($user->urn(), "slice_view");
+
+  if ($default_slice_tab == "aggregate") {
+    echo "<li><a class='tab' data-tabindex=1 href='#actions_table'>Aggregates</a></li>";
+    echo "<li><a class='tab' data-tabindex=2 href='#jacks-app'>Resources</a></li>";
+    echo "<li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>";
+  } else if ($default_slice_tab == "geographic") {
+    echo "<li><a class='tab' data-tabindex=1 href='#geo_view_div'>Map</a></li>";
+    echo "<li><a class='tab' data-tabindex=2 href='#jacks-app'>Resources</a></li>";
+    echo "<li><a class='tab' data-tabindex=3 href='#actions_table'>Aggregates</a></li>";
+  } else {
+    echo "<li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>";
+    echo "<li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>";
+    echo "<li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>";
+  }
+?>
     <li><a class='tab' data-tabindex=4 href='#members'>Members</a></li>
     <li><a class='tab' data-tabindex=5 href='#manageslice'>Info</a></li>
     <li><a class='tab' data-tabindex=6 href='#logs'>Logs</a></li>

@@ -566,8 +566,8 @@ echo "<div class='card' id='preferences'>";
 echo "<h2>Portal preferences</h2>";
 
 $preference_descriptions = array(
-  "homepage_view" => "Default homepage style (for slices and projects)"
-  // "slice_view" => "Default view for slices"
+  "homepage_view" => "Default homepage style (for slices and projects)",
+  "slice_view" => "Default view for slices"
 );
 
 foreach($possible_prefs as $pref_name => $pref_values) {
@@ -576,7 +576,7 @@ foreach($possible_prefs as $pref_name => $pref_values) {
   foreach ($pref_values as $pref_value) {
     $user_value = get_preference($user->urn(), $pref_name);
     $selected = $pref_value == $user_value ? "selected" : "";
-    print "<option value='$pref_value' $selected data-user-val='$user_value'>$pref_value</option>";
+    print "<option value='$pref_value' $selected>$pref_value</option>";
   }
   print "</select><br>";
 }

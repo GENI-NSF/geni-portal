@@ -35,17 +35,22 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 if (array_key_exists('user_urn', $_REQUEST)) {
-  set_preferences($_REQUEST['user_urn'], $_REQUEST);
+  $user_urn = $_REQUEST['user_urn'];
+  unset($_REQUEST['user_urn']);
+  set_preferences($user_urn, $_REQUEST);
+} else {
+  print "Error: No user URN specified.";
+  error_log("Error: No user URN specified.");
 }
 
 function set_preferences($user_urn, $preferences) {
   global $possible_prefs;
   $conn = portal_conn();
+  $user_urn = $conn->quote($user_urn, "text");
   $success_string = "";
   foreach ($preferences as $pref_name => $pref_value) {
     if (array_key_exists($pref_name, $possible_prefs)) {
       if(in_array($pref_value, $possible_prefs[$pref_name])) {
-        $user_urn = $conn->quote($user_urn, "text");
         $pref_name = $conn->quote($pref_name, "text");
         $pref_value = $conn->quote($pref_value, "text");
         $sql = "UPDATE user_preferences SET preference_value=$pref_value "

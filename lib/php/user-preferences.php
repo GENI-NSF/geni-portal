@@ -34,8 +34,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $possible_prefs = array(
-  "homepage_view" => array("cards", "table")
-  // "slice_view" => array("graphical", "aggregate", "geographic")
+  "homepage_view" => array("cards", "table"),
+  "slice_view" => array("graphical", "aggregate", "geographic")
 );
 
 function get_preference($user_urn, $preference) {
@@ -55,6 +55,8 @@ function get_preference($user_urn, $preference) {
     } else {
       return $db_response[RESPONSE_ARGUMENT::VALUE]['preference_value'];
     }
+  } else {
+    return "";
   }
 }
 
