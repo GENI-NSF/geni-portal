@@ -132,12 +132,12 @@ function make_slice_table($slicelist) {
   global $user;
   print "<div class='tablecontainer'>";
   print "<table class='slicetable'>";
-  print "<tr><th>Slice Name</th>";
+  print "<tr><th>Name</th>";
   print "<th>Project</th>";
-  print "<th>Slice Lead</th>";
-  print "<th>Slice Expiration</th>";
-  print "<th>Next Resource Expiration</th>";
-  print "<th>Actions</th>";
+  print "<th>Owner</th>";
+  print "<th>Expiration</th>";
+  print "<th>Next Resource <br> Expiration</th>";
+  print "<th>&nbsp;</th>";
   print "</tr>";
 
   foreach ($slicelist as $slice) {
@@ -174,7 +174,7 @@ function list_slice($slice, $user) {
   $args['slice_id'] = $slice_id;
   $query = http_build_query($args);
   $slice_url = $slice_base_url . $query;
-  print "<tr><td><a href='$slice_url'>$slice_name</a></td>";
+  print "<tr class='slicetablerow'><td><a href='$slice_url'>$slice_name</a></td>";
 
   $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];                 
 

@@ -233,6 +233,23 @@ body {
   display: table;
 }
 
+#content .slicetablerow td {
+  padding: 10px;
+}
+
+#content .slicetableactions .selector {
+  width: 100px;
+}
+
+#content .slicetableactions ul {
+  width: 160px;
+}
+
+#content .slicetableactions li {
+  width: 160px;
+  padding: 0px;
+}
+
 /* MAIN CONTENT */
 
 #content-outer {
