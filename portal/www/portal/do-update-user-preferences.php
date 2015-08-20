@@ -35,7 +35,12 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 if (array_key_exists('user_urn', $_REQUEST)) {
-  set_preferences($_REQUEST['user_urn'], $_REQUEST);
+  $user_urn = $_REQUEST['user_urn'];
+  unset($_REQUEST['user_urn']);
+  set_preferences($user_urn, $_REQUEST);
+} else {
+  print "Error: No user URN specified.";
+  error_log("Error: No user URN specified.");
 }
 
 function set_preferences($user_urn, $preferences) {

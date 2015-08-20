@@ -229,7 +229,7 @@ DROP TABLE IF EXISTS last_seen;
 CREATE TABLE last_seen (
   id SERIAL,
   member_id UUID NOT NULL,
-  ts timestamp not null default CURRENT_TIMESTAMP,
+  ts timestamp not null default NOW() AT TIME ZONE 'UTC',
   request_uri VARCHAR,
   PRIMARY KEY (id)
 );
@@ -271,7 +271,7 @@ CREATE TABLE lead_request (
   requester_urn   VARCHAR NOT NULL,
   requester_uuid  UUID NOT NULL,
   requester_eppn  VARCHAR NOT NULL,
-  request_ts timestamp NOT NULL default CURRENT_TIMESTAMP,
+  request_ts timestamp NOT NULL default NOW() AT TIME ZONE 'UTC',
   approver VARCHAR default '',
   notes VARCHAR default '',
   reason VARCHAR default '',
@@ -279,3 +279,20 @@ CREATE TABLE lead_request (
   PRIMARY KEY (id)
 );
 CREATE INDEX lead_request_index_requester_urn ON lead_request (requester_urn);
+
+-- ----------------------------------------------------------------------
+-- user preferences
+--
+-- Record preferences for portal users
+-- ----------------------------------------------------------------------
+
+DROP TABLE IF EXISTS user_preferences;
+
+CREATE TABLE user_preferences (
+  id SERIAL,
+  user_urn        VARCHAR NOT NULL,
+  preference_name VARCHAR NOT NULL,
+  preference_value VARCHAR NOT NULL,
+  PRIMARY KEY (id)
+);
+

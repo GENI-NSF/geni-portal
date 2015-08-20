@@ -304,10 +304,13 @@ if (count($all_projects) == 0) {
     $project_card .= "<div id='projectarea'>$project_boxes</div></div>";    
     print $project_card;   
   } else {
-    print "<div class='card' id='slices'>";
+    print "<div class='dashsection card' id='slices'>";
+    unset($project_id);
+    print "<h3 class='dashtext'>Slices</h3><br><br>";
+    print "<a href='createslice.php' class='button'><i class='material-icons'>add</i>New slice</a>";
     include("tool-slices.php");
     print "</div>";
-    print "<div class='card' id='projects'>";
+    print "<div class='dashsection card' id='projects'>";
     include("tool-projects.php");
     include("tool-expired-projects.php");
     print "</div>";
