@@ -5,7 +5,8 @@ svcdatadir = $(pkgdatadir)/km
 svcwebdir = /var/www/secure
 svccssdir = /var/www/common/css
 
-nobase_dist_svcdata_DATA = db/postgresql/schema.sql
+nobase_dist_svcdata_DATA = db/postgresql/schema.sql \
+	db/postgresql/update-1.sql
 
 dist_svcweb_DATA = \
 	www/kmtool/kmfooter.php \

@@ -33,6 +33,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   exit();
 }
 
+// Map of preference names to choices for that pref. The first element in the array
+// of choices is the default value.
 $possible_prefs = array(
   "homepage_view" => array("cards", "table"),
   "slice_view" => array("graphical", "aggregate", "geographic")
@@ -49,13 +51,19 @@ function get_preference($user_urn, $preference) {
     $db_response = db_fetch_row($sql, "Get user preference");
 
     $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
+    $default_option = $possible_prefs[$preference][0];
     if($db_error != "") { // TODO: What do we do here
       error_log("DB error when getting row from user_preferences table: " . $db_error);
-      return true;
+      return $default_option;
     } else {
-      return $db_response[RESPONSE_ARGUMENT::VALUE]['preference_value'];
+      if ($db_response[RESPONSE_ARGUMENT::VALUE]['preference_value']) {
+        return $db_response[RESPONSE_ARGUMENT::VALUE]['preference_value'];
+      } else {
+        return $default_option;
+      }
     }
   } else {
+    error_log("Unknown preference '$preference' requested for user '$user_urn'");
     return "";
   }
 }

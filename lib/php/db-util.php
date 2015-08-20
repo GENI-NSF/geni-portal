@@ -439,7 +439,7 @@ function record_last_seen($user, $request_uri)
   $q_member_id = $conn->quote($user->account_id, 'text');
   $sql = "UPDATE last_seen SET";
   $sql .= " request_uri = " . $q_request_uri;
-  $sql .= ", ts = now()";
+  $sql .= ", ts = now() at time zone 'utc'";
   $sql .= " WHERE member_id = " . $q_member_id;
   $result = db_execute_statement($sql, "record_last_seen update");
   // geni_syslog("UPDATE result = " . print_r($result, true));

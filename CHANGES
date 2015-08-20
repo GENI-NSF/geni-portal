@@ -4,6 +4,11 @@
 
 = GENI Portal Release Notes =
 
+== 3.3 ==
+ * Store timestamps in UTC for last_seen, lead requests, and KM asserted attributes. (#1446)
+ * Add user preferences to the portal (#1526)
+  * Allow users to pick between default homepage view: cards or table (#1498)
+
 == 3.2 ==
  * Move SR certs from geni-portal to geni-ch (geni-ch #102).
  * Fix bug where login screen gets embedded in logs card on session timeout (#1460)

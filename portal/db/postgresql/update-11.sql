@@ -1,15 +1,4 @@
--- ----------------------------------------------------------------------
--- user preferences
---
--- Record preferences for portal users
--- ----------------------------------------------------------------------
+-- Modify timestamps with a default to use now() but in UTC (not local)
+ALTER TABLE ONLY last_seen ALTER COLUMN ts SET DEFAULT NOW() AT TIME ZONE 'UTC';
 
-DROP TABLE IF EXISTS user_preferences;
-
-CREATE TABLE user_preferences (
-  id SERIAL,
-  user_urn        VARCHAR NOT NULL,
-  preference_name VARCHAR NOT NULL,
-  preference_value VARCHAR NOT NULL,
-  PRIMARY KEY (id)
-);
+ALTER TABLE ONLY lead_request ALTER COLUMN request_ts SET DEFAULT NOW() AT TIME ZONE 'UTC';
