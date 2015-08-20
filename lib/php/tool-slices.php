@@ -89,16 +89,6 @@ if (count($my_slice_objects) > 0) {
   $listres_base_url = relative_url("listresources.php?");
   $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
-  $gemini_base_url = relative_url("gemini.php?");
-  $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
-
-  // Code to set up jfed button
-  $jfedret = get_jfed_strs($user);
-  $jfed_script_text = $jfedret[0];
-  $jfed_button_start = $jfedret[1];
-  $jfed_button_part2 = $jfedret[2];
-  print $jfed_script_text;
-  // End of jFed section
 
   //separate slices for which $user is lead
   $lead_slices = array();
@@ -165,6 +155,7 @@ function list_slice($slice, $user) {
   global $gemini_base_url, $labwiki_base_url;
   global $disabled, $jfed_button_start, $jfed_button_part2;
   global $sa_url, $user;
+  global $portal_max_slice_renewal_days;
 
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
@@ -192,8 +183,10 @@ function list_slice($slice, $user) {
   // contain the project of the slice. If so, list the project using something else.
   if (!array_key_exists($slice_project_id, $project_objects)) {
     $slice_project_name = "-Expired Project-";
+    $project_expiration = "";
   } else {
     $project = $project_objects[$slice_project_id];
+    $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   }
   print "<td><a href='project.php?project_id=$slice_project_id'>$slice_project_name</a></td>";
@@ -205,21 +198,24 @@ function list_slice($slice, $user) {
 
   // Slice expiration
   $slice_exp_date = $slice[SA_ARGUMENT::EXPIRATION];
+  $slice_exp_hours = get_time_diff($slice_exp_date);
   $slice_exp_str = dateUIFormat($slice_exp_date);
-  $slice_exp_pretty_str = "in <b>" . get_time_diff_string(get_time_diff($slice_exp_str)) . "</b>";
-  $slice_exp_color = get_urgency_color($slice_exp_str);
-  $slice_exp_icon = get_urgency_icon($slice_exp_str);
+  $slice_exp_pretty_str = "In <b>" . get_time_diff_string($slice_exp_hours) . "</b>";
+  $slice_exp_color = get_urgency_color($slice_exp_hours);
+  $slice_exp_icon = get_urgency_icon($slice_exp_hours);
 
   print "<td><span title='$slice_exp_str'>$slice_exp_pretty_str ";
   print "<i class='material-icons' style='color:$slice_exp_color; font-size: 18px;'>$slice_exp_icon</i></span></td>";
 
   // Next resource expiration  
   $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
-  if (count($slivers) == 0) {
-    $next_exp_str = "";
-    $next_exp_pretty_str = "<i>No resources for this slice</i>";
-    $next_exp_color = "#5F584E";
-    $next_exp_icon = "";
+  $resource_count = count($slivers);
+  if ($resource_count == 0) {
+    $resource_exp_str = "";
+    $resource_exp_pretty_str = "<i>No resources</i>";
+    $resource_exp_color = "#5F584E";
+    $resource_exp_icon = "";
+    $resource_exp_hours = 1000000;
   } else {
     $first_sliver = reset($slivers);
     $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
@@ -229,51 +225,60 @@ function list_slice($slice, $user) {
         $next_exp = $this_date;
       }
     }
-    $next_exp_str = dateUIFormat($next_exp);
-    $next_exp_pretty_str = "in <b>" . get_time_diff_string(get_time_diff($next_exp_str)) . "</b>";
-    $next_exp_color = get_urgency_color($next_exp_str);
-    $next_exp_icon = get_urgency_icon($next_exp_str);
+    $resource_exp_str = dateUIFormat($next_exp);
+    $resource_exp_hours = get_time_diff($resource_exp_str);
+    $resource_exp_pretty_str = "In <b>" . get_time_diff_string($resource_exp_hours) . "</b>";
+    $resource_exp_color = get_urgency_color($resource_exp_hours);
+    $resource_exp_icon = get_urgency_icon($resource_exp_hours);
   }
-  print "<td><span title='$next_exp_str'>$next_exp_pretty_str ";
-  print "<i class='material-icons' style='color:$next_exp_color; font-size: 18px;'>$next_exp_icon</i></span></td>";
+  print "<td><span title='$resource_exp_str'>$resource_exp_pretty_str ";
+  print "<i class='material-icons' style='color:$resource_exp_color; font-size: 18px;'>$resource_exp_icon</i></span></td>";
 
   // Slice actions
-  $slicecred_url = $base_url . $query;
-  $sliceresource_url = $resource_base_url . $query;
-  $delete_sliver_url = $delete_sliver_base_url . $query;
+  $add_url = $resource_base_url . $query;
+  $remove_url = $delete_sliver_base_url . $query;
   $listres_url = $listres_base_url . $query;
   $gemini_url = $gemini_base_url . $query;
   $labwiki_url = $labwiki_base_url . $query;
 
-  // Determine privileges to this slice for this user
-  $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id);
-  $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id);
-  $renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id);
-  $get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id);
-
-  print "<td>";
-  print "<ul class='selectorcontainer' style='margin: 0px;'><li class='has-sub selector' style='float:none;'>";
+  print "<td style='text-align: center;'>";
+  print "<ul class='selectorcontainer slicetableactions' style='margin: 0px;'><li class='has-sub selector' style='float:none;'>";
   print "<span class='selectorshown'>Actions</span><ul class='submenu'>";
-  if ($add_slivers_privilege) {
-    print "<li><a onClick=\"window.location='$sliceresource_url'\">Add Resources</a></li>";
-  }
-  if ($get_slice_credential_privilege) {
-    print "<li><a title='Login info, etc' onClick=\"info_set_location('$slice_id', '$listres_url')\">Details</a></li>";
-  }
-  if ($delete_slivers_privilege) {
-    print "<li><a onClick=\"info_set_location('$slice_id', '$delete_sliver_url')\">Delete Resources</a></li>"; 
-  }
-  if ($add_slivers_privilege) {
-    print "<li><a onClick=\"window.open('$gemini_url')\">GENI Desktop</a></li>";  
-    print "<li><a onClick=\"window.open('$labwiki_url')\">LabWiki</a></li>";
+  print "<li><a href='$slice_url'>Manage slice</a></li>";
+
+  if ($user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+    print "<li><a href='$add_url'>Add resources</a></li>";
   }
 
-  // Show a jfed button if there wasn't an error generating it
-  if (!is_null($jfed_button_start) && $get_slice_credential_privilege) {
-    print "<li>";
-    print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . ">jFed</button>";
-    print "</li>";
+  $dashboard_max_renewal_days = 7;
+
+  $renewal_days = min($dashboard_max_renewal_days, $portal_max_slice_renewal_days);
+  if ($project_expiration) {
+    $project_expiration_dt = new DateTime($project_expiration);
+    $now_dt = new DateTime();
+    $difference = $project_expiration_dt->diff($now_dt);
+    $renewal_days = $difference->days;
+    $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, $dashboard_max_renewal_days);
   }
+
+  $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+
+  $renewal_hours = 24 * $renewal_days;
+  $disable_renewal = "";
+  if ($slice_exp_hours > $renewal_hours && $resource_exp_hours > $renewal_hours) {
+    $disable_renewal = "class='disabledaction'";
+  }
+
+  if ($resource_count > 0) {
+    print "<li><a $disable_renewal onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, $slice_exp_hours, $resource_exp_hours);'>Renew resources ($renewal_days days)</a></li>";
+    if ($user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+      print "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
+    }
+    if ($user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+      print "<li><a onclick='info_set_location(\"$slice_id\", \"$remove_url\")'>Delete resources</a></li>";
+    }
+  }
+
   print "</ul></li></ul>";
 
   print "</td></tr>\n";
