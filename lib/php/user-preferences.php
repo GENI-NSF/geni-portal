@@ -51,19 +51,19 @@ function get_preference($user_urn, $preference) {
     $db_response = db_fetch_row($sql, "Get user preference");
 
     $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
+    $default_option = $possible_prefs[$preference][0];
     if($db_error != "") { // TODO: What do we do here
       error_log("DB error when getting row from user_preferences table: " . $db_error);
-      return true;
+      return $default_option;
     } else {
       if ($db_response[RESPONSE_ARGUMENT::VALUE]['preference_value']) {
         return $db_response[RESPONSE_ARGUMENT::VALUE]['preference_value'];
       } else {
-        $choices = $possible_prefs[$preference];
-        return $choices[0]; // the default value
+        return $default_option;
       }
     }
   } else {
-    error_log("Tried to load preference $preference that does not exist for user $user_urn");
+    error_log("Unknown preference '$preference' requested for user '$user_urn'");
     return "";
   }
 }
