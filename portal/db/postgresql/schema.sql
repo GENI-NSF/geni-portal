@@ -279,3 +279,20 @@ CREATE TABLE lead_request (
   PRIMARY KEY (id)
 );
 CREATE INDEX lead_request_index_requester_urn ON lead_request (requester_urn);
+
+-- ----------------------------------------------------------------------
+-- user preferences
+--
+-- Record preferences for portal users
+-- ----------------------------------------------------------------------
+
+DROP TABLE IF EXISTS user_preferences;
+
+CREATE TABLE user_preferences (
+  id SERIAL,
+  user_urn        VARCHAR NOT NULL,
+  preference_name VARCHAR NOT NULL,
+  preference_value VARCHAR NOT NULL,
+  PRIMARY KEY (id)
+);
+
