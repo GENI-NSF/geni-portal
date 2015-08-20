@@ -767,6 +767,10 @@ ul.instructions {
 
 /* OTHER */
 
+.preferenceselect {
+  margin: 10px;
+}
+
 #incommon-logo {
   width: .75in;
   padding: 0.25in;

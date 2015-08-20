@@ -146,7 +146,7 @@ function make_slice_table($slicelist) {
   print "</div>";
 }
 
-function list_slice($slice, $user) {
+function list_slice($slice,$user) {
   global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
   global $delete_sliver_base_url;

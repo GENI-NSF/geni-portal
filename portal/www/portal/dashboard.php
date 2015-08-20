@@ -33,6 +33,7 @@ require_once("sa_client.php");
 require_once("cs_client.php");
 require_once("proj_slice_member.php");
 require_once("services.php");
+require_once("user-preferences.php");
 
 
 $user = geni_loadUser();
@@ -90,7 +91,7 @@ if (! $user->portalIsAuthorized()) {
 ?>
 
 <?php
-
+  
   $expired_projects = array();
   $unexpired_projects = array();
   $num_projects = count($project_objects);
@@ -120,234 +121,248 @@ if (! $user->portalIsAuthorized()) {
     // you have some projects or slices
     make_navigation_tabs();
 
-    // Start making the slice and project sections
-    $lead_names = lookup_member_names_for_rows($ma_url, $user, $all_projects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
-    $slice_filters = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
-    $slice_filters .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
-    $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Categories</li>";
-    $slice_filters .= "<li data-value='-ALL-'>All slices</li>";
-    $slice_filters .= "<li data-value='-MY-'>Slices I lead</li>";
-    $slice_filters .= "<li data-value='-has-resources-'>Has resources</li>";
-    $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Projects</li>";
-    $slice_project_info = "";
-    $show_info = "";
-    $project_boxes = "";
-    $user_id = $user->account_id;
+    if (get_preference($user->urn(), "homepage_view") == "cards") {
 
-    // Make and fill dictionary of project join requests
-    // Do this for ACTIVE projects only
-    $project_request_map = array();
-    if (count($project_objects) > 0) {
-      $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
-                  CS_CONTEXT_TYPE::PROJECT);
-      foreach ($reqlist as $req) {
-         if ($req[RQ_REQUEST_TABLE_FIELDNAME::STATUS] != RQ_REQUEST_STATUS::PENDING){
+      // Start making the slice and project sections
+      $lead_names = lookup_member_names_for_rows($ma_url, $user, $all_projects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
+      $slice_filters = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
+      $slice_filters .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
+      $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Categories</li>";
+      $slice_filters .= "<li data-value='-ALL-'>All slices</li>";
+      $slice_filters .= "<li data-value='-MY-'>Slices I lead</li>";
+      $slice_filters .= "<li data-value='-has-resources-'>Has resources</li>";
+      $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Projects</li>";
+      $slice_project_info = "";
+      $show_info = "";
+      $project_boxes = "";
+      $user_id = $user->account_id;
+
+      // Make and fill dictionary of project join requests
+      // Do this for ACTIVE projects only
+      $project_request_map = array();
+      if (count($project_objects) > 0) {
+        $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
+                    CS_CONTEXT_TYPE::PROJECT);
+        foreach ($reqlist as $req) {
+          if ($req[RQ_REQUEST_TABLE_FIELDNAME::STATUS] != RQ_REQUEST_STATUS::PENDING){
             continue;
-         }
-         $context_id = $req[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
-         if (array_key_exists($context_id , $project_request_map )) {
+          }
+          $context_id = $req[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
+          if (array_key_exists($context_id , $project_request_map )) {
            $project_request_map[$context_id][] = $req;
-         } else {
+          } else {
            $project_request_map[$context_id] = array($req);
-         }
-     }                       
-    }
-
-    // Get the user's unexpired slices
-    $unexpired_slices = array();
-    foreach($slice_objects as $slice) {
-      $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-      $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
-      if(!convert_boolean($expired)) {
-        $unexpired_slices[$slice_id] = $slice;
-      }
-    }
-    $slice_objects = $unexpired_slices;
-
-    $slice_owner_names = array();
-    if (count($slice_objects) > 0) {
-      $slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $slice_objects, SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
-    }
-
-    $user_id = $user->account_id;
-    $project_slice_counts = array();
-    $slice_boxes = '';
-    foreach ($slice_objects as $slice) {
-      $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-      $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-      $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-      $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-      if ($slice_owner_id == $user_id) {
-        $whose_slice = "-MY- -ALL-";
-      } else {
-        $whose_slice = "-THEIR- -ALL-";
-      }
-      $slice_exp_date = $slice[SA_ARGUMENT::EXPIRATION];
-      $args['slice_id'] = $slice_id;
-      $query = http_build_query($args);
-      $add_resource_url = "slice-add-resources-jacks.php?" . $query;
-      $delete_resource_url = "confirm-sliverdelete.php?" . $query;
-      $listres_url = "listresources.php?" . $query;
-      $slice_url = "slice.php?" . $query;
-      $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
-      $slice_project_url = "project.php?project_id=$slice_project_id";
-
-      if (array_key_exists($slice_project_id, $project_slice_counts)) {
-        $project_slice_counts[$slice_project_id]++;
-      } else {
-        $project_slice_counts[$slice_project_id] = 1;
-      }
-      if (!array_key_exists($slice_project_id, $project_objects)) { // slice belongs to an expired project
-        $project_expiration = "";
-        $project_expiration_dt = new DateTime();
-        $slice_project_name = "-Expired Project-";
-      } else {
-        $project = $project_objects[$slice_project_id];
-        $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
-        $project_expiration_dt = new DateTime($project_expiration);
-        $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+          }
+        }                       
       }
 
-      $dashboard_max_renewal_days = 7;
+      // Get the user's unexpired slices
+      $unexpired_slices = array();
+      foreach($slice_objects as $slice) {
+        $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+        $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
+        if(!convert_boolean($expired)) {
+          $unexpired_slices[$slice_id] = $slice;
+        }
+      }
+      $slice_objects = $unexpired_slices;
 
-      $renewal_days = min($dashboard_max_renewal_days, $portal_max_slice_renewal_days);
-      if ($project_expiration) {
-        $project_expiration_dt = new DateTime($project_expiration);
-        $now_dt = new DateTime();
-        $difference = $project_expiration_dt->diff($now_dt);
-        $renewal_days = $difference->days;
-        $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, $dashboard_max_renewal_days);
+      $slice_owner_names = array();
+      if (count($slice_objects) > 0) {
+        $slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $slice_objects, SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
       }
 
-      $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
-      $slice_exp = get_time_diff($slice_exp_date);
+      $user_id = $user->account_id;
+      $project_slice_counts = array();
+      $slice_boxes = '';
+      foreach ($slice_objects as $slice) {
+        $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+        $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+        $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+        $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
+        if ($slice_owner_id == $user_id) {
+          $whose_slice = "-MY- -ALL-";
+        } else {
+          $whose_slice = "-THEIR- -ALL-";
+        }
+        $slice_exp_date = $slice[SA_ARGUMENT::EXPIRATION];
+        $args['slice_id'] = $slice_id;
+        $query = http_build_query($args);
+        $add_resource_url = "slice-add-resources-jacks.php?" . $query;
+        $delete_resource_url = "confirm-sliverdelete.php?" . $query;
+        $listres_url = "listresources.php?" . $query;
+        $slice_url = "slice.php?" . $query;
+        $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+        $slice_project_url = "project.php?project_id=$slice_project_id";
 
-      if (count($slivers) == 0) {
-        $resource_exp = 1000000000;
-        $next_exp = "";
-      } else {
-        $first_sliver = reset($slivers);
-        $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
-        foreach ($slivers as $sliver) {
-          $this_date = new DateTime($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
-          if ($next_exp > $this_date) {
-            $next_exp = $this_date;
+        if (array_key_exists($slice_project_id, $project_slice_counts)) {
+          $project_slice_counts[$slice_project_id]++;
+        } else {
+          $project_slice_counts[$slice_project_id] = 1;
+        }
+        if (!array_key_exists($slice_project_id, $project_objects)) { // slice belongs to an expired project
+          $project_expiration = "";
+          $project_expiration_dt = new DateTime();
+          $slice_project_name = "-Expired Project-";
+        } else {
+          $project = $project_objects[$slice_project_id];
+          $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+          $project_expiration_dt = new DateTime($project_expiration);
+          $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+        }
+
+        $dashboard_max_renewal_days = 7;
+
+        $renewal_days = min($dashboard_max_renewal_days, $portal_max_slice_renewal_days);
+        if ($project_expiration) {
+          $project_expiration_dt = new DateTime($project_expiration);
+          $now_dt = new DateTime();
+          $difference = $project_expiration_dt->diff($now_dt);
+          $renewal_days = $difference->days;
+          $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, $dashboard_max_renewal_days);
+        }
+
+        $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+        $slice_exp = get_time_diff($slice_exp_date);
+
+        if (count($slivers) == 0) {
+          $resource_exp = 1000000000;
+          $next_exp = "";
+        } else {
+          $first_sliver = reset($slivers);
+          $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
+          foreach ($slivers as $sliver) {
+            $this_date = new DateTime($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
+            if ($next_exp > $this_date) {
+              $next_exp = $this_date;
+            }
+          }
+          if ($next_exp != "") {
+            $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
+          } else {
+            $resource_exp = "";
           }
         }
-        if ($next_exp != "") {
-          $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
+        $slice_boxes .= make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
+                                       count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $slice_project_url, $renewal_days, 
+                                       dateUIFormat($slice_exp_date), dateUIFormat($next_exp));
+      }
+
+      // populate slice filters with project names, make project boxes
+      foreach ($project_objects as $project) {
+        $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+        $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+        $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+        $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+        $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+        $lead_name = $lead_names[$lead_id];
+        if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+          $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
         } else {
-          $resource_exp = "";
+          $create_slice_button = "";
         }
+        $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
+        $slice_filters .= "<li data-value='{$project_name}'>$project_name</li>";
+        $slice_project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
+        $slice_project_info .= "$create_slice_button $manage_project_button</div>";
+        $show_info = "style='display:none;'";
+        $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+        $expired_project_class = $expired ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
+        $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
+        $categories = "$expired_project_class $project_lead_class";
+        $handle_req_str = get_pending_requests($project_id, $project_request_map);
+        $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str);
       }
-      $slice_boxes .= make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
-                                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $slice_project_url, $renewal_days, 
-                                     dateUIFormat($slice_exp_date), dateUIFormat($next_exp));
-    }
 
-    // populate slice filters with project names, make project boxes
-    foreach ($project_objects as $project) {
-      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-      $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-      $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
-      $lead_name = $lead_names[$lead_id];
-      if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-        $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+      foreach ($expired_projects as $project) {
+        $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+        $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+        $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+        $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+        $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+        $lead_name = $lead_names[$lead_id];
+        if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+          $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+        } else {
+          $create_slice_button = "";
+        }
+        $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+        $expired_project_class = $expired ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
+        $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
+        $categories = "$expired_project_class $project_lead_class";
+        $handle_req_str = get_pending_requests($project_id, $project_request_map);
+        $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str);
+      }
+      $slice_filters .= "</ul></li></ul>";
+
+      // Make slice section
+      $slice_card = "<div class='dashsection card' data-cardname='slices' id='slices'>";
+      $slice_card .= "<h3 class='dashtext'>Slices</h3><br>";
+      // Slice filters
+      $slice_card .= "<div id='projectcontrols'><h6 class='dashtext'>Filter by:</h6>$slice_filters<br class='mobilebreak'>"; 
+      $slice_card .= "<h6 class='dashtext'>Sort by:</h6>";
+      $slice_card .= "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
+      // Slice sorts
+      $slice_card .= "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
+      $slice_card .= "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
+      $slice_card .= "<li data-value='resourceexp'>Resource expiration</li><li data-value='projname'>Project name</li>";
+      $slice_card .= "</ul></li></ul><br class='mobilebreak'>";
+      $slice_card .= "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
+      $slice_project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
+      $slice_project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
+
+      $slice_card .= $slice_project_info;
+
+      $slice_card .= "<div id='slicearea' style='clear:both;'>$slice_boxes</div></div>";
+
+      // Make projects section
+      $project_card = "<div class='dashsection card' data-cardname='projects' id='projects'>";
+      $project_card .= "<h3 class='dashtext'>Projects</h3><br>";
+      // Project filters
+      $project_card .= "<h6 class='dashtext'>Filter by:</h6><ul class='selectorcontainer'>";
+      $project_card .= "<li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
+      $project_card .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
+      $project_card .= "<li data-value='-ACTIVE-PROJECTS-'>Active projects</li>";
+      $project_card .= "<li data-value='-MY-PROJECTS-'>Projects I lead</li>";
+      $project_card .= "<li data-value='-HAS-SLICES-'>Has slices</li>";
+      $project_card .= "<li data-value='-EXPIRED-PROJECTS-'>Expired projects</li>";
+      $project_card .= "</ul></li></ul><br class='mobilebreak'>";
+      // Project sorts
+      $project_card .= "<h6 class='dashtext'>Sort by:</h6>";
+      $project_card .= "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
+      $project_card .= "<span data-value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
+      $project_card .= "<li data-value='projname'>Project name</li>";
+      $project_card .= "<li data-value='projexp'>Project expiration</li>";
+      $project_card .= "<li data-value='slicecount'>Slice count</li>";
+      $project_card .= "</ul></li></ul><br class='mobilebreak'>";
+      $project_card .= "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br>";
+      
+      $project_card .= "<div style='margin: 15px 0px; clear: both;'>";
+      if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+        $project_card .= "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
+        $project_card .= "<a class='button' href='join-project.php'>Join a Project</a></div>";
       } else {
-        $create_slice_button = "";
+        $project_card .= "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
+        $project_card .= "<a class='button' href='modify.php?belead=belead'>Ask to be a Project Lead</a></div>";
       }
-      $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
-      $slice_filters .= "<li data-value='{$project_name}'>$project_name</li>";
-      $slice_project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
-      $slice_project_info .= "$create_slice_button $manage_project_button</div>";
-      $show_info = "style='display:none;'";
-      $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-      $expired_project_class = $expired ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
-      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
-      $categories = "$expired_project_class $project_lead_class";
-      $handle_req_str = get_pending_requests($project_id, $project_request_map);
-      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str);
-    }
-    foreach ($expired_projects as $project) {
-      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-      $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-      $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
-      $lead_name = $lead_names[$lead_id];
-      if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-        $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
-      } else {
-        $create_slice_button = "";
-      }
-      $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-      $expired_project_class = $expired ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
-      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
-      $categories = "$expired_project_class $project_lead_class";
-      $handle_req_str = get_pending_requests($project_id, $project_request_map);
-      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str);
-    }
-    $slice_filters .= "</ul></li></ul>";
 
-    // Make slice section
-    $slice_card = "<div class='dashsection card' data-cardname='slices' id='slices'>";
-    $slice_card .= "<h3 class='dashtext'>Slices</h3><br>";
-    // Slice filters
-    $slice_card .= "<div id='projectcontrols'><h6 class='dashtext'>Filter by:</h6>$slice_filters<br class='mobilebreak'>"; 
-    $slice_card .= "<h6 class='dashtext'>Sort by:</h6>";
-    $slice_card .= "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
-    // Slice sorts
-    $slice_card .= "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
-    $slice_card .= "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
-    $slice_card .= "<li data-value='resourceexp'>Resource expiration</li><li data-value='projname'>Project name</li>";
-    $slice_card .= "</ul></li></ul><br class='mobilebreak'>";
-    $slice_card .= "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
-    $slice_project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
-    $slice_project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
-
-    $slice_card .= $slice_project_info;
-
-    $slice_card .= "<div id='slicearea' style='clear:both;'>$slice_boxes</div></div>";
-
-    // Make projects section
-    $project_card = "<div class='dashsection card' data-cardname='projects' id='projects'>";
-    $project_card .= "<h3 class='dashtext'>Projects</h3><br>";
-    // Project filters
-    $project_card .= "<h6 class='dashtext'>Filter by:</h6><ul class='selectorcontainer'>";
-    $project_card .= "<li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
-    $project_card .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
-    $project_card .= "<li data-value='-ACTIVE-PROJECTS-'>Active projects</li>";
-    $project_card .= "<li data-value='-MY-PROJECTS-'>Projects I lead</li>";
-    $project_card .= "<li data-value='-HAS-SLICES-'>Has slices</li>";
-    $project_card .= "<li data-value='-EXPIRED-PROJECTS-'>Expired projects</li>";
-    $project_card .= "</ul></li></ul><br class='mobilebreak'>";
-    // Project sorts
-    $project_card .= "<h6 class='dashtext'>Sort by:</h6>";
-    $project_card .= "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
-    $project_card .= "<span data-value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
-    $project_card .= "<li data-value='projname'>Project name</li>";
-    $project_card .= "<li data-value='projexp'>Project expiration</li>";
-    $project_card .= "<li data-value='slicecount'>Slice count</li>";
-    $project_card .= "</ul></li></ul><br class='mobilebreak'>";
-    $project_card .= "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br>";
-    
-    $project_card .= "<div style='margin: 15px 0px; clear: both;'>";
-    if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-      $project_card .= "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
-      $project_card .= "<a class='button' href='join-project.php'>Join a Project</a></div>";
+      $project_card .= "<div id='projectarea'>$project_boxes</div></div>";
+      // Finally, print the slice and project cards to the dashboard
+      print $slice_card;
+      print $project_card;   
     } else {
-      $project_card .= "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
-      $project_card .= "<a class='button' href='modify.php?belead=belead'>Ask to be a Project Lead</a></div>";
+      print "<div class='dashsection card' data-cardname='slices' id='slices'>";
+      unset($project_id);
+      print "<h3 class='dashtext'>Slices</h3><br><br>";
+      print "<a href='createslice.php' class='button'><i class='material-icons'>add</i>New slice</a>";
+      include("tool-slices.php");
+      print "</div>";
+      print "<div class='dashsection card' data-cardname='projects' id='projects'>";
+      include("tool-projects.php");
+      include("tool-expired-projects.php");
+      print "</div>";
     }
-
-    $project_card .= "<div id='projectarea'>$project_boxes</div></div>";
-
-    // Finally, print the slice and project cards to the dashboard
-    print $slice_card;
-    print $project_card;
-  }
+  } 
 
   // Print the tab switching navigation bar 
   function make_navigation_tabs() {
