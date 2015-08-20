@@ -37,7 +37,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 // of choices is the default value.
 $possible_prefs = array(
   "homepage_view" => array("cards", "table"),
-  "slice_view" => array("graphical", "aggregate", "geographic")
+  "slice_view" => array("Resources", "Aggregates", "Map")
 );
 
 function get_preference($user_urn, $preference) {

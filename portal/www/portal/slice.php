@@ -321,6 +321,16 @@ include("tool-showmessage.php");
   
 </script>
 
+<?php
+  $tab_names_to_div_ids = array(
+    "Resources" => "#jacks-app",
+    "Aggregates" => "#actions_table",
+    "Map" => "#geo_view_div");
+
+  $default_slice_tab = $tab_names_to_div_ids[get_preference($user->urn(), "slice_view")];
+
+  echo "<script type='text/javascript'>DEFAULT_TAB = '$default_slice_tab';</script>";
+?>
 <script src='cards.js'></script>
 <script src='dashboard.js'></script>
 <script type="text/javascript">
@@ -336,23 +346,9 @@ include("tool-showmessage.php");
 
 <div class='nav2'>
   <ul class='tabs'>
-<?php
-  $default_slice_tab = get_preference($user->urn(), "slice_view");
-
-  if ($default_slice_tab == "aggregate") {
-    echo "<li><a class='tab' data-tabindex=1 href='#actions_table'>Aggregates</a></li>";
-    echo "<li><a class='tab' data-tabindex=2 href='#jacks-app'>Resources</a></li>";
-    echo "<li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>";
-  } else if ($default_slice_tab == "geographic") {
-    echo "<li><a class='tab' data-tabindex=1 href='#geo_view_div'>Map</a></li>";
-    echo "<li><a class='tab' data-tabindex=2 href='#jacks-app'>Resources</a></li>";
-    echo "<li><a class='tab' data-tabindex=3 href='#actions_table'>Aggregates</a></li>";
-  } else {
-    echo "<li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>";
-    echo "<li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>";
-    echo "<li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>";
-  }
-?>
+    <li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>
+    <li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>
+    <li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>
     <li><a class='tab' data-tabindex=4 href='#members'>Members</a></li>
     <li><a class='tab' data-tabindex=5 href='#manageslice'>Info</a></li>
     <li><a class='tab' data-tabindex=6 href='#logs'>Logs</a></li>

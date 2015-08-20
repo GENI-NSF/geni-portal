@@ -57,7 +57,10 @@ function switch_to_card(new_active) {
 $(document).ready(function() {
   $('ul.tabs').each(function() {
     var links = $(this).find('a');
-    active = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
+    try {
+      var default_tab_name = DEFAULT_TAB; // the user has set a default tab for this page
+    } catch(err) { default_tab_name = null; } 
+    active = $(links.filter('[href="'+location.hash+'"]')[0] || links.filter('[href="'+ default_tab_name +'"]')[0] || links[0]);
     active.addClass('activesection');
     content = $(active.attr('href'));
     callback = get_callback(active.attr('href'));

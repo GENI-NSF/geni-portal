@@ -567,7 +567,7 @@ echo "<h2>Portal preferences</h2>";
 
 $preference_descriptions = array(
   "homepage_view" => "Default homepage style (for slices and projects)",
-  "slice_view" => "Default view for slices"
+  "slice_view" => "Default tab for slice page"
 );
 
 foreach($possible_prefs as $pref_name => $pref_values) {
