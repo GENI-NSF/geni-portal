@@ -46,7 +46,7 @@ if (array_key_exists('user_urn', $_REQUEST)) {
 function set_preferences($user_urn, $preferences) {
   global $possible_prefs;
   $conn = portal_conn();
-  $user_urn = $conn->quote($user_urn, "text");
+  $db_user_urn = $conn->quote($user_urn, "text");
   $success_string = "";
   foreach ($preferences as $pref_name => $pref_value) {
     if (array_key_exists($pref_name, $possible_prefs)) {
@@ -54,10 +54,10 @@ function set_preferences($user_urn, $preferences) {
         $pref_name = $conn->quote($pref_name, "text");
         $pref_value = $conn->quote($pref_value, "text");
         $sql = "UPDATE user_preferences SET preference_value=$pref_value "
-             . "WHERE user_urn=$user_urn and preference_name=$pref_name; "
+             . "WHERE user_urn=$db_user_urn and preference_name=$pref_name; "
              . "INSERT INTO user_preferences (user_urn, preference_name, preference_value) "
-             . "SELECT $user_urn, $pref_name, $pref_value "
-             . "WHERE NOT EXISTS (SELECT 1 FROM user_preferences WHERE user_urn=$user_urn and preference_name=$pref_name);";
+             . "SELECT $db_user_urn, $pref_name, $pref_value "
+             . "WHERE NOT EXISTS (SELECT 1 FROM user_preferences WHERE user_urn=$db_user_urn and preference_name=$pref_name);";
         $db_response = db_execute_statement($sql, "Update user preferences");
         $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
         if($db_error == ""){
