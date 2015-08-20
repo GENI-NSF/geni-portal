@@ -352,6 +352,7 @@ if (! $user->portalIsAuthorized()) {
       print $project_card;   
     } else {
       print "<div class='dashsection card' data-cardname='slices' id='slices'>";
+      unset($project_id);
       print "<h3 class='dashtext'>Slices</h3><br><br>";
       print "<a href='createslice.php' class='button'><i class='material-icons'>add</i>New slice</a>";
       include("tool-slices.php");
