@@ -110,12 +110,12 @@ if (count($my_slice_objects) > 0) {
   usort($nonlead_slices,"cmp");
 
   if (count($lead_slices) > 0) {
-    print "<h5>Slices I lead</h5>";
+    print "<h5>Slices I own</h5>";
     make_slice_table($lead_slices);
   }
 
   if (count($nonlead_slices) > 0) {
-    print "<h5>Slices I don't lead</h5>";
+    print "<h5>Slices I don't own</h5>";
     make_slice_table($nonlead_slices);
   }
 } else {
