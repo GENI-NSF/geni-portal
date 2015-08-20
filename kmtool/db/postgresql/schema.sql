@@ -15,7 +15,7 @@ CREATE TABLE km_asserted_attribute (
   name VARCHAR NOT NULL,
   value VARCHAR NOT NULL,
   asserter_id UUID,
-  created timestamp DEFAULT NOW()
+  created timestamp DEFAULT NOW() AT TIME ZONE 'UTC'
 );
 
 CREATE INDEX km_asserted_attribute_eppn ON km_asserted_attribute (eppn);

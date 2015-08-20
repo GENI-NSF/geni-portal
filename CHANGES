@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.3 ==
+ * Store timestamps in UTC for last_seen, lead requests, and KM asserted attributes. (#1446)
 
 == 3.2 ==
  * Move SR certs from geni-portal to geni-ch (geni-ch #102).
