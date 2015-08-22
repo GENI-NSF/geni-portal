@@ -35,6 +35,7 @@ require_once('logging_constants.php');
 include("services.php");
 require_once("settings.php");
 require_once("tool-jfed.php");
+require_once("user-preferences.php");
 
   // Actions / approvals required 
    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
@@ -58,9 +59,11 @@ if (! $user->portalIsAuthorized()) {
 }
 include("tool-breadcrumbs.php");
 
-echo "<table id='resourcemap'><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td>";
-include("map.html");
-echo "</td></tr></table>";
+if (get_preference($user->urn(), "show_map") == "true") {
+  echo "<table id='resourcemap'><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td>";
+  include("map.html");
+  echo "</td></tr></table>";
+} 
 
 // List of my projects
 include("tool-projects.php");

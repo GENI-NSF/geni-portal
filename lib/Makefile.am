@@ -71,6 +71,7 @@ nobase_dist_svcdata_DATA = \
 	php/tools-user.php \
 	php/uploadsshkey.html \
 	php/user.php \
+	php/user-preferences.php \
 	php/util.php
 
 cleandb:

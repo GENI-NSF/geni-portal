@@ -180,6 +180,7 @@ function show_header($title, $load_user=1, $show_cards=false){
   echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
   echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
   echo '<li><a href="profile.php#tools">Manage Accounts</a></li>'; 
+  echo '<li><a href="profile.php#preferences">Preferences</a></li>'; 
   echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
   if ($load_user && $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
     echo '<li><a href="admin.php">Admin</a></li>';
