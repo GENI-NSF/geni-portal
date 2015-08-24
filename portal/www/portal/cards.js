@@ -89,7 +89,10 @@ $(document).ready(function() {
         active.removeClass('activesection');
         content.hide();
         var links = $(this).find('a');
-        active = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
+        try {
+          var default_tab_name = DEFAULT_TAB; // the user has set a default tab for this page
+        } catch(err) { default_tab_name = null; }
+        active = $(links.filter('[href="'+location.hash+'"]')[0] || links.filter('[href="'+ default_tab_name +'"]')[0] || links[0]);
         active.addClass('activesection');
         content = $(active.attr('href'));
         content.show();
