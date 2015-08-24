@@ -39,9 +39,9 @@ require_once("user-preferences.php");
 
 $user = geni_loadUser();
 
-// TODO: ask tom here!
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
+  $msg = "Unable to load user record.";
+  relative_redirect('error-text.php?error=' . urlencode($msg));
 }
 
 if (! $user->portalIsAuthorized()) {
