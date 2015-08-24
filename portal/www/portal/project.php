@@ -229,7 +229,6 @@ print "</div>";
 
 ?>
 <div class='card' id='slices'>
-<h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
@@ -344,13 +343,18 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 <script type="text/javascript">
   $(document).ready(function(){ getLogs(24); });
   function getLogs(hours){
-    $.get("do-get-logs.php?hours="+hours+"&project_id="+<?php echo "\"" . $project_id . "\""; ?>, function(data) {
-      $('#log_table').html(data);
+    url= "do-get-logs.php?hours="+hours+"&project_id="+<?php echo "'" . $project_id . "'"; ?>;
+    $.get(url, function(data) {
+      if (data.split("<html").length == 1) {
+        $('#logtable').html(data);
+      } else {
+        location.reload();
+      }
     });
   }
 </script>
 <div class='tablecontainer'>
-	<table id="log_table"></table>
+	<table id="logtable"></table>
 </div>
 </div>
 <?php

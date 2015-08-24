@@ -27,6 +27,8 @@ require_once("user.php");
 require_once("cert_utils.php");
 require_once("rq_client.php");
 require_once("settings.php");
+require_once("user-preferences.php");
+
 ?>
 
 <?php
@@ -59,6 +61,7 @@ END;
 		<li><a class='tab' data-tabindex=5 href='#rspecs' title="Resource Specifications">RSpecs</a></li>
 		<li><a class='tab' data-tabindex=6 href='#tools'>Manage Accounts</a></li>
 		<li><a class='tab' data-tabindex=7 href='#outstandingrequests'>Outstanding Requests</a></li>
+    <li><a class='tab' data-tabindex=8 href='#preferences'>Preferences</a></li>
 	</ul>
 </div>
 		
@@ -533,5 +536,53 @@ echo "</div>";
 
   // END the tabContent class
   echo "</div>";
+
+?>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".preferenceselect").change(function(){
+      $("#saveprefs").prop("disabled", false);
+    });
+  });
+  function save_preferences(user_urn) {
+    params = { 
+      user_urn: user_urn,
+    <?php
+      foreach($possible_prefs as $pref_name => $pref_values) {
+        echo "$pref_name: $('#default_{$pref_name}').val(), \n";
+      }        
+    ?>
+    };
+    $.post("do-update-user-preferences", params, function(data){
+      $("#preferencesuccess").html(data);
+      $("#saveprefs").prop("disabled", true);
+    });
+  }
+</script>
+
+<?php 
+echo "<div class='card' id='preferences'>";
+echo "<h2>Portal preferences</h2>";
+
+$preference_descriptions = array(
+  "homepage_view" => "Default homepage style (for slices and projects)",
+  "slice_view" => "Default tab for slice page"
+);
+
+foreach($possible_prefs as $pref_name => $pref_values) {
+  print $preference_descriptions[$pref_name];
+  print "<select id='default_{$pref_name}' class='preferenceselect'>";
+  foreach ($pref_values as $pref_value) {
+    $user_value = get_preference($user->urn(), $pref_name);
+    $selected = $pref_value == $user_value ? "selected" : "";
+    print "<option value='$pref_value' $selected>$pref_value</option>";
+  }
+  print "</select><br>";
+}
+
+echo "<button disabled onclick='save_preferences(\"{$user->urn()}\")' id='saveprefs' style='margin-right: 20px;'>Save preferences</button>";
+echo "<span id='preferencesuccess'></span>";
+echo "</div>";
 
 ?>

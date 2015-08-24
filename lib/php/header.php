@@ -121,9 +121,8 @@ function show_header($title, $load_user=1, $show_cards=false){
   /* Stylesheet(s) */
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
   echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
-  echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
-  echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400|Material+Icons" rel="stylesheet" type="text/css">';
+  echo '<link type="text/css" rel="stylesheet" media="(max-width: 480px)" href="/common/css/mobile-portal.css" />';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Droid+Sans+Mono|Material+Icons" rel="stylesheet" type="text/css">';
 
   if(isset($portal_analytics_enable)) {
     if($portal_analytics_enable) {
@@ -180,6 +179,7 @@ function show_header($title, $load_user=1, $show_cards=false){
   echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
   echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
   echo '<li><a href="profile.php#tools">Manage Accounts</a></li>'; 
+  echo '<li><a href="profile.php#preferences">Preferences</a></li>'; 
   echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
   if ($load_user && $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
     echo '<li><a href="admin.php">Admin</a></li>';
