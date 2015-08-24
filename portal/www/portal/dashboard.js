@@ -173,28 +173,44 @@ function renew_slice(slice_id, days, count, sliceexphours, resourceexphours) {
 function renew_resources(url, slice_id) {
   $.getJSON("aggregates.php", { slice_id: slice_id },
     function (responseTxt, statusTxt, xhr) {
-        var json_agg = responseTxt;
-        var agg_ids = Object.keys(json_agg);
-        var agg_count = agg_ids.length;
-        for (var i = 0; i < agg_count; i++) {
-            url += "&am_id[]=" + agg_ids[i];
+      var json_agg = responseTxt;
+      var agg_ids = Object.keys(json_agg);
+      var agg_count = agg_ids.length;
+      for (var i = 0; i < agg_count; i++) {
+        url += "&am_id[]=" + agg_ids[i];
+      }
+      if (agg_count > 10) {
+        result = confirm("This action will renew resources at "
+                         + agg_count
+                         + " aggregates and may take several minutes.");
+        if (result) {
+          window.location = url;
+        } else {
+          return;
         }
-        if (agg_count > 10) {
-          result = confirm("This action will renew resources at "
-                           + agg_count
-                           + " aggregates and may take several minutes.");
-          if (result) {
-            window.location = url;
-          } else {
-            return;
-          }
-        }
-        window.location = url;
+      }
+      window.location = url;
     })
     .fail(function() {
-        alert("Unable to locate sliver information for this slice.");
+      alert("Unable to locate sliver information for this slice.");
     });
 }
+
+function info_set_location(slice_id, url, stop_if_none) {
+  $.getJSON("aggregates.php", { slice_id: slice_id }, function (responseTxt, statusTxt, xhr) {
+    var json_agg = responseTxt;
+    var agg_ids = Object.keys(json_agg);
+    var agg_count = agg_ids.length;
+    for (var i = 0; i < agg_count; i++) {
+      url += "&am_id[]=" + agg_ids[i];
+    }
+    window.location = url;
+  })
+  .fail(function() {
+    alert("Unable to locate sliver information for this slice.");
+  });
+}
+
 
 // Shows all the projects matching selection, sorting by the sorting type given by sortby. 
 function show_projects(selection, sortby) {
