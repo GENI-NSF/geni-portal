@@ -24,10 +24,6 @@ body {
 	overflow-x: scroll;
 }
 
-#resourcemap {
-  display: none;
-}
-
 #breadcrumb {
   display: none;
 }
@@ -54,10 +50,6 @@ body {
 .tablecontainer {
   width: 100%;
   overflow-x: scroll;
-}
-
-.slicetable {
-  width: 750px !important;
 }
 
 #content pre {
@@ -158,5 +150,106 @@ body {
   margin-right: 20px;
   border-bottom: 1px solid #F57F21;
   padding-bottom: 7px;
+}
+
+
+/* DASHBOARD */
+
+.has-sub > a {
+  pointer-events: none;
+}
+
+.selectorcontainer {
+  margin: 5px;
+}
+
+.mobilebreak {
+  display: block;
+}
+
+#hamburger {
+  display: inline;
+}
+
+#globe {
+  display: none;
+}
+
+#dashboardtools {
+  display: none;
+  background-color: #EEEEEE;
+  width: 130px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  position: absolute;
+  border-top: 1px solid #fff;
+  margin: 0 !important;
+  padding: 0;
+  z-index: 2;
+  top: 50px;
+  height: auto;
+}
+
+#dashboardtools li {
+  background-color: #EEEEEE;
+}
+
+#dashboardtools li button {
+  background-color: #EEEEEE !important;
+}
+
+#dashboardtools li .submenu {
+  left: 130px;
+  top: 0px;
+}
+
+.dashtext {
+  text-align: center;
+}
+
+.floatright, .floatleft {
+  float: none;
+  margin: 0 auto;
+}
+
+.selector {
+  margin: 5px !important;
+}
+
+.slicebox {
+  margin: 20px auto;
+}
+
+.sliceactions .submenu {
+  position: absolute;
+  right: 30px;
+}
+
+#projectcontrols {
+  text-align: center;
+}
+
+#projectswitch {
+  margin: 5px 15px;
+}
+
+.projectinfo {
+  margin: 0px 0px 0px 20px;
+  text-align: center;
+}
+
+.slicelink {
+  text-decoration: underline;
+}
+
+#logtable {
+  margin-left: 0px;
+}
+
+#dashboardheader {
+  min-width: 0px;
+}
+
+#maptab {
+  display: none;
 }
 
