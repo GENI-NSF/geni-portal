@@ -204,12 +204,9 @@ function show_projects(selection, sortby) {
 
   save_state("project", selection, sortby);
 
-  sort_boxes(sortby, $("#projectascendingcheck").prop("checked"), "#projectarea");
+  sort_boxes(sortby, "projname", $("#projectascendingcheck").prop("checked"), "#projectarea");
   animate_boxes("#projectarea", selection);
 
-
-
-  // sort_boxes(sortby, $("#ascendingcheck").prop("checked"));
   if($("." + selection).length == 0) {
     $("#projectarea").append("<h6 style='margin:15px;' class='noprojects'><i>No projects to display.</i></h6>");
   }
@@ -234,7 +231,7 @@ function show_slices(selection, sortby) {
     $("#" + project_name + "info").show();
   }
 
-  sort_boxes(sortby, $("#sliceascendingcheck").prop("checked"), "#slicearea");
+  sort_boxes(sortby, "slicename", $("#sliceascendingcheck").prop("checked"), "#slicearea");
   animate_boxes("#slicearea", class_name);
 
   if($("." + class_name).length == 0) {
@@ -274,7 +271,7 @@ function animate_boxes(container, selection) {
 }
 
 // sort boxes in container based on their values for attribute attr
-function sort_boxes(attr, ascending, container) {
+function sort_boxes(attr, secondattr, ascending, container) {
   numberical_attrs = ['sliceexp', 'resourceexp', 'resourcecount', 'projexp', 'slicecount'];
   sorted_slices = $(container).children(".slicebox").sort(function(a, b) {
     if ($.inArray(attr, numberical_attrs) != -1) { // is it a numerical attribute, if so, don't lexically sort
@@ -285,9 +282,31 @@ function sort_boxes(attr, ascending, container) {
       vB = $(b).attr("data-" + attr).toLowerCase(); 
     }
     if(ascending) {
-      return (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
+      order = (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
+      if (order == 0) { // tie on first attribute, use secondary sorting attribute
+        if ($.inArray(secondattr, numberical_attrs) != -1) {
+          vA = parseInt($(a).attr("data-" + secondattr));
+          vB = parseInt($(b).attr("data-" + secondattr));
+        } else {
+          vA = $(a).attr("data-" + secondattr).toLowerCase();
+          vB = $(b).attr("data-" + secondattr).toLowerCase(); 
+        }
+        order = (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
+      }
+      return order;
     } else {
-      return (vA < vB) ? 1 : (vA > vB) ? -1 : 0;
+      order = (vA < vB) ? 1 : (vA > vB) ? -1 : 0;
+      if (order == 0) { // tie on first attribute, use secondary sorting attribute
+        if ($.inArray(secondattr, numberical_attrs) != -1) { 
+          vA = parseInt($(a).attr("data-" + secondattr));
+          vB = parseInt($(b).attr("data-" + secondattr));
+        } else {
+          vA = $(a).attr("data-" + secondattr).toLowerCase();
+          vB = $(b).attr("data-" + secondattr).toLowerCase(); 
+        }
+        order = (vA < vB) ? 1 : (vA > vB) ? -1 : 0;
+      }
+      return order;
     }
   });
   $(container).append(sorted_slices);
