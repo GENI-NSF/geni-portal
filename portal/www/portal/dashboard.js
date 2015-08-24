@@ -96,6 +96,12 @@ function save_state(section, selection, sortby) {
 
 // Get the values that you last used and display them
 function resume_dashboard() {
+  if (localStorage.username && localStorage.username != GENI_USERNAME) {
+    localStorage.clear();
+  }
+
+  localStorage.username = GENI_USERNAME;
+
   return_to_prev_state($("#slicefilterswitch"), "lastsliceselection");
   return_to_prev_state($("#slicesortby"), "lastslicesortby");
   return_to_prev_state($("#projectfilterswitch"), "lastprojectselection");
