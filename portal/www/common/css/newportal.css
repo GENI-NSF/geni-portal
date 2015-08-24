@@ -195,12 +195,12 @@ body {
   padding: 0px;
 }
 
-#slicetools li button {
+.submenu li button {
   border: 0px;
-  background-color: #FFFFFF;
+  background-color: #FFFFFF !important;
   display: block;
   text-decoration: none !important;
-  color: #303030;
+  color: #303030 !important;
   width: 100%;
   margin: 0px;
   height: 30px;
@@ -223,6 +223,23 @@ body {
   padding: 10px 20px;
   height: 50px;
   display: table;
+}
+
+#content .slicetablerow td {
+  padding: 10px;
+}
+
+#content .slicetableactions .selector {
+  width: 100px;
+}
+
+#content .slicetableactions ul {
+  width: 160px;
+}
+
+#content .slicetableactions li {
+  width: 160px;
+  padding: 0px;
 }
 
 /* MAIN CONTENT */
@@ -1125,10 +1142,12 @@ td .material-icons {
   text-decoration: none !important;
   color: #303030;
   width: 100%;
-  margin: 0px;
+  margin: 0px !important;
+  padding: 0px !important;
   height: 30px;
   line-height: 30px;
   font-size: 15px;
+  box-shadow: none !important;
 }
 
 .submenu li button:focus {
@@ -1139,6 +1158,7 @@ td .material-icons {
   cursor: pointer;
   background-color: #FB8C00 !important;
   color: #FFFFFF;
+  box-shadow: none;
   animation: selectorhighlight;
   -webkit-transition-duration: 100ms;
   transition-duration: 100ms;
