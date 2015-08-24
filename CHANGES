@@ -8,7 +8,11 @@
  * Store timestamps in UTC for last_seen, lead requests, and KM asserted attributes. (#1446)
  * Update slice table view to match dashboard style
  * Add user preferences to the portal (#1526)
+  * Allow users to pick a default slice view (#1482)
   * Allow users to pick between default homepage view: cards or table (#1498)
+ * Cleanup dashboard code (#1506)
+ * Fix width of footer to match main cards. (#1555)
+ * Add secondary sort for slices (#1560)
 
 == 3.2 ==
  * Move SR certs from geni-portal to geni-ch (geni-ch #102).

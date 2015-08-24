@@ -249,7 +249,6 @@ dist_svcwebcommon_DATA = \
 	www/common/topbar_gradient2.png 
 
 dist_svcwebcss_DATA =  \
-	www/common/css/dashboard.css \
 	www/common/css/mobile-portal.css \
 	www/common/css/newportal.css \
 	www/common/css/portal.css 

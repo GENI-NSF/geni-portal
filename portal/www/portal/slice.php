@@ -42,6 +42,7 @@ require_once('status_constants.php');
 require_once('maintenance_mode.php');
 require_once('am_client.php');
 require_once("tool-jfed.php");
+require_once("user-preferences.php");
 
 function cmp($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
@@ -320,6 +321,16 @@ include("tool-showmessage.php");
   
 </script>
 
+<?php
+  $tab_names_to_div_ids = array(
+    "Resources" => "#jacks-app",
+    "Aggregates" => "#actions_table",
+    "Map" => "#geo_view_div");
+
+  $default_slice_tab = $tab_names_to_div_ids[get_preference($user->urn(), "slice_view")];
+
+  echo "<script type='text/javascript'>DEFAULT_TAB = '$default_slice_tab';</script>";
+?>
 <script src='cards.js'></script>
 <script src='dashboard.js'></script>
 <script type="text/javascript">
