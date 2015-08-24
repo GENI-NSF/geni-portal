@@ -633,9 +633,9 @@ ul.instructions {
 /* FOOTER */
 
 #footer {
-  width: calc(92.5% - 40px);
-  max-width: 1460px;
-  min-width: 800px;
+  width: calc(95% - 40px);
+  max-width: 1360px;
+  min-width: 760px;
   padding: 10px 20px;
   margin: 30px auto 30px auto;
   font-weight: normal;
