@@ -12,6 +12,7 @@
   * Allow users to pick between default homepage view: cards or table (#1498)
  * Cleanup dashboard code (#1506)
  * Fix width of footer to match main cards. (#1555)
+ * Add secondary sort for slices (#1560)
 
 == 3.2 ==
  * Move SR certs from geni-portal to geni-ch (geni-ch #102).
