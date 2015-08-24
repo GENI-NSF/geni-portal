@@ -36,8 +36,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 // Map of preference names to choices for that pref. The first element in the array
 // of choices is the default value.
 $possible_prefs = array(
-  "homepage_view" => array("cards", "table")
-  // "slice_view" => array("graphical", "aggregate", "geographic")
+  "homepage_view" => array("cards", "table"),
+  "slice_view" => array("Resources", "Aggregates", "Map")
 );
 
 function get_preference($user_urn, $preference) {
