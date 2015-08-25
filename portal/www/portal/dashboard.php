@@ -60,6 +60,9 @@ if (! $user->portalIsAuthorized()) {
 
 show_header('GENI Portal: Home', true, true);
 include("tool-showmessage.php");
+
+echo "<script type='text/javascript'>GENI_USERNAME = '{$user->username}';</script>";
+
 ?>
 
 <script src='dashboard.js'></script>
