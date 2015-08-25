@@ -1,0 +1,56 @@
+.TH GENI-SYNC-WIRELESS 1 "August 11, 2015"
+.SH NAME
+geni-sync-wireless \- Synchronize ORBIT and GENI CH sense of projects/groups and members
+.SH SYNOPSIS
+.B geni-sync-wireless
+[\fB--holdingpen_group\fR]
+[\fB--holdingpen-admin\fR]
+[\fB--project\fR]
+[\fB--user\fR]
+[\fB--cleanup\fR]
+[\fB--settings_file\fR]
+.SH DESCRIPTION
+.B geni-sync-wireless 
+
+Perform synchronization between GENI clearinghouse wireless-enabled projects 
+and ORBIT groups, and their corresponding leads and membership rosters.
+A wireless-enabled project is one with the 'enable_wimax' attribute.
+In 'cleanup' mode (invoked by --cleanup), groups and members are deleted
+from ORBIT if they are not found in corresponding GENI CH wireless-enabled
+projects and members. Otherwise (non-cleanup mode) new projects and members
+are written but not deleted.
+
+The intended use of this script is that it be run in 'cleanup' mode 
+periodically, say nightly. Otherwise, it should be run for specific 
+projects when the 'ORBIT sync' button on the wimax-enable.php page is pressed.
+
+All GENI members that have ever been a member of SOME wireless-enabled project
+are made members of the 'holdingpen' group on ORBIT. In addition, they
+are made members of any group corresponding to any wireless-enabled projects
+to which they belong. When these projects are no longer wireless-enabled,
+or when the given user is not a member of such a project, their membership
+in the corresponding ORBIT group is removed, but the membership in the
+holdingpen group remains.
+
+.SH OPTIONS
+.TP
+\fB--holdingpen_group
+Name of group holding all GENI users regardless of additional membership in wireless-enabled group. Default: geni-HOLDINGPEN.
+.TP
+\fB-holdingpen_admin
+Username in GENI CH of admin of holdingpen group. Default: agosain.
+.TP
+\fB--project
+[Optional]Name of project for which to perform sync between GENI and ORBIT state.
+.TP
+\fB--user
+[Optional]Name of user for which to perform sync between GENI and ORBIT state.
+.TP
+\fB--cleanup
+Remove all ORBIT groups and members that don't correspond to current GENI wireless-enabled projects and members. Default: false.
+.TP
+\fB--settings_file
+Name of settings file from which to parse system-local information. Default: /etc/geni-ch/settings.php.
+        
+.SH AUTHOR
+geni-sync-wireless was written by Raytheon BBN Technologies.

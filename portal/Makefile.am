@@ -202,7 +202,10 @@ dist_svcweb_DATA = \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
-        www/portal/wimax-enable.php
+        www/portal/wimax-enable.php \
+        www/portal/wimax-enable-new.php \
+	www/portal/wireless_operations.php \
+	www/portal/wireless_redirect.php 
 
 dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \
@@ -234,6 +237,7 @@ dist_svcwebimages_DATA = \
 	www/images/staticmap.png \
 	www/images/Symbols-Tips-icon-clear.png \
 	www/images/UseGENI.png \
+	www/images/VTS.svg \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
 	www/images/Xen-VM.svg 
