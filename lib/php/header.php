@@ -211,9 +211,9 @@ function show_header($title, $load_user=1, $show_cards=false){
   echo '<ul class="submenu">';
   echo "<li><a href='https://www.cloudlab.us/login.php' target='_blank'>CloudLab <i class='material-icons'>launch</i></a></li>";
   echo "<li><a href='http://gee-project.org/user' target='_blank'>GEE <i class='material-icons'>launch</i></a></li>";
-  echo "<li><a href='wireless_redirect.php?site=ORBIT' target='_blank'>ORBIT<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='https://geni.orbit-lab.org/' target='_blank'>ORBIT<i class='material-icons'>launch</i></a></li>";
   echo "<li><a href='http://portal.savitestbed.ca/auth/login' target='_blank'>SAVI<i class='material-icons'>launch</i></a></li>";
-  echo "<li><a href='wireless_redirect.php?site=WITEST' target='_blank'>WiTest<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://witestlab.poly.edu/site/index.php' target='_blank'>WiTest<i class='material-icons'>launch</i></a></li>";
   echo '</ul></li>';
 
   echo '<li class="headerlink has-sub">Tools';
