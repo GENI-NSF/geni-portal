@@ -237,7 +237,6 @@ dist_svcwebimages_DATA = \
 	www/images/staticmap.png \
 	www/images/Symbols-Tips-icon-clear.png \
 	www/images/UseGENI.png \
-	www/images/VTS.svg \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
 	www/images/Xen-VM.svg 
