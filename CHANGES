@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 3.4 ==
+
+
 == 3.3 ==
  * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
    Wireless Account Management page (wimax-enable.php) accordinlgy (#1392).
