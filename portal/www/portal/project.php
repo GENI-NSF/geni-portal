@@ -229,7 +229,6 @@ print "</div>";
 
 ?>
 <div class='card' id='slices'>
-<h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");

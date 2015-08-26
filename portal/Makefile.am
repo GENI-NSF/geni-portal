@@ -42,6 +42,8 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-8.sql \
 	db/postgresql/update-9.sql \
 	db/postgresql/update-10.sql \
+	db/postgresql/update-11.sql \
+	db/postgresql/update-12.sql \
 	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
@@ -96,6 +98,7 @@ dist_svcweb_DATA = \
 	www/portal/do-renew-slice.php \
 	www/portal/do-renew.php \
 	www/portal/do-slice-search.php \
+	www/portal/do-update-user-preferences.php \
 	www/portal/do-upload-project-members.php \
 	www/portal/do-user-admin.php \
 	www/portal/do-user-search.php \
@@ -199,7 +202,10 @@ dist_svcweb_DATA = \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
-        www/portal/wimax-enable.php
+        www/portal/wimax-enable.php \
+        www/portal/wimax-enable-new.php \
+	www/portal/wireless_operations.php \
+	www/portal/wireless_redirect.php 
 
 dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \
@@ -245,7 +251,6 @@ dist_svcwebcommon_DATA = \
 	www/common/topbar_gradient2.png 
 
 dist_svcwebcss_DATA =  \
-	www/common/css/dashboard.css \
 	www/common/css/mobile-portal.css \
 	www/common/css/newportal.css \
 	www/common/css/portal.css 
