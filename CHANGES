@@ -4,14 +4,23 @@
 
 = GENI Portal Release Notes =
 
+== 3.4 ==
+
+
 == 3.3 ==
+ * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
+   Wireless Account Management page (wimax-enable.php) accordinlgy (#1392).
+ * Changes for Wireless management cover previous wimax tickets. 
+   (#772, #773, #1058, #1076, #1136).
  * Store timestamps in UTC for last_seen, lead requests, and KM asserted attributes. (#1446)
  * Update slice table view to match dashboard style
+ * Store username with saved filters/sorts to fix confusion on shared computers (#1477)
  * Add user preferences to the portal (#1526)
   * Allow users to pick a default slice view (#1482)
   * Allow users to pick between default homepage view: cards or table (#1498)
  * Cleanup dashboard code (#1506)
  * Fix width of footer to match main cards. (#1555)
+ * Add secondary sort for slices (#1560)
 
 == 3.2 ==
  * Move SR certs from geni-portal to geni-ch (geni-ch #102).
@@ -39,6 +48,7 @@
  * Remove obsolete files (from Makefiles too)
 
 == 3.1 ==
+ * Migrate schema files for CH tables to geni-ch (geni-ch #103)
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc.
    (#1457, #1491)
  * Fix CSS on Jacks expanded views (#1458)
