@@ -704,7 +704,14 @@ ul.instructions {
   font-style: italic;
 }
 
+.closebutton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
 .instruction {
+  position: relative;
   background-color: #FFFFFF;
   border-left: 10px solid green;
   color: #616161;
@@ -725,6 +732,7 @@ ul.instructions {
 }
 
 .warn {
+  position: relative;
   background-color: #FFFFFF;
   border-left: 10px solid red;
   color: #616161;
@@ -745,6 +753,7 @@ ul.instructions {
 }
 
 .error {
+  position: relative;
   background-color: #FFFFFF;
   border-left: 10px solid red;
   color: #616161;

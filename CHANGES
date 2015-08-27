@@ -6,6 +6,7 @@
 
 == 3.4 ==
  * Add version number to localStorage (#1479)
+ * Add ability to clear success/failure/error messages on pages (#1565)
 
 == 3.3 ==
  * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
