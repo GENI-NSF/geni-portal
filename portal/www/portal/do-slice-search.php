@@ -195,28 +195,36 @@ function get_member_info($slice, $signer, $ma_url, $sa_url)
       $member_ids[] = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     }
   }
-  $member_names = lookup_member_names($ma_url, $signer, $member_ids);
-  $admin_names = lookup_member_names($ma_url, $signer, $admin_ids);
-  $member_info = "<b style='text-decoration: underline;'>Slice members</b><br>";
-  if (count($admin_names) > 0) {
-    $member_info .= "<b>Admins</b><br>";
-    foreach ($admin_names as $admin_id => $admin_name) {
-      $member_info .= $admin_name . "<br>";
+  $slice_member_details = lookup_member_details($ma_url, $signer, $member_ids);
+  $slice_admin_details = lookup_member_details($ma_url, $signer, $admin_ids);
+  $member_info_str = "<b style='text-decoration: underline;'>Slice members</b><br>";
+  if (count($slice_admin_details) > 0) {
+    $member_info_str .= "<b>Admins</b><br>";
+    foreach ($slice_admin_details as $slice_admin_id => $slice_admin_info) {
+      $slice_admin_obj = new Member($slice_admin_id);
+      $slice_admin_obj->init_from_record($slice_admin_info);
+      $slice_admin_name = $slice_admin_obj -> prettyName();
+      $slice_admin_username = $slice_admin_info[MA_ATTRIBUTE_NAME::USERNAME];
+      $member_info_str .= "$slice_admin_name ($slice_admin_username)<br>";
     }
   } else {
-    $member_info .= "<i>No admins on slice</i><br>";
+    $member_info_str .= "<i>No admins on slice</i><br>";
   }
-  if (count($member_names) > 0) {
-    $member_info .= "<b>Members</b><br>";
-    foreach ($member_names as $member_id => $member_name) {
-      $member_info .= $member_name . "<br>";
+  if (count($slice_member_details) > 0) {
+    $member_info_str .= "<b>Members</b><br>";
+    foreach ($slice_member_details as $slice_member_id => $slice_member_info) {
+      $slice_member_obj = new Member($slice_member_id);
+      $slice_member_obj->init_from_record($slice_member_info);
+      $slice_member_name = $slice_member_obj -> prettyName();
+      $slice_member_username = $slice_member_info[MA_ATTRIBUTE_NAME::USERNAME];
+      $member_info_str .= "$slice_member_name ($slice_member_username)<br>";
     }
   } else {
-    if(count($admin_names) == 0){
-      $member_info .= "<i>No members on slice</i><br>";
+    if(count($slice_admin_details) == 0){
+      $member_info_str .= "<i>No members on slice</i><br>";
     }
   }
-  return $member_info;
+  return $member_info_str;
 }
 
 ?>
