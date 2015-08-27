@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.4 ==
+ * Show slice member usernames on slice search (#1432)
  * Add version number to localStorage (#1479)
  * Add ability to clear success/failure/error messages on pages (#1565)
  * Migrate management scripts from geni-portal to geni-ch (geni-ch #101).
