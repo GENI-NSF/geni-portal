@@ -74,8 +74,8 @@ echo "DEFAULT_TAB = '$default_slice_tab';</script>";
 
 ?>
 
-<script src='cards.js'></script>
 <script src='dashboard.js'></script>
+<script src='cards.js'></script>
 
 <?php
   
