@@ -36,6 +36,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 // Map of preference names to choices for that pref. The first element in the array
 // of choices is the default value.
 $possible_prefs = array(
+  "homepage_tab" => array("Slices", "Projects", "Logs", "Map"),
   "homepage_view" => array("cards", "table"),
   "slice_view" => array("Resources", "Aggregates", "Map")
 );

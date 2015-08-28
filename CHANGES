@@ -10,6 +10,7 @@
  * Add ability to clear success/failure/error messages on pages (#1565)
  * Provide a useful message when a user is in no active projects (#1567)
  * Migrate management scripts from geni-portal to geni-ch (geni-ch #101).
+ * Allow users to pick default homepage tab (#1576)
 
 == 3.3 ==
  * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change

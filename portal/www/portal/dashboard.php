@@ -61,7 +61,16 @@ if (! $user->portalIsAuthorized()) {
 show_header('GENI Portal: Home', true, true);
 include("tool-showmessage.php");
 
-echo "<script type='text/javascript'>GENI_USERNAME = '{$user->username}';</script>";
+  $tab_names_to_div_ids = array(
+    "Slices" => "#slices",
+    "Projects" => "#projects",
+    "Logs" => "#logs",
+    "Map" => "#map");
+
+$default_slice_tab = $tab_names_to_div_ids[get_preference($user->urn(), "homepage_tab")];
+
+echo "<script type='text/javascript'>GENI_USERNAME = '{$user->username}';";
+echo "DEFAULT_TAB = '$default_slice_tab';</script>";
 
 ?>
 
