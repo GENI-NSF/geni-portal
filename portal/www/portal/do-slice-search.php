@@ -71,7 +71,7 @@ function search_for_slices($term, $search_type, $signer, $ma_url, $sa_url)
     if (is_valid_urn($term)) {
       // don't redirect to the error page if you can't find a slice
       global $put_message_result_handler;
-      $put_message_result_handler=no_redirect_result_handler;
+      $put_message_result_handler='no_redirect_result_handler';
       $results = lookup_slice_by_urn($sa_url, $signer, $term);
     } else {
       print "<p>Error: invalid URN</p>";
