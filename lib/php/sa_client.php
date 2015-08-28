@@ -229,15 +229,19 @@ function lookup_slice_by_urn($sa_url, $signer, $slice_urn)
 		   );
   $options = array_merge($options, $client->options());
   $slices = $client->lookup_slices($client->creds(), $options);
-  $urns = array_keys($slices);
-  $urn = $urns[0];
-  $slice = $slices[$urn];
-  return array($slice['SLICE_UID'],
-	       $slice['SLICE_NAME'],
-	       $slice['_GENI_PROJECT_UID'],
-	       $slice['SLICE_EXPIRATION'],
-	       $slice['_GENI_SLICE_OWNER'],
-	       $slice['SLICE_URN']);
+  if ($slices) {
+    $urns = array_keys($slices);
+    $urn = $urns[0];
+    $slice = $slices[$urn];
+    return array($slice['SLICE_UID'],
+  	       $slice['SLICE_NAME'],
+  	       $slice['_GENI_PROJECT_UID'],
+  	       $slice['SLICE_EXPIRATION'],
+  	       $slice['_GENI_SLICE_OWNER'],
+  	       $slice['SLICE_URN']);
+  } else { // no slice with this URN was found
+    return array();
+  }
 }
 
 // FIXME: lookup_slice_details_by_ids($sa_url, $slice_ids_list)

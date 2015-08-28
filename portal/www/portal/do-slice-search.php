@@ -56,30 +56,53 @@ if (array_key_exists('term', $_REQUEST)) {
   print "Couldn't complete empty search.";
 }
 
+function is_valid_urn($urn)
+{
+  $pattern = '/urn:publicid:IDN\+([^\+]+)\+([^\+]+)\+([^\+]+)$/';
+  $match_count = preg_match($pattern, $urn, $matches);
+  return $match_count == 1;
+}
 
 // Returns an array of slice detail objects from the SA for slices which match
 // the $term for the $search_type
 function search_for_slices($term, $search_type, $signer, $ma_url, $sa_url) 
 {
   if ($search_type == "urn") {
-    $results = lookup_slice_by_urn($sa_url, $signer, $term);
-    return lookup_slice_details($sa_url, $signer, array($results[0]));
+    if (is_valid_urn($term)) {
+      // don't redirect to the error page if you can't find a slice
+      global $put_message_result_handler;
+      $put_message_result_handler='no_redirect_result_handler';
+      $results = lookup_slice_by_urn($sa_url, $signer, $term);
+    } else {
+      print "<p>Error: invalid URN</p>";
+      return array();
+    }
+    if (count($results) > 0) {
+      return lookup_slice_details($sa_url, $signer, array($results[0]));
+    } else {
+      return array();
+    }
   } else {
     if ($search_type == "owner_email") {
       $email_results = lookup_members_by_email($ma_url, $signer, array($term));
-      $member_ids_arr = $email_results[$term];
-      $member_id = $member_ids_arr[0];
-      $slices = get_slices_for_member($sa_url, $signer, $member_id, true); 
-      $slice_ids = array();
-      foreach ($slices as $slice) {
-        if($slice[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE] == CS_ATTRIBUTE_TYPE::LEAD
-          && $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED] != 1){
-          $slice_ids [] = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID]; 
+      if (count($email_results) > 0) {
+        $member_ids_arr = $email_results[$term];
+        $member_id = $member_ids_arr[0];
+        $slices = get_slices_for_member($sa_url, $signer, $member_id, true); 
+        $slice_ids = array();
+        foreach ($slices as $slice) {
+          if($slice[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE] == CS_ATTRIBUTE_TYPE::LEAD
+            && $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED] != 1){
+            $slice_ids [] = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID]; 
+          }
         }
+        return lookup_slice_details($sa_url, $signer, $slice_ids);
+      } else {
+        return array();
       }
-      return lookup_slice_details($sa_url, $signer, $slice_ids);
     } else {
-      print "Searching by $search_type not yet implemented";
+      print "<p>Error: searching by $search_type not yet implemented</p>";
+      return array();
     }
   }
 }
