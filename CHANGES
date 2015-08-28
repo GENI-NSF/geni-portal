@@ -7,6 +7,7 @@
 == 3.4 ==
  * Add version number to localStorage (#1479)
  * Add ability to clear success/failure/error messages on pages (#1565)
+ * Provide a useful message when a user is in no active projects (#1567)
  * Migrate management scripts from geni-portal to geni-ch (geni-ch #101).
 
 == 3.3 ==
