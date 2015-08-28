@@ -566,6 +566,7 @@ echo "<div class='card' id='preferences'>";
 echo "<h2>Portal preferences</h2>";
 
 $preference_descriptions = array(
+  "homepage_tab" => "Default tab for the homepage",
   "homepage_view" => "Default homepage style (for slices and projects)",
   "slice_view" => "Default tab for slice page"
 );
