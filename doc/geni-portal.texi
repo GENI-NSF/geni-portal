@@ -1,8 +1,10 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
 @setfilename geni-portal.info
-@settitle GENI Portal Manual 2.29
+@settitle The GENI Portal and Clearinghouse
 @c %**end of header
+
+@include version.texi
 
 @c combine the program index into the concept index
 @syncodeindex pg cp
@@ -32,8 +34,8 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.34
-@subtitle July, 2015
+@subtitle Version @value{VERSION}
+@subtitle @value{UPDATED-MONTH}
 @author Marshall Brinn
 @author Aaron Helsinger
 @author Tom Mitchell
@@ -378,6 +380,20 @@ the @code{kill} command with the default signal (@code{TERM}).
 @example
 # Check for long-running omni processes every 5 minutes
 */5 * * * * /usr/local/bin/geni-watch-omni
+@end example
+
+@subsection Sync wireless groups and accounts
+@cindex wireless
+@pindex geni-sync-wireless
+For integration with wireless testbeds the GENI portal can synchronize
+GENI projects and users with wireless LDAP databases. In order to keep
+these two systems in sync a cron job runs a script periodically (nominally
+once a day) to synchronize all groups and accounts.
+
+@example
+# Synchronize with wireless testbeds
+# Sync wireless groups and accounts
+00 2 * * * /usr/local/bin/geni-sync-wireless --cleanup
 @end example
 
 
