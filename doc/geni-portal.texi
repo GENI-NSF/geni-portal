@@ -382,6 +382,20 @@ the @code{kill} command with the default signal (@code{TERM}).
 */5 * * * * /usr/local/bin/geni-watch-omni
 @end example
 
+@subsection Sync wireless groups and accounts
+@cindex wireless
+@pindex geni-sync-wireless
+For integration with wireless testbeds the GENI portal can synchronize
+GENI projects and users with wireless LDAP databases. In order to keep
+these two systems in sync a cron job runs a script periodically (nominally
+once a day) to synchronize all groups and accounts.
+
+@example
+# Synchronize with wireless testbeds
+# Sync wireless groups and accounts
+00 2 * * * /usr/local/bin/geni-sync-wireless --cleanup
+@end example
+
 
 @section Log files
 
