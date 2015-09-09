@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 3.5 ==
+
 == 3.4 ==
  * Improve error handling for failed slice searches on admin page (#1417)
  * Show slice member usernames on slice search (#1432)
