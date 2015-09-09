@@ -4,6 +4,15 @@
 
 = GENI Portal Release Notes =
 
+== 3.4 ==
+ * Improve error handling for failed slice searches on admin page (#1417)
+ * Show slice member usernames on slice search (#1432)
+ * Add version number to localStorage (#1479)
+ * Add ability to clear success/failure/error messages on pages (#1565)
+ * Provide a useful message when a user is in no active projects (#1567)
+ * Migrate management scripts from geni-portal to geni-ch (geni-ch #101).
+ * Allow users to pick default homepage tab (#1579)
+
 == 3.3 ==
  * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
    Wireless Account Management page (wimax-enable.php) accordinlgy (#1392).

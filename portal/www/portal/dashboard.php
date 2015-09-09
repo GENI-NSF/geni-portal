@@ -61,7 +61,16 @@ if (! $user->portalIsAuthorized()) {
 show_header('GENI Portal: Home', true, true);
 include("tool-showmessage.php");
 
-echo "<script type='text/javascript'>GENI_USERNAME = '{$user->username}';</script>";
+  $tab_names_to_div_ids = array(
+    "Slices" => "#slices",
+    "Projects" => "#projects",
+    "Logs" => "#logs",
+    "Map" => "#map");
+
+$default_slice_tab = $tab_names_to_div_ids[get_preference($user->urn(), "homepage_tab")];
+
+echo "<script type='text/javascript'>GENI_USERNAME = '{$user->username}';";
+echo "DEFAULT_TAB = '$default_slice_tab';</script>";
 
 ?>
 
@@ -94,12 +103,20 @@ foreach($project_objects as $project) {
 $all_projects = $project_objects;
 $project_objects = $unexpired_projects;
 
-if (count($all_projects) == 0) { 
-  // You are in no projects, expired or unexpired
-  // So, you're a new user or one who got kicked out of all projects
-  make_new_user_greeting($user);
+if (count($all_projects) == 0) { // You are in no active projects, active or expired
+  make_no_projects_greeting($user, true);
 } else { 
-  // You have some projects (active or expired) 
+  if(count($project_objects) == 0) { // You are in no active projects
+    make_no_projects_greeting($user, false);
+    print "<script type='text/javascript'>";
+    print "$(document).ready(function(){";
+    print 'update_selector($("#projectfilterswitch"), "-EXPIRED-PROJECTS-");';
+    print 'switch_to_card("#projects");';
+    print 'update_projects();';
+    print "});";
+    print "</script>";
+  }
+
   make_navigation_tabs();
 
   if (get_preference($user->urn(), "homepage_view") == "cards") {
@@ -331,7 +348,7 @@ function make_navigation_tabs() {
 }
 
 // Print the message that shows up for $user when they have no projects or slices
-function make_new_user_greeting($user) {
+function make_no_projects_greeting($user, $new_user) {
   global $in_lockdown_mode;
   $disable_create_project = "";
   $disable_join_project = "";
@@ -342,34 +359,46 @@ function make_new_user_greeting($user) {
     $disable_project_lead = "disabled";
   }
   if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-    print "<p class='instruction'>";
-    print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
-    print "You have been made a 'Project Lead', meaning you can create GENI Projects, "; 
-    print "as well as create slices in projects and reserve resources.<br/><br/>";
-    print "A project is a group of people and their research, ";
-    print "led by a single responsible individual - the project lead.";
-    print "See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>";
-    print "<p class='warn'>";
-    print "You are not a member of any projects. You need to Create or Join a Project.";
-    print "</p>";
-    print "<button $disable_create_project onClick=\"window.location='edit-project.php'\">";
-    print "<i class='material-icons'>add</i> New Project</button>";
-    print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>";
-    print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>";
+    if ($new_user) {
+      print "<p class='instruction'>";
+      print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
+      print "You have been made a 'Project Lead', meaning you can create GENI Projects, "; 
+      print "as well as create slices in projects and reserve resources.<br/><br/>";
+      print "A project is a group of people and their research, ";
+      print "led by a single responsible individual - the project lead.";
+      print "See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>";
+      print "<p class='warn'>";
+      print "You are not a member of any projects. You need to Create or Join a Project.";
+      print "</p>";
+      print "<button $disable_create_project onClick=\"window.location='edit-project.php'\"><i class='material-icons'>add</i> New Project</button>";
+      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>";
+      print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>";
+    } else {
+      print "<p class='warn'>";
+      print "You are not a member of any active projects. You need to create, join, or renew an expired project you lead.";
+      print "</p>";
+    }
   } else {
-    print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
-    print "You can now participate in GENI research, by joining a 'Project'.<br/>";
-    print "Note that your account is not a 'Project Lead' account, meaning you must join a project created by someone else, ";
-    print "before you can create slices or use GENI resources.<br/><br/>";
-    print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
-    print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>";
-    print "<p class='warn'>";
-    print "You are not a member of any projects. Please join an
-       existing Project, ask someone to create a Project for you, or ask
-       to be a Project Lead.</p>";
-    print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>";
-    print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>";
-    print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>";
+    if ($new_user) {
+      print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
+      print "You can now participate in GENI research, by joining a 'Project'.<br/>";
+      print "Note that your account is not a 'Project Lead' account, meaning you must join a project created by someone else, ";
+      print "before you can create slices or use GENI resources.<br/><br/>";
+      print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
+      print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>"; 
+      print "<p class='warn'>";
+      print "You are not a member of any projects. Please join an
+         existing Project, ask someone to create a Project for you, or ask
+         to be a Project Lead.</p>";
+      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>";
+      print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>";
+      print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>";
+    } else {
+      print "<p class='warn'>";
+      print "You are not a member of any active projects. Please join an
+         existing Project, ask someone to create a Project for you, ask
+         to be a Project Lead, or ask someone to renew an expired project.</p>";
+    }
   }
 }
 

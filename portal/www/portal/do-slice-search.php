@@ -56,30 +56,53 @@ if (array_key_exists('term', $_REQUEST)) {
   print "Couldn't complete empty search.";
 }
 
+function is_valid_urn($urn)
+{
+  $pattern = '/urn:publicid:IDN\+([^\+]+)\+([^\+]+)\+([^\+]+)$/';
+  $match_count = preg_match($pattern, $urn, $matches);
+  return $match_count == 1;
+}
 
 // Returns an array of slice detail objects from the SA for slices which match
 // the $term for the $search_type
 function search_for_slices($term, $search_type, $signer, $ma_url, $sa_url) 
 {
   if ($search_type == "urn") {
-    $results = lookup_slice_by_urn($sa_url, $signer, $term);
-    return lookup_slice_details($sa_url, $signer, array($results[0]));
+    if (is_valid_urn($term)) {
+      // don't redirect to the error page if you can't find a slice
+      global $put_message_result_handler;
+      $put_message_result_handler='no_redirect_result_handler';
+      $results = lookup_slice_by_urn($sa_url, $signer, $term);
+    } else {
+      print "<p>Error: invalid URN</p>";
+      return array();
+    }
+    if (count($results) > 0) {
+      return lookup_slice_details($sa_url, $signer, array($results[0]));
+    } else {
+      return array();
+    }
   } else {
     if ($search_type == "owner_email") {
       $email_results = lookup_members_by_email($ma_url, $signer, array($term));
-      $member_ids_arr = $email_results[$term];
-      $member_id = $member_ids_arr[0];
-      $slices = get_slices_for_member($sa_url, $signer, $member_id, true); 
-      $slice_ids = array();
-      foreach ($slices as $slice) {
-        if($slice[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE] == CS_ATTRIBUTE_TYPE::LEAD
-          && $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED] != 1){
-          $slice_ids [] = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID]; 
+      if (count($email_results) > 0) {
+        $member_ids_arr = $email_results[$term];
+        $member_id = $member_ids_arr[0];
+        $slices = get_slices_for_member($sa_url, $signer, $member_id, true); 
+        $slice_ids = array();
+        foreach ($slices as $slice) {
+          if($slice[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE] == CS_ATTRIBUTE_TYPE::LEAD
+            && $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED] != 1){
+            $slice_ids [] = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID]; 
+          }
         }
+        return lookup_slice_details($sa_url, $signer, $slice_ids);
+      } else {
+        return array();
       }
-      return lookup_slice_details($sa_url, $signer, $slice_ids);
     } else {
-      print "Searching by $search_type not yet implemented";
+      print "<p>Error: searching by $search_type not yet implemented</p>";
+      return array();
     }
   }
 }
@@ -195,28 +218,36 @@ function get_member_info($slice, $signer, $ma_url, $sa_url)
       $member_ids[] = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     }
   }
-  $member_names = lookup_member_names($ma_url, $signer, $member_ids);
-  $admin_names = lookup_member_names($ma_url, $signer, $admin_ids);
-  $member_info = "<b style='text-decoration: underline;'>Slice members</b><br>";
-  if (count($admin_names) > 0) {
-    $member_info .= "<b>Admins</b><br>";
-    foreach ($admin_names as $admin_id => $admin_name) {
-      $member_info .= $admin_name . "<br>";
+  $slice_member_details = lookup_member_details($ma_url, $signer, $member_ids);
+  $slice_admin_details = lookup_member_details($ma_url, $signer, $admin_ids);
+  $member_info_str = "<b style='text-decoration: underline;'>Slice members</b><br>";
+  if (count($slice_admin_details) > 0) {
+    $member_info_str .= "<b>Admins</b><br>";
+    foreach ($slice_admin_details as $slice_admin_id => $slice_admin_info) {
+      $slice_admin_obj = new Member($slice_admin_id);
+      $slice_admin_obj->init_from_record($slice_admin_info);
+      $slice_admin_name = $slice_admin_obj -> prettyName();
+      $slice_admin_username = $slice_admin_info[MA_ATTRIBUTE_NAME::USERNAME];
+      $member_info_str .= "$slice_admin_name ($slice_admin_username)<br>";
     }
   } else {
-    $member_info .= "<i>No admins on slice</i><br>";
+    $member_info_str .= "<i>No admins on slice</i><br>";
   }
-  if (count($member_names) > 0) {
-    $member_info .= "<b>Members</b><br>";
-    foreach ($member_names as $member_id => $member_name) {
-      $member_info .= $member_name . "<br>";
+  if (count($slice_member_details) > 0) {
+    $member_info_str .= "<b>Members</b><br>";
+    foreach ($slice_member_details as $slice_member_id => $slice_member_info) {
+      $slice_member_obj = new Member($slice_member_id);
+      $slice_member_obj->init_from_record($slice_member_info);
+      $slice_member_name = $slice_member_obj -> prettyName();
+      $slice_member_username = $slice_member_info[MA_ATTRIBUTE_NAME::USERNAME];
+      $member_info_str .= "$slice_member_name ($slice_member_username)<br>";
     }
   } else {
-    if(count($admin_names) == 0){
-      $member_info .= "<i>No members on slice</i><br>";
+    if(count($slice_admin_details) == 0){
+      $member_info_str .= "<i>No members on slice</i><br>";
     }
   }
-  return $member_info;
+  return $member_info_str;
 }
 
 ?>

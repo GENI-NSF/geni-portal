@@ -23,6 +23,9 @@
 
 // dashboard.js: enable interactivity and animations on the dashboard page
 
+// increment if your changes to localStorage stuff require clearing localStorage.
+GENI_LS_VERSION = 1; 
+
 $(document).ready(function(){
   if ($("#slicefilterswitch").length > 0) { // they have some projects or slices
     resume_dashboard();
@@ -96,11 +99,18 @@ function save_state(section, selection, sortby) {
 
 // Get the values that you last used and display them
 function resume_dashboard() {
+  // If a new user logs in, clear the old user's state out.
   if (localStorage.username && localStorage.username != GENI_USERNAME) {
     localStorage.clear();
   }
 
+  // If the version of the local storage keys has changed, clean out old version so nothing breaks
+  if (localStorage.GENI_LS_VERSION && localStorage.GENI_LS_VERSION != GENI_LS_VERSION) {
+    localStorage.clear();
+  }
+
   localStorage.username = GENI_USERNAME;
+  localStorage.GENI_LS_VERSION = GENI_LS_VERSION;
 
   return_to_prev_state($("#slicefilterswitch"), "lastsliceselection");
   return_to_prev_state($("#slicesortby"), "lastslicesortby");
