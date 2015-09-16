@@ -202,8 +202,7 @@ dist_svcweb_DATA = \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
-        www/portal/wimax-enable.php \
-        www/portal/wimax-enable-new.php \
+	www/portal/wimax-enable.php \
 	www/portal/wireless_operations.php \
 	www/portal/wireless_redirect.php 
 
