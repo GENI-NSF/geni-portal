@@ -266,7 +266,7 @@ class ORBIT_Interface:
                                              stderr=err_file)
             os.unlink(err_filename)
         except subprocess.CalledProcessError as e:
-            error_text = open(err_filemame, 'r'). read()
+            error_text = open(err_filename, 'r'). read()
             syslog("Error invoking curl LDIF saveUser command: %s: Error %s Msg %s" \
                 (save_user_url, e.returncode, error_text))
             os.unlink(err_fileame)
