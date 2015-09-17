@@ -240,8 +240,12 @@ class WirelessProjectManager:
         if self._options.verbose:
             syslog("GENI PROJECTS = %s" % self._geni_projects)
             syslog("GENI MEMBERS = %s" % self._geni_members)
-            syslog("ORBIT GROUPS = %s" % self._orbit_groups)
-            syslog("ORBIT USERS = %s" % self._orbit_users)
+            for k,v in self._orbit_groups.iteritems():
+                syslog("ORBIT GROUP %s admin %s" % (k, v['admin']))
+                for u in v['users']:
+                    syslog("ORBIT GROUP %s member %s" % (k, u))
+            for u in self._orbit_users:
+                syslog("ORBIT USER %s" % (u))
 
         # Make sure the holdingpen gorup and admin exist
         self.ensure_holdingpen_group_and_admin()
