@@ -177,6 +177,31 @@ class WirelessProjectManager:
     # Turn ORBIT name to GENI name (remove geni- prefix)
     def to_geni_name(self, name): return name[5:]
 
+    def insert_wimax_username(self, member_id, member_info):
+        username = member_info['username']
+        name = 'wimax_username'
+        value = self.to_orbit_name(username)
+        self_asserted = False
+        syslog("Setting wimax_username for %s to %s" % (username, value))
+        ins = self.MEMBER_ATTRIBUTE_TABLE.insert().values(
+                member_id=member_id,
+                name=name,
+                value=value,
+                self_asserted=self_asserted)
+        result = self._session.execute(ins)
+        self._session.commit()
+
+    def ensure_wimax_username(self, member_id, member_info):
+        """Ensure that the given member has a wimax_username set
+        in the member attribute table. Add it if they don't.
+        """
+        username = member_info['username']
+        wimax_username = None
+        if 'wimax_username' in member_info:
+            wimax_username = member_info['wimax_username']
+        if not wimax_username:
+            self.insert_wimax_username(member_id, member_info)
+
     # Top level synchronization function
     # Gather GENI clearinghouse sense of projects/members
     #    Possibly limited to specific project or user
@@ -215,8 +240,12 @@ class WirelessProjectManager:
         if self._options.verbose:
             syslog("GENI PROJECTS = %s" % self._geni_projects)
             syslog("GENI MEMBERS = %s" % self._geni_members)
-            syslog("ORBIT GROUPS = %s" % self._orbit_groups)
-            syslog("ORBIT USERS = %s" % self._orbit_users)
+            for k,v in self._orbit_groups.iteritems():
+                syslog("ORBIT GROUP %s admin %s" % (k, v['admin']))
+                for u in v['users']:
+                    syslog("ORBIT GROUP %s member %s" % (k, u))
+            for u in self._orbit_users:
+                syslog("ORBIT USER %s" % (u))
 
         # Make sure the holdingpen gorup and admin exist
         self.ensure_holdingpen_group_and_admin()
@@ -308,14 +337,16 @@ class WirelessProjectManager:
     def ensure_project_members_exist(self): 
         for member_id, member_info in self._geni_members.items():
             username = member_info['username']
-            if username == self._options.holdingpen_admin: continue
+            if username == self._options.holdingpen_admin:
+                continue
+            member_ssh_keys = member_info['ssh_keys']
+            if len(member_ssh_keys) == 0:
+                syslog("Skipping user with no ssh keys: %s" % username)
+                continue
             orbit_username = self.to_orbit_name(username)
+            self.ensure_wimax_username(member_id, member_info)
             if orbit_username not in self._orbit_users:
                 member_pretty_name = self.get_pretty_name(member_info)
-                member_ssh_keys = member_info['ssh_keys']
-                if len(member_ssh_keys) == 0:
-                    syslog("Skipping user with no ssh keys: %s" % username)
-                    continue
                 syslog("Creating ORBIT user: %s" % orbit_username)
                 first_name = ""
                 if 'first_name' in member_info: 
@@ -575,7 +606,7 @@ class WirelessProjectManager:
                 member_ids))
         query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name.in_(\
                 ["username", 'member_enabled', "first_name", "email_address", 
-                 "last_name", "displayName"]))
+                 "last_name", "displayName", 'wimax_username']))
         
         member_rows = query.all()
         for row in member_rows:

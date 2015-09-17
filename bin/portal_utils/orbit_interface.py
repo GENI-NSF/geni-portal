@@ -203,8 +203,7 @@ class ORBIT_Interface:
     def get_orbit_groups_and_users(self):
         orbit_query_url = "%s/getGroupsAndUsers" % self._base_orbit_url
         orbit_info_raw = self.get_curl_output(orbit_query_url)
-        orbit_groups = self.parse_group_user_info(orbit_info_raw)
-        orbit_users = set()
+        orbit_groups, orbit_users = self.parse_group_user_info(orbit_info_raw)
         for group_name, group_info in orbit_groups.items():
             orbit_group_member_query_url = \
                 "%s/getProjectMembers?groupname=%s" % \
@@ -212,14 +211,13 @@ class ORBIT_Interface:
             orbit_member_info_raw = \
                 self.get_curl_output(orbit_group_member_query_url)
             users = self.parse_group_members(orbit_member_info_raw)
-            for user in users:
-                orbit_users.add(user)
-                group_info['users'] = users
-        return orbit_groups, list(orbit_users)
+            group_info['users'] = users
+        return orbit_groups, orbit_users
 
     # Parse results from getGroupsAndUsers call
     def parse_group_user_info(self, orbit_info_raw):
         groups = {}
+        users = []
         orbit_info = xml.dom.minidom.parseString(orbit_info_raw)
         group_nodes = orbit_info.getElementsByTagName('Group')
         user_nodes = orbit_info.getElementsByTagName('User')
@@ -229,12 +227,8 @@ class ORBIT_Interface:
             groups[group_name] = {'admin' : group_admin, 'users' : []}
         for user_node in user_nodes:
             user_name = user_node.getAttribute('username')
-            group_name = user_node.getAttribute('groupname')
-            if group_name not in groups:
-                syslog("Group %s for user %s not defined" % \
-                    (group_name, user_name))
-            group = groups[group_name]['users'].append(user_name)
-        return groups
+            users.append(user_name)
+        return groups, users
 
     # Parse results from getProjectMembers call
     def parse_group_members(self, orbit_info_raw):
@@ -266,7 +260,7 @@ class ORBIT_Interface:
                                              stderr=err_file)
             os.unlink(err_filename)
         except subprocess.CalledProcessError as e:
-            error_text = open(err_filemame, 'r'). read()
+            error_text = open(err_filename, 'r'). read()
             syslog("Error invoking curl LDIF saveUser command: %s: Error %s Msg %s" \
                 (save_user_url, e.returncode, error_text))
             os.unlink(err_fileame)

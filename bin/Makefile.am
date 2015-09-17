@@ -25,6 +25,7 @@ pkgsysconfdir = $(sysconfdir)/geni-ch
 dist_bin_SCRIPTS = \
 		geni-manage-maintenance \
 		geni-parse-map-data \
+		geni-sync-wireless \
 		geni-watch-omni
 
 bin_SCRIPTS = \
