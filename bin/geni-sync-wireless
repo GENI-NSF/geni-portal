@@ -177,6 +177,31 @@ class WirelessProjectManager:
     # Turn ORBIT name to GENI name (remove geni- prefix)
     def to_geni_name(self, name): return name[5:]
 
+    def insert_wimax_username(self, member_id, member_info):
+        username = member_info['username']
+        name = 'wimax_username'
+        value = self.to_orbit_name(username)
+        self_asserted = False
+        syslog("Setting wimax_username for %s to %s" % (username, value))
+        ins = self.MEMBER_ATTRIBUTE_TABLE.insert().values(
+                member_id=member_id,
+                name=name,
+                value=value,
+                self_asserted=self_asserted)
+        result = self._session.execute(ins)
+        self._session.commit()
+
+    def ensure_wimax_username(self, member_id, member_info):
+        """Ensure that the given member has a wimax_username set
+        in the member attribute table. Add it if they don't.
+        """
+        username = member_info['username']
+        wimax_username = None
+        if 'wimax_username' in member_info:
+            wimax_username = member_info['wimax_username']
+        if not wimax_username:
+            self.insert_wimax_username(member_id, member_info)
+
     # Top level synchronization function
     # Gather GENI clearinghouse sense of projects/members
     #    Possibly limited to specific project or user
@@ -310,6 +335,7 @@ class WirelessProjectManager:
             username = member_info['username']
             if username == self._options.holdingpen_admin: continue
             orbit_username = self.to_orbit_name(username)
+            self.ensure_wimax_username(member_id, member_info)
             if orbit_username not in self._orbit_users:
                 member_pretty_name = self.get_pretty_name(member_info)
                 member_ssh_keys = member_info['ssh_keys']
@@ -575,7 +601,7 @@ class WirelessProjectManager:
                 member_ids))
         query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name.in_(\
                 ["username", 'member_enabled', "first_name", "email_address", 
-                 "last_name", "displayName"]))
+                 "last_name", "displayName", 'wimax_username']))
         
         member_rows = query.all()
         for row in member_rows:
