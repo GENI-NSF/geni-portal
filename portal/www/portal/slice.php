@@ -476,7 +476,12 @@ function confirmQuery() {
       if (result) {
         var myform = $("#renewform");
         $.each(slice_ams, function(index, value) {
-          myform.html(myform.html()+'<input type="hidden" name="am_id[]" value="'+value+'"/>');
+          var am_input = $('<input>').attr({
+                           type: 'hidden',
+                           value: value,
+                           name: 'am_id[]'
+                         });
+          myform.append(am_input);
           $('#datepicker').val(dateVal);
         });
         myform.submit();
