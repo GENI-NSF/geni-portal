@@ -410,8 +410,8 @@ print "</div>";
 
 if ($renew_slice_privilege) {
   print "<form id='renewform' method='GET' action=\"do-renew.php\">";
-  print "<div id='renewbox' class='card' style='display: none;'><tr>";
-  print "<table style='box-shadow: none; margin: 0px; width: auto;'>";
+  print "<div id='renewbox' class='card' style='display: none;'>";
+  print "<table style='box-shadow: none; margin: 0px; width: auto;'><tr>";
   print "<td style='border-bottom:none; padding: 0px 10px;'>";
   print "<div>";
   print "<input type='radio' id='sliceonly' name='renew' value='slice'>renew slice until <br>";
