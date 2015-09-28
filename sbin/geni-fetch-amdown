@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+
+# ----------------------------------------------------------------------
+# Copyright (c) 2013-2015 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the ' Work' ) to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED ' AS IS' , WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
+import argparse
+import re
+import sys
+import xmlrpclib
+
+sr_type_aggregate = 0
+
+class ChapiResponse(object):
+    def __init__(self, response):
+        self.code = response['code']
+        self.value = response['value']
+        self.output = response['output']
+
+ATTRIBUTES = '_GENI_SERVICE_ATTRIBUTES'
+
+class Aggregate(object):
+    def __init__(self, sr_record):
+        self.url = sr_record['SERVICE_URL']
+        self.amtype = sr_record[ATTRIBUTES]['UI_AM_TYPE']
+        self.categories = sr_record[ATTRIBUTES]['UI_AM_CAT'].split()
+        self.name = sr_record['SERVICE_NAME']
+        self.urn = sr_record['SERVICE_URN']
+
+    def isExoGENI(self):
+        return self.amtype == 'ui_exogeni_am'
+
+    def isInstaGENI(self):
+        return self.amtype == 'ui_instageni_am'
+
+    def isOpenGENI(self):
+        if self.amtype == 'ui_other_am':
+            url = urlparse(self.url)
+            return url.port == 5002
+        else:
+            return False
+
+    def isStitchable(self):
+        return 'ui_stitchable' in self.categories
+
+class ServiceRegistry(object):
+
+    SERVICE_TYPE_AGGREGATE = 0
+
+    def __init__(self, url):
+        self.url = url
+        self.proxy = xmlrpclib.ServerProxy(self.url)
+
+    def get_services(self):
+        result = ChapiResponse(self.proxy.get_services())
+        if result.code == 0:
+            return result.value
+        else:
+            raise(Exception("Error from SR: %r" %
+                            result.output))
+
+    def get_aggregates(self):
+        services = self.get_services()
+        aggregates = [Aggregate(s) for s in services
+                        if s['SERVICE_TYPE'] == self.SERVICE_TYPE_AGGREGATE]
+        return aggregates
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('cert', help='Location of portal certificate')
+    parser.add_argument('key', help='Location of portal private key')
+    parser.add_argument('-s', '--settings',
+                        default='/etc/geni-ch/settings.php',
+                        help='location of settings.php')
+    return parser.parse_args(argv)
+
+
+def parse_settings(settings_file):
+    result = None
+    pattern = '\$service_registry_url\s*=\s*\'(.*)\''
+    prog = re.compile(pattern)
+    with open(settings_file, 'r') as settings:
+        for line in settings:
+            m = prog.match(line)
+            if m:
+                result = m.group(1)
+    return result
+
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    args = parse_args(argv)
+    print 'Args = %r'  % (args)
+    # init_logging(options)
+    sr_url = parse_settings(args.settings)
+    print 'sr_url = %r' % (sr_url)
+    sr = ServiceRegistry(sr_url)
+    aggs = sr.get_aggregates()
+    for agg in aggs:
+        print agg.urn
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
