@@ -34,105 +34,6 @@ import ssl
 import sys
 import xmlrpclib
 
-short_name_to_urn = dict()
-short_name_to_urn['al2s'] = 'urn:publicid:IDN+al2s.internet2.edu+authority+am'
-short_name_to_urn['apt'] = 'urn:publicid:IDN+apt.emulab.net+authority+cm'
-short_name_to_urn['cenic-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.cenic.net+authority+am'
-short_name_to_urn['cenic-ig'] = 'urn:publicid:IDN+instageni.cenic.net+authority+cm'
-short_name_to_urn['cenic-of'] = 'urn:publicid:IDN+openflow:foam:foam.cenic.net+authority+am'
-short_name_to_urn['clemson-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am'
-short_name_to_urn['clemson-ig'] = 'urn:publicid:IDN+instageni.clemson.edu+authority+cm'
-short_name_to_urn['clemson-og'] = 'urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+authority+am'
-short_name_to_urn['cornell-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.geni.it.cornell.edu+authority+am'
-short_name_to_urn['cornell-ig'] = 'urn:publicid:IDN+geni.it.cornell.edu+authority+cm'
-short_name_to_urn['cwru-ig'] = 'urn:publicid:IDN+geni.case.edu+authority+cm'
-short_name_to_urn['exosm'] = 'urn:publicid:IDN+exogeni.net+authority+am'
-short_name_to_urn['fiu-eg'] = 'urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am'
-short_name_to_urn['gatech-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.rnoc.gatech.edu+authority+am'
-short_name_to_urn['gatech-ig'] = 'urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm'
-short_name_to_urn['gpo-eg-of'] = 'urn:publicid:IDN+openflow:foam:bbn-hn.exogeni.gpolab.bbn.com+authority+am'
-short_name_to_urn['gpo-eg'] = 'urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am'
-short_name_to_urn['gpo-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am'
-short_name_to_urn['gpo-ig'] = 'urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm'
-short_name_to_urn['gpo-og'] = 'urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am'
-short_name_to_urn['illinois-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.illinois.edu+authority+am'
-short_name_to_urn['illinois-ig'] = 'urn:publicid:IDN+instageni.illinois.edu+authority+cm'
-short_name_to_urn['im-vw1'] = 'urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm'
-short_name_to_urn['im-wilab'] = 'urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm'
-short_name_to_urn['kansas-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.ku.gpeni.net+authority+am'
-short_name_to_urn['kansas-ig'] = 'urn:publicid:IDN+instageni.ku.gpeni.net+authority+cm'
-short_name_to_urn['kettering-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.geni.kettering.edu+authority+am'
-short_name_to_urn['kettering-ig'] = 'urn:publicid:IDN+geni.kettering.edu+authority+cm'
-short_name_to_urn['max-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.maxgigapop.net+authority+am'
-short_name_to_urn['max-ig'] = 'urn:publicid:IDN+instageni.maxgigapop.net+authority+cm'
-short_name_to_urn['max'] = 'urn:publicid:IDN+dragon.maxgigapop.net+authority+am'
-short_name_to_urn['missouri-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.rnet.missouri.edu+authority+am'
-short_name_to_urn['missouri-ig'] = 'urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm'
-short_name_to_urn['moxi-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.iu.edu+authority+am'
-short_name_to_urn['moxi-ig'] = 'urn:publicid:IDN+instageni.iu.edu+authority+cm'
-short_name_to_urn['moxi-of'] = 'urn:publicid:IDN+openflow:foam:moxifoam.ictc.indiana.gigapop.net+authority+am'
-short_name_to_urn['nicta-eg'] = 'urn:publicid:IDN+exogeni.net:nictavmsite+authority+am'
-short_name_to_urn['northwestern-ig'] = 'urn:publicid:IDN+instageni.northwestern.edu+authority+cm'
-short_name_to_urn['nortwestern-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.northwestern.edu+authority+am'
-short_name_to_urn['nps-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.nps.edu+authority+am'
-short_name_to_urn['nps-ig'] = 'urn:publicid:IDN+instageni.nps.edu+authority+cm'
-short_name_to_urn['nysernet-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am'
-short_name_to_urn['nysernet-ig'] = 'urn:publicid:IDN+instageni.nysernet.org+authority+cm'
-short_name_to_urn['nysernet-of'] = 'urn:publicid:IDN+openflow:foam:foam.nysernet.org+authority+am'
-short_name_to_urn['nyu-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.genirack.nyu.edu+authority+am'
-short_name_to_urn['nyu-ig'] = 'urn:publicid:IDN+genirack.nyu.edu+authority+cm'
-short_name_to_urn['ohmetrodc-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.metrodatacenter.com+authority+am'
-short_name_to_urn['ohmetrodc-ig'] = 'urn:publicid:IDN+instageni.metrodatacenter.com+authority+cm'
-short_name_to_urn['osf-eg-of'] = 'urn:publicid:IDN+openflow:foam:osf-hn.exogeni.net+authority+am'
-short_name_to_urn['osf-eg'] = 'urn:publicid:IDN+exogeni.net:osfvmsite+authority+am'
-short_name_to_urn['renci-eg-of'] = 'urn:publicid:IDN+openflow:foam:rci-hn.exogeni.net+authority+am'
-short_name_to_urn['renci-eg'] = 'urn:publicid:IDN+exogeni.net:rcivmsite+authority+am'
-short_name_to_urn['rutgers-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.rutgers.edu+authority+am'
-short_name_to_urn['rutgers-ig'] = 'urn:publicid:IDN+instageni.rutgers.edu+authority+cm'
-short_name_to_urn['sl-eg-of'] = 'urn:publicid:IDN+openflow:foam:sl-hn.exogeni.net+authority+am'
-short_name_to_urn['sl-eg'] = 'urn:publicid:IDN+exogeni.net:slvmsite+authority+am'
-short_name_to_urn['sl-of'] = 'urn:publicid:IDN+openflow:foam:sl-geni.northwestern.edu+authority+am'
-short_name_to_urn['sox-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.sox.net+authority+am'
-short_name_to_urn['sox-ig'] = 'urn:publicid:IDN+instageni.sox.net+authority+cm'
-short_name_to_urn['sox-of'] = 'urn:publicid:IDN+openflow:foam:foam.sox.net+authority+am'
-short_name_to_urn['stanford-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.stanford.edu+authority+am'
-short_name_to_urn['stanford-ig'] = 'urn:publicid:IDN+instageni.stanford.edu+authority+cm'
-short_name_to_urn['tamu-eg-of'] = 'urn:publicid:IDN+openflow:foam:tamu-hn.exogeni.net+authority+am'
-short_name_to_urn['tamu-eg'] = 'urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am'
-short_name_to_urn['ucdavis-eg-of'] = 'urn:publicid:IDN+openflow:foam:ucd-hn.exogeni.net+authority+am'
-short_name_to_urn['ucdavis-eg'] = 'urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am'
-short_name_to_urn['uchicago-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.geni.uchicago.edu+authority+am'
-short_name_to_urn['uchicago-ig'] = 'urn:publicid:IDN+geni.uchicago.edu+authority+cm'
-short_name_to_urn['ucla-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.idre.ucla.edu+authority+am'
-short_name_to_urn['ucla-ig'] = 'urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm'
-short_name_to_urn['ufl-eg-of'] = 'urn:publicid:IDN+openflow:foam:ufl-hn.exogeni.net+authority+am'
-short_name_to_urn['ufl-eg'] = 'urn:publicid:IDN+exogeni.net:uflvmsite+authority+am'
-short_name_to_urn['uh-eg'] = 'urn:publicid:IDN+exogeni.net:uhvmsite+authority+am'
-short_name_to_urn['ukl-og'] = 'urn:publicid:IDN+glab077.e4.ukl.german-lab.de:gcf+authority+am'
-short_name_to_urn['uky-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.lan.sdn.uky.edu+authority+am'
-short_name_to_urn['uky-ig'] = 'urn:publicid:IDN+lan.sdn.uky.edu+authority+cm'
-short_name_to_urn['uky-pg'] = 'urn:publicid:IDN+uky.emulab.net+authority+cm'
-short_name_to_urn['ukypks2-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.pks2.sdn.uky.edu+authority+am'
-short_name_to_urn['ukypks2-ig'] = 'urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm'
-short_name_to_urn['umkc-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.umkc.edu+authority+am'
-short_name_to_urn['umkc-ig'] = 'urn:publicid:IDN+instageni.umkc.edu+authority+cm'
-short_name_to_urn['utah-clab'] = 'urn:publicid:IDN+utah.cloudlab.us+authority+cm'
-short_name_to_urn['utah-ig-of'] = 'urn:publicid:IDN+openflow:foam:ig-utah+authority+am'
-short_name_to_urn['utah-ig'] = 'urn:publicid:IDN+utah.geniracks.net+authority+cm'
-short_name_to_urn['utah-pg'] = 'urn:publicid:IDN+emulab.net+authority+cm'
-short_name_to_urn['utah-stitch'] = 'urn:publicid:IDN+stitch.geniracks.net+authority+cm'
-short_name_to_urn['utahddc-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am'
-short_name_to_urn['utahddc-ig'] = 'urn:publicid:IDN+utahddc.geniracks.net+authority+cm'
-short_name_to_urn['utc-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.utc.edu+authority+am'
-short_name_to_urn['utc-ig'] = 'urn:publicid:IDN+instageni.utc.edu+authority+cm'
-short_name_to_urn['wall2'] = 'urn:publicid:IDN+wall2.ilabt.iminds.be+authority+cm'
-short_name_to_urn['wisconsin-ig-of'] = 'urn:publicid:IDN+openflow:foam:foam.instageni.wisc.edu+authority+am'
-short_name_to_urn['wisconsin-ig'] = 'urn:publicid:IDN+instageni.wisc.edu+authority+cm'
-short_name_to_urn['wsu-eg-of'] = 'urn:publicid:IDN+openflow:foam:wsu-hn.exogeni.net+authority+am'
-short_name_to_urn['wsu-eg'] = 'urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am'
-short_name_to_urn['wvn-eg-of'] = 'urn:publicid:IDN+openflow:foam:wvn-hn.exogeni.net+authority+am'
-short_name_to_urn['wvn-eg'] = 'urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am'
-
 
 class ChapiResponse(object):
     def __init__(self, response):
@@ -151,8 +52,7 @@ class Aggregate(object):
         self.categories = sr_record[self.ATTRIBUTES]['UI_AM_CAT'].split()
         self.name = sr_record['SERVICE_NAME']
         self.urn = sr_record['SERVICE_URN']
-        # We don't get short name from the SR yet
-        self.short_name = None
+        self.short_name = sr_record['_GENI_SERVICE_SHORT_NAME']
 
     def isExoGENI(self):
         return self.amtype == 'ui_exogeni_am'
@@ -268,23 +168,22 @@ def main(argv=None):
     sr = ServiceRegistry(sr_url)
     am_status = {}
     aggs = sr.get_aggregates()
-    aggs_by_eg_site = dict()
+    agg_lookup_tbl = dict()
     for agg in aggs:
         # Initialize the status dictionary. All aggregates are assumed
         # to be up.
         am_status[agg.urn] = 'up'
 
+        # Index by short name
+        agg_lookup_tbl[agg.short_name] = agg
         # Build a map for ExoGENI site names
         eg_site = agg.exogeni_site()
         if eg_site:
-            aggs_by_eg_site[eg_site] = agg
+            agg_lookup_tbl[eg_site] = agg
 
     for da in down_ams:
-        if da in short_name_to_urn:
-            urn = short_name_to_urn[da]
-            am_status[urn] = 'down'
-        elif da in aggs_by_eg_site:
-            urn = aggs_by_eg_site[da].urn
+        if da in agg_lookup_tbl:
+            urn = agg_lookup_tbl[da].urn
             am_status[urn] = 'down'
         else:
             # Unknown aggregate
