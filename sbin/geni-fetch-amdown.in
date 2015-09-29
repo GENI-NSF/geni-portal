@@ -239,7 +239,7 @@ def parse_args(argv):
                         default='@pkgsysconfdir@/settings.php',
                         help='location of settings.php')
     parser.add_argument('-d', '--dest',
-                        default='@pkgsysconfdir@/am-status.php',
+                        default='@pkgsysconfdir@/am-status.json',
                         help='destination of output file')
     return parser.parse_args(argv)
 
