@@ -213,7 +213,7 @@ def fetch_amdown(key_file, cert_file, host='alerts.gpolab.bbn.com',
                                 cert_file=cert_file, context=ctx)
     c.request('GET', path)
     response = c.getresponse()
-    print response.status, response.reason
+    #    print response.status, response.reason
     data = response.read()
     c.close()
     # We get: [["gpo-ig"], ["utah-ig"], ["rencivmsite"]]
@@ -228,8 +228,11 @@ def parse_args(argv):
     parser.add_argument('cert', help='Location of portal certificate')
     parser.add_argument('key', help='Location of portal private key')
     parser.add_argument('-s', '--settings',
-                        default='/etc/geni-ch/settings.php',
+                        default='@pkgsysconfdir@/settings.php',
                         help='location of settings.php')
+    parser.add_argument('-d', '--dest',
+                        default='@pkgsysconfdir@/am-status.php',
+                        help='destination of output file')
     return parser.parse_args(argv)
 
 
@@ -249,35 +252,41 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
     args = parse_args(argv)
-    print 'Args = %r' % (args)
 
     down_ams = fetch_amdown(args.key, args.cert)
-    print down_ams
 
     # init_logging(options)
     sr_url = parse_settings(args.settings)
-    print 'sr_url = %r' % (sr_url)
     sr = ServiceRegistry(sr_url)
+    am_status = {}
     aggs = sr.get_aggregates()
     aggs_by_eg_site = dict()
     for agg in aggs:
+        # Initialize the status dictionary. All aggregates are assumed
+        # to be up.
+        am_status[agg.urn] = 'up'
+
+        # Build a map for ExoGENI site names
         eg_site = agg.exogeni_site()
         if eg_site:
-            print '%r => %r' % (eg_site, agg.urn)
             aggs_by_eg_site[eg_site] = agg
 
-    down_urns = []
     for da in down_ams:
         if da in short_name_to_urn:
             urn = short_name_to_urn[da]
-            down_urns.append(urn)
+            am_status[urn] = 'down'
         elif da in aggs_by_eg_site:
             urn = aggs_by_eg_site[da].urn
-            down_urns.append(urn)
+            am_status[urn] = 'down'
         else:
-            print "Unknown down aggregate: %s" % (da)
+            # Unknown aggregate
+            # TODO: should we log to syslog?
+            # print "Unknown down aggregate: %s" % (da)
+            pass
 
-    print "Down Aggregates: %r" % (down_urns)
+    # Write the data out to the destination file
+    with open(args.dest, "w") as out:
+        json.dump(am_status, out, indent=2)
     return 0
 
 

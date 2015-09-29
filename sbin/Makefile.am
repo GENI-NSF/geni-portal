@@ -4,7 +4,6 @@ edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
 	-e 's|@pkgsysconfdir[@]|$(pkgsysconfdir)|g' \
-	-e 's|@sharedstatedir[@]|$(sharedstatedir)|g' \
 	-e 's|@prefix[@]|$(prefix)|g'
 
 TEMPLATES = \
