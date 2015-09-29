@@ -140,13 +140,15 @@ class ChapiResponse(object):
         self.value = response['value']
         self.output = response['output']
 
-ATTRIBUTES = '_GENI_SERVICE_ATTRIBUTES'
 
 class Aggregate(object):
+
+    ATTRIBUTES = '_GENI_SERVICE_ATTRIBUTES'
+
     def __init__(self, sr_record):
         self.url = sr_record['SERVICE_URL']
-        self.amtype = sr_record[ATTRIBUTES]['UI_AM_TYPE']
-        self.categories = sr_record[ATTRIBUTES]['UI_AM_CAT'].split()
+        self.amtype = sr_record[self.ATTRIBUTES]['UI_AM_TYPE']
+        self.categories = sr_record[self.ATTRIBUTES]['UI_AM_CAT'].split()
         self.name = sr_record['SERVICE_NAME']
         self.urn = sr_record['SERVICE_URN']
         # We don't get short name from the SR yet
@@ -174,11 +176,12 @@ class Aggregate(object):
         site = None
         eg_prefix = 'urn:publicid:IDN+exogeni.net:'
         eg_suffix = '+authority+am'
-        if (self.isExoGENI
-            and self.urn.startswith(eg_prefix)
-            and self.urn.endswith(eg_suffix)):
+        if (self.isExoGENI and
+                self.urn.startswith(eg_prefix) and
+                self.urn.endswith(eg_suffix)):
             site = self.urn[len(eg_prefix):-len(eg_suffix)]
         return site
+
 
 class ServiceRegistry(object):
 
@@ -199,7 +202,7 @@ class ServiceRegistry(object):
     def get_aggregates(self):
         services = self.get_services()
         aggregates = [Aggregate(s) for s in services
-                        if s['SERVICE_TYPE'] == self.SERVICE_TYPE_AGGREGATE]
+                      if s['SERVICE_TYPE'] == self.SERVICE_TYPE_AGGREGATE]
         return aggregates
 
 
@@ -246,7 +249,7 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
     args = parse_args(argv)
-    print 'Args = %r'  % (args)
+    print 'Args = %r' % (args)
 
     down_ams = fetch_amdown(args.key, args.cert)
     print down_ams
