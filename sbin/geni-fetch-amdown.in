@@ -208,9 +208,17 @@ class ServiceRegistry(object):
 
 def fetch_amdown(key_file, cert_file, host='alerts.gpolab.bbn.com',
                  path='/cgi-bin/amdown.cgi'):
-    ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-    c = httplib.HTTPSConnection(host=host, key_file=key_file,
-                                cert_file=cert_file, context=ctx)
+    # The rules tighten up in Python 2.7.9. If a lower version,
+    # do the obvious thing. If 2.7.9 or higher, create an empty
+    # ssl context to avoid issues with the server's self-signed
+    # certificate.
+    if sys.version_info < (2,7,9):
+        c = httplib.HTTPSConnection(host=host, key_file=key_file,
+                                    cert_file=cert_file)
+    else:
+        ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        c = httplib.HTTPSConnection(host=host, key_file=key_file,
+                                    cert_file=cert_file, context=ctx)
     c.request('GET', path)
     response = c.getresponse()
     #    print response.status, response.reason
