@@ -118,6 +118,13 @@ $all_rspecs = fetchRSpecMetaData($user);
 // JACKS-APP STUFF //
 include("jacks-editor-app.php");
 setup_jacks_editor_slice_context();
+
+$AM_STATUS_LOCATION = "/etc/geni-ch/am-status.json";
+$am_status = array("fake_urn" => "fake_status");
+if (file_exists($AM_STATUS_LOCATION)) {
+  $am_status = json_decode(file_get_contents($AM_STATUS_LOCATION));
+}
+
 ?>
 
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
@@ -137,6 +144,7 @@ print "</div></td></tr></table>";
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
   var jacks_all_compute_ams = <?php echo json_encode($all_compute_ams) ?>;
+  var jacks_am_status = <?php echo json_encode($am_status) ?>;
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
