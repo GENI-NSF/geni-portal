@@ -410,8 +410,8 @@ print "</div>";
 
 if ($renew_slice_privilege) {
   print "<form id='renewform' method='GET' action=\"do-renew.php\">";
-  print "<div id='renewbox' class='card' style='display: none;'><tr>";
-  print "<table style='box-shadow: none; margin: 0px; width: auto;'>";
+  print "<div id='renewbox' class='card' style='display: none;'>";
+  print "<table style='box-shadow: none; margin: 0px; width: auto;'><tr>";
   print "<td style='border-bottom:none; padding: 0px 10px;'>";
   print "<div>";
   print "<input type='radio' id='sliceonly' name='renew' value='slice'>renew slice until <br>";
@@ -476,7 +476,12 @@ function confirmQuery() {
       if (result) {
         var myform = $("#renewform");
         $.each(slice_ams, function(index, value) {
-          myform.html(myform.html()+'<input type="hidden" name="am_id[]" value="'+value+'"/>');
+          var am_input = $('<input>').attr({
+                           type: 'hidden',
+                           value: value,
+                           name: 'am_id[]'
+                         });
+          myform.append(am_input);
           $('#datepicker').val(dateVal);
         });
         myform.submit();
