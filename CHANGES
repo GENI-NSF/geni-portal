@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.5 ==
+ * Fix referer redirect when portal is not authorized (#1604)
 
 == 3.4 ==
  * Improve error handling for failed slice searches on admin page (#1417)
