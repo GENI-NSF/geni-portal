@@ -226,6 +226,11 @@ print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 $slice_nojacks_url = "slice-add-resources.php?slice_id=$slice_id";
 print "<p><b>Note:</b> To reserve FOAM or other non-compute resources, use the <button onClick=\"window.location='$slice_nojacks_url'\"><b>Non Jacks Add Resources</b></button> page.</p>";
+?>
+<p>
+  You can view the <a href="am-status.php">current status of aggregates</a>.
+</p>
+<?php
 
 // END add resources tab
 echo "</div>";
