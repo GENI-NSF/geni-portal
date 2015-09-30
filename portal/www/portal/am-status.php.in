@@ -1,0 +1,124 @@
+<?php
+//----------------------------------------------------------------------
+// Copyright (c) 2015 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
+
+require_once("user.php");
+require_once("header.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+
+$AM_STATUS_FILE = "@pkgsysconfdir@/am-status.json";
+
+/**
+ * Load a mapping from URN to status. This is a JSON file,
+ * so load it and parse it as JSON.
+ *
+ * Return an array whose keys are aggregate URNs and whose
+ * values are states like "up" or "down".
+ */
+function load_am_status($fname)
+{
+  $str_data = file_get_contents($fname);
+  $data = json_decode($str_data, true);
+  return $data;
+}
+
+/**
+ * Convert a status string into an icon.
+ */
+function status_to_icon($status)
+{
+  if ($status == "up") {
+    $color = "#339933";
+    $icon = "check_circle";
+  } else if ($status == "down") {
+    $color = "#EE583A";
+    $icon = "report";
+  } else {
+    $color =  "#FBC02D";
+    $icon = "warning";
+  }
+  $result = "<i class='material-icons' style='color:$color;'>$icon</i>";
+  return $result;
+}
+
+function make_agg_row($agg, $status_data)
+{
+  $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
+  $urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
+  $status = "up";
+  if (array_key_exists($urn, $status_data)) {
+    $status = $status_data[$urn];
+  }
+  $icon = status_to_icon($status);
+
+  $row = '<tr>';
+  $row .= '<td>' . $name . '</td>';
+  $row .= '<td>' . $icon . '</td>';
+  $row .= '<td>' . $status . '</td>';
+  $row .= '</tr>';
+  return $row;
+}
+
+/**
+ * Compare two aggregates by their names.
+ * Comparison function for use with usort()
+ */
+function cmp_aggs($a, $b) {
+  $aname = strtolower($a[SR_TABLE_FIELDNAME::SERVICE_NAME]);
+  $bname = strtolower($b[SR_TABLE_FIELDNAME::SERVICE_NAME]);
+  return strcmp($aname, $bname);
+}
+
+$user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+
+$aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+usort($aggs, "cmp_aggs");
+
+$status_data = load_am_status($AM_STATUS_FILE);
+
+$table_rows = array();
+foreach ($aggs as $am) {
+  $table_rows[] = make_agg_row($am, $status_data);
+}
+
+show_header('GENI Portal: Aggregate Status');
+?>
+
+
+<h1>Aggregate Status</h1>
+<table>
+<?php
+foreach ($table_rows as $row) {
+  print($row);
+  print("\n");
+}
+?>
+</table>
+
+<?php
+include("footer.php");
+?>
