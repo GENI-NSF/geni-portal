@@ -73,9 +73,8 @@ function make_agg_row($agg, $status_data)
   $icon = status_to_icon($status);
 
   $row = '<tr>';
-  $row .= '<td>' . $name . '</td>';
-  $row .= '<td>' . $icon . '</td>';
-  $row .= '<td>' . $status . '</td>';
+  $row .= "<td>$name</td>";
+  $row .= "<td>$icon &nbsp; &nbsp; $status</td>";
   $row .= '</tr>';
   return $row;
 }
@@ -110,14 +109,25 @@ show_header('GENI Portal: Aggregate Status');
 
 
 <h1>Aggregate Status</h1>
-<table>
+<div class='tablecontainer'>
+<table id='aggtable'>
+<thead>
+<tr><th>Name &#x2191;&#x2193;</th><th>Status &#x2191;&#x2193;</th></tr>
+</thead>
+<tbody>
 <?php
 foreach ($table_rows as $row) {
   print($row);
   print("\n");
 }
 ?>
-</table>
+</tbody></table></div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#aggtable').DataTable({paging: false});
+  });
+</script>
 
 <?php
 include("footer.php");
