@@ -6,9 +6,11 @@
 
 == 3.5 ==
  * Fix a renew bug on Firefox (#1590)
+ * Remove debug printouts (#1598)
  * Provide aggregate status to Jacks (#1600)
  * Add an aggregate status page (#1601)
  * Fix referer redirect when portal is not authorized (#1604)
+ * For details see https://github.com/GENI-NSF/geni-portal/milestones/3.5
 
 == 3.4 ==
  * Improve error handling for failed slice searches on admin page (#1417)
