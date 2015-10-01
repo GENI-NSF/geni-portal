@@ -131,16 +131,11 @@ function perform_list_operation()
 					 '--project', $_GET['project_name'],
 					 '-u', $_GET['sliver_id']));
     $response = $response[1];
-    error_log("RESP = " . print_r($response, true));
   } else if ($operation == 'deleteimage') {
-    error_log("HERE");
     $urn = $_GET['image_urn'];
-    error_log("URN = " . $urn);
-    error_log("URN = " . print_r($urn, true));
     $args = array('deleteimage', $urn);
     $response = invoke_omni_function($am_url, $user, $args);
     $response = $response[1][$am_url];
-    error_log("RESP = " . print_r($response, true));
   }
 
   $code = $response['code']['geni_code'];
@@ -152,8 +147,6 @@ function perform_list_operation()
 }
 
 $result = perform_list_operation();
-
-error_log("RESULT = " . print_r($result, true));
 
 header("Cache-Control: public");
 header("Content-Type: application/json");
