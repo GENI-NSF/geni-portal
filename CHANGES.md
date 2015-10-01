@@ -2,8 +2,6 @@
 
 # [Release 3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
 
-# [3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
-
 * Fix a renew bug on Firefox
   ([#1590](https://github.com/GENI-NSF/geni-portal/issues/1590))
 * Remove debug printouts
@@ -15,7 +13,7 @@
 * Fix referer redirect when portal is not authorized
   ([#1604](https://github.com/GENI-NSF/geni-portal/issues/1604))
 
-# [3.4](https://github.com/GENI-NSF/geni-portal/milestones/3.4)
+# [Release 3.4](https://github.com/GENI-NSF/geni-portal/milestones/3.4)
 
 * Improve error handling for failed slice searches on admin page
   ([#1417](https://github.com/GENI-NSF/geni-portal/issues/1417))
@@ -32,7 +30,7 @@
 * Allow users to pick default homepage tab
   ([#1579](https://github.com/GENI-NSF/geni-portal/issues/1579))
 
-# [3.3](https://github.com/GENI-NSF/geni-portal/milestones/3.3)
+# [Release 3.3](https://github.com/GENI-NSF/geni-portal/milestones/3.3)
 
 * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
   Wireless Account Management page (wimax-enable.php) accordingly
@@ -62,7 +60,7 @@
 * Add secondary sort for slices
   ([#1560](https://github.com/GENI-NSF/geni-portal/issues/1560))
 
-# [3.2](https://github.com/GENI-NSF/geni-portal/milestones/3.2)
+# [Release 3.2](https://github.com/GENI-NSF/geni-portal/milestones/3.2)
 
 * Move SR certs from geni-portal to geni-ch
   ([geni-ch #102](https://github.com/GENI-NSF/geni-ch/issues/102))
@@ -104,11 +102,11 @@
   on session timeout
   ([#1557](https://github.com/GENI-NSF/geni-portal/issues/1557))
 
-# [3.1.1](https://github.com/GENI-NSF/geni-portal/milestones/3.1.1)
+# [Release 3.1.1](https://github.com/GENI-NSF/geni-portal/milestones/3.1.1)
 * Remove obsolete files (from Makefiles too)
 
 
-# [3.1](https://github.com/GENI-NSF/geni-portal/milestones/3.1)
+# [Release 3.1](https://github.com/GENI-NSF/geni-portal/milestones/3.1)
 
 * Migrate schema files for CH tables to geni-ch
   ([geni-ch #103](https://github.com/GENI-NSF/geni-ch/issues/103))
@@ -144,7 +142,7 @@
 * Add link to GENI Bibliography
   ([#1510](https://github.com/GENI-NSF/geni-portal/issues/1510))
 
-# [3.0](https://github.com/GENI-NSF/geni-portal/milestones/3.0)
+# [Release 3.0](https://github.com/GENI-NSF/geni-portal/milestones/3.0)
 
 * Add create image function for PG/IG racks within jacks-app
   ([#1389](https://github.com/GENI-NSF/geni-portal/issues/1389))
