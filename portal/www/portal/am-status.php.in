@@ -131,6 +131,7 @@ show_header('GENI Portal: Aggregate Status');
 
 
 <h1>Aggregate Status</h1>
+<p>Current aggregate responsiveness to GENI AM API calls</p>
 <div class='tablecontainer'>
 <table id='aggtable'>
 <thead>
@@ -144,6 +145,16 @@ foreach ($table_rows as $row) {
 }
 ?>
 </tbody></table></div>
+
+<section>
+<h3>Legend</h3>
+<p>
+Up: Responding to GENI AM API calls
+</p>
+<p>
+Down: Failed to respond to GENI AM API calls when last checked
+</p>
+</section>
 
 <script type="text/javascript">
 $(document).ready(function () {
