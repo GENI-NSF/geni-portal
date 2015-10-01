@@ -6,6 +6,7 @@
 svcdatadir = $(pkgdatadir)/portal
 gcfsrcdir = $(svcdatadir)/gcf/src
 gcfsrcgenidir = $(gcfsrcdir)/geni
+pkgsysconfdir = $(sysconfdir)/geni-ch
 
 # This is silly -- easier to rename the file in git
 # TODO: rename the file in git and remove this extraneous target
@@ -27,6 +28,31 @@ svcwebmapolthemeimgdir = /var/www/common/map/OpenLayers-2.13/theme/default/img
 svcwebtopdir = /var/www
 svcwebpolicydir = /var/www/policy
 
+edit = sed \
+	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	-e 's|@pkgsysconfdir[@]|$(pkgsysconfdir)|g' \
+	-e 's|@prefix[@]|$(prefix)|g'
+
+TEMPLATES = \
+	www/portal/am-status.php
+
+TEMPLATES.IN = $(TEMPLATES:%=%.in)
+
+$(TEMPLATES): Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+		test -f ./$@.in || srcdir=$(srcdir)/; \
+		$(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	mv $@.tmp $@
+
+%: $(srcdir)/%.in
+
+# Distribute but do not install
+EXTRA_DIST = $(TEMPLATES.IN)
+
+CLEANFILES = $(TEMPLATES)
 
 nobase_dist_svcdata_DATA = \
 	apache2-http.conf \
@@ -65,6 +91,7 @@ dist_svcweb_DATA = \
 	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
+	www/portal/am-status.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
 	www/portal/cards.js \
