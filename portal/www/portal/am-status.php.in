@@ -148,12 +148,12 @@ foreach ($table_rows as $row) {
 
 <section>
 <h3>Legend</h3>
-<p>
-Up: Responding to GENI AM API calls
-</p>
-<p>
-Down: Failed to respond to GENI AM API calls when last checked
-</p>
+<dl>
+  <dt>Up</dt>
+  <dd>Responding to GENI AM API calls</dd>
+  <dt>Down</dt>
+  <dd>Failed to respond to GENI AM API calls when last checked</dd>
+</dl>
 </section>
 
 <script type="text/javascript">
