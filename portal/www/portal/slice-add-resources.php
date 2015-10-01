@@ -265,6 +265,9 @@ print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
+?>
+<p><a href="am-status.php">View current aggregate status</a></p>
+<?php
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose File' to temporarily upload an RSpec for this reservation only.</p>";
 
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
@@ -275,11 +278,6 @@ print '</p>';
 
 $slice_jacks_url = "slice-add-resources-jacks.php?slice_id=$slice_id";
 print "<p><b>Note:</b> For a graphical reservation tool, use the <button onClick=\"window.location='$slice_jacks_url'\"><b>Jacks Add Resources</b></button> page.</p>";
-?>
-<p>
-  You can view the <a href="am-status.php">current status of aggregates</a>.
-</p>
-<?php
 // END add resources tab
 echo "</div>";
 

@@ -209,6 +209,7 @@ print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
 ?>
+<p><a href="am-status.php">View current aggregate status</a></p>
 <?php
 
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec.</p>";
@@ -226,11 +227,6 @@ print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 $slice_nojacks_url = "slice-add-resources.php?slice_id=$slice_id";
 print "<p><b>Note:</b> To reserve FOAM or other non-compute resources, use the <button onClick=\"window.location='$slice_nojacks_url'\"><b>Non Jacks Add Resources</b></button> page.</p>";
-?>
-<p>
-  You can view the <a href="am-status.php">current status of aggregates</a>.
-</p>
-<?php
 
 // END add resources tab
 echo "</div>";
