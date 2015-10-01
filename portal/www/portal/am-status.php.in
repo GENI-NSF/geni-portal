@@ -44,19 +44,40 @@ function load_am_status($fname)
 }
 
 /**
+ * Convert a status string into a string for display on the UI.
+ */
+function status_to_display($status)
+{
+  switch($status) {
+    case "up":
+      $result = "Up";
+      break;
+    case "down":
+      $result = "Down";
+      break;
+    default:
+      $result = "Uknown";
+  }
+  return $result;
+}
+
+/**
  * Convert a status string into an icon.
  */
 function status_to_icon($status)
 {
-  if ($status == "up") {
-    $color = "#339933";
-    $icon = "check_circle";
-  } else if ($status == "down") {
-    $color = "#EE583A";
-    $icon = "report";
-  } else {
-    $color =  "#FBC02D";
-    $icon = "warning";
+  switch($status) {
+    case "up":
+      $color = "#339933";
+      $icon = "check_circle";
+      break;
+    case "down":
+      $color = "#EE583A";
+      $icon = "report";
+      break;
+    default:
+      $color =  "#FBC02D";
+      $icon = "warning";
   }
   $result = "<i class='material-icons' style='color:$color;'>$icon</i>";
   return $result;
@@ -71,10 +92,11 @@ function make_agg_row($agg, $status_data)
     $status = $status_data[$urn];
   }
   $icon = status_to_icon($status);
+  $pretty_status = status_to_display($status);
 
   $row = '<tr>';
   $row .= "<td>$name</td>";
-  $row .= "<td>$icon &nbsp; &nbsp; $status</td>";
+  $row .= "<td>$icon &nbsp; &nbsp; $pretty_status</td>";
   $row .= '</tr>';
   return $row;
 }
