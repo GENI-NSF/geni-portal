@@ -1,0 +1,43 @@
+{
+	"__doc__" : [
+	   "This file contains a list of templates to be transformed ",
+	   "and installed at configuration time.",
+	   "It is intended to be used as input to the ",
+	   "geni-install-templates program.", 
+	   "Each element of the __templates__ entry contains a source ",
+	   "and destination, ",
+	   "as well as optional owner (for chown) and protection (for chmod) ",
+	   "to be performed on destimation file."
+	],
+
+	"__templates__" : [
+	   {
+	      "doc" : "Installation of Portal SP script",
+	      "source" : "install-sp-centos.sh.tmpl",
+	      "destination" : "/tmp/install-sp-centos.sh",
+	      "owner" : "root:root",
+	      "protection" : "0777"
+           },
+	   {
+	      "doc" : "Shibboleth configuration script",
+	      "source" : "shibboleth2.xml.tmpl",
+	      "destination" : "/etc/shibboleth/shibboleth2.xml",
+	      "owner" : "root:root",
+	      "protection" : "0644"
+           },
+	   {
+	      "doc" : "Portal settings configuration info",
+	      "source" : "settings.php.tmpl",
+	      "destination" : "/etc/geni-ch/settings.php",
+	      "owner" : "root:root",
+	      "protection" : "0444"
+           },
+	   {
+	      "doc" : "Installation of Portal Apache config",
+	      "source" : "portal-ssl.conf.tmpl",
+	      "destination" : "/etc/httpd/conf.d/portal-ssl.conf",
+	      "owner" : "root:root",
+	      "protection" : "0644"
+           }
+       ]
+}

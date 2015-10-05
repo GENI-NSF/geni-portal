@@ -1,0 +1,101 @@
+#!/bin/bash
+# Exit on error
+set -e
+# Echo commands with variables expanded
+set -x
+
+
+#----------------------------------------------------------------------
+# Install Shibboleth Service Provider from a base state.
+#----------------------------------------------------------------------
+
+# Note: After running this install the service provider needs identity
+# provider metadata. This metadata needs to be registered in the
+# shibboleth configuration file
+# (/etc/shibbleth/shibboleth2.xml). Here's how to get the metadata
+# from an idp:
+#
+#  scp cetaganda.gpolab:/opt/shibboleth-idp/metadata/idp-metadata.xml \
+#          /etc/shibboleth/cetaganda-idp-metadata.xml
+#
+# See the cetaganda entry in shibboleth2.xml for a sample entry.
+#
+
+#----------------------------------------------------------------------
+# Ensure running as root
+#----------------------------------------------------------------------
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root" 1>&2
+    exit 1
+fi
+
+#----------------------------------------------------------------------
+# Log stuff for later analysis
+#----------------------------------------------------------------------
+LOG=./install.log
+# Rotate the log?
+
+# initialize the log
+date > ${LOG}
+
+#----------------------------------------------------------------------
+# Generate keys and certs
+#----------------------------------------------------------------------
+
+#generate private keys
+openssl genrsa -out portal-@portal_host@.key 2048 >> ${LOG} 2>&1
+
+#generate CSR
+openssl req -new -key portal-@portal_host@.key -out portal-@portal_host@.csr -subj "/C=US/ST=MA/L=Cambridge/CN=@portal_host@" >> ${LOG} 2>&1
+
+#generate Self-Signed Cert
+openssl x509 -req -days 365 -in portal-@portal_host@.csr -signkey portal-@portal_host@.key -out portal-@portal_host@.crt >> ${LOG} 2>&1
+
+cp portal-@portal_host@.crt /etc/pki/tls/certs
+cp portal-@portal_host@.key /etc/pki/tls/private
+cp portal-@portal_host@.csr /etc/pki/tls/private
+
+
+# Copy "default site" web files into place
+if [ -d common/www/localhost ]; then
+  cp -r common/www/localhost /var/www/localhost
+fi
+
+#----------------------------------------------------------------------
+# Configure Shibboleth SP
+#----------------------------------------------------------------------
+
+SHIB_SP_DIR=/tmp/shib/sp
+
+#-----
+# First, copy the common shibboleth config
+#-----
+if [ -d $SHIB_SP_DIR/common ]; then
+  if [ -d $SHIB_SP_DIR/common/shibboleth ]; then
+      mkdir -p /etc/shibboleth
+    cp $SHIB_SP_DIR/common/shibboleth/* /etc/shibboleth
+  fi
+fi
+
+#-----
+# Next, copy the host-specific shibboleth config files
+#-----
+GENI_APACHE_CONFIG_DIR=/usr/share/geni-ch/www
+mkdir -p $GENI_APACHE_CONFIG_DIR
+for d in $SHIB_SP_DIR/common/www/*; do
+  echo "Copying ${d} to $GENI_APACHE_CONFIG_DIR"
+  /bin/cp -R ${d} $GENI_APACHE_CONFIG_DIR
+done
+
+# Restart the Shib Daemon and apache
+service ntpd restart
+service shibd restart
+service httpd restart
+
+echo 'Check for HOST specific files - portal-ssl an'
+echo "Edit $HOST ch-ssl and portal-ssl files to point to correct addresses and names"
+echo 'Edit /etc/shibboleth/shibboleth2.xml'
+echo 'Then restart services'
+echo 'service ntpd restart'
+echo 'service shibd restart'
+echo 'service httpd restart'
