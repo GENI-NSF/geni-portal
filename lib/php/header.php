@@ -57,22 +57,26 @@ function check_km_authorization($user)
 /*
  * We want to syslog whenever we have a new shib session ID
  */
-$CURRENT_SHIB_ID_TAG = "CURRENT_SHIB_ID";
-$current_shib_id = $_SERVER["Shib-Session-ID"];
-if(!isset($_SESSION)) { session_start(); }
-$shib_id_changed = false;
-if(!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
-   $_SESSION[$CURRENT_SHIB_ID_TAG] != $current_shib_id) {
-  $shib_id_changed = true;
-}
-// error_log("NEW SHIB_ID = " . $current_shib_id);
-if ($shib_id_changed) {
-  $eppn = "No EPPN Found";
-  if (array_key_exists("eppn", $_SERVER)) {
-    $eppn = strtolower($_SERVER["eppn"]);
+if (array_key_exists("Shib-Session-ID", $_SERVER)) {
+  $CURRENT_SHIB_ID_TAG = "CURRENT_SHIB_ID";
+  $current_shib_id = $_SERVER["Shib-Session-ID"];
+  if (!isset($_SESSION)) {
+    session_start();
   }
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . $eppn);
-  $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
+  $shib_id_changed = false;
+  if (!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
+      $_SESSION[$CURRENT_SHIB_ID_TAG] != $current_shib_id) {
+    $shib_id_changed = true;
+  }
+  // error_log("NEW SHIB_ID = " . $current_shib_id);
+  if ($shib_id_changed) {
+    $eppn = "No EPPN Found";
+    if (array_key_exists("eppn", $_SERVER)) {
+      $eppn = strtolower($_SERVER["eppn"]);
+    }
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . $eppn);
+    $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
+  }
 }
 
 $extra_js = array();
