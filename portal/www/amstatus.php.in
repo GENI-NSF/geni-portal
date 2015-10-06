@@ -83,6 +83,13 @@ function status_to_icon($status)
   return $result;
 }
 
+function status_display($status)
+{
+  $icon = status_to_icon($status);
+  $pretty_status = status_to_display($status);
+  return "$icon $pretty_status";
+}
+
 function make_agg_row($agg, $status_data)
 {
   $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
@@ -91,12 +98,11 @@ function make_agg_row($agg, $status_data)
   if (array_key_exists($urn, $status_data)) {
     $status = $status_data[$urn];
   }
-  $icon = status_to_icon($status);
-  $pretty_status = status_to_display($status);
+  $status_cell = status_display($status);
 
   $row = '<tr>';
   $row .= "<td>$name</td>";
-  $row .= "<td>$icon &nbsp; &nbsp; $pretty_status</td>";
+  $row .= "<td>$status_cell</td>";
   $row .= '</tr>';
   return $row;
 }
@@ -145,9 +151,9 @@ foreach ($table_rows as $row) {
 <section>
 <h3>Legend</h3>
 <dl>
-  <dt>Up</dt>
+  <dt><?php print status_display("up"); ?></dt>
   <dd>Responding to GENI AM API calls</dd>
-  <dt>Down</dt>
+  <dt><?php print status_display("down"); ?></dt>
   <dd>Failed to respond to GENI AM API calls when last checked</dd>
 </dl>
 </section>
