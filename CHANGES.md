@@ -1,5 +1,9 @@
 # GENI Portal Release Notes
 
+# [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
+
+* Move AM status page outside secure zone for public access
+
 # [Release 3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
 
 * Fix a renew bug on Firefox
