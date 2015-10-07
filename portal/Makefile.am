@@ -35,7 +35,7 @@ edit = sed \
 	-e 's|@prefix[@]|$(prefix)|g'
 
 TEMPLATES = \
-	www/portal/am-status.php
+	www/amstatus.php
 
 TEMPLATES.IN = $(TEMPLATES:%=%.in)
 
@@ -91,7 +91,6 @@ dist_svcweb_DATA = \
 	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
-	www/portal/am-status.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
 	www/portal/cards.js \
@@ -416,6 +415,7 @@ dist_svcwebmapolthemeimg_DATA =  \
   www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel.png
 
 dist_svcwebtop_DATA = \
+    www/amstatus.php \
 	www/index.php \
 	www/login-help.php \
 	www/favicon.ico
