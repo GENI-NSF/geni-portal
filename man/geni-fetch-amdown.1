@@ -1,0 +1,38 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH GENI-FETCH-AMDOWN 1 "October 6, 2015"
+.SH NAME
+geni-fetch-amdown \- Fetch list of down aggregate managers
+.SH SYNOPSIS
+.B geni-fetch-amdown
+[-h] [-s SETTINGS] [-d DEST]
+.I cert
+.I key
+.br
+.SH DESCRIPTION
+.B geni-fetch-amdown
+fetches a list of down aggregates from a Nagios server. The data happens to be
+in JSON format as a list of lists. Each sublist contains a single string
+indicating the aggregate. This string is either the GENI short name or the
+ExoGENI VM site name.
+
+.B geni-fetch-amdown
+retrieves the data and transforms it into a JSON list of URNS. The resulting
+data is written to the destination specified with the
+.I \-d
+argument.
+.SH OPTIONS
+A summary of options is included below.
+.TP
+.B \-d, \-\-dest <DEST>
+The name of the output file
+.TP
+.B \-s, \-\-settings <SETTINGS>
+The location of the GENI Portal settings file.
+Usually /etc/geni-ch/settings.php
+.TP
+.B \-h, \-\-help
+Show summary of options
+.SH BUGS
+None known.
+.SH AUTHOR
+geni-fetch-amdown was written by Raytheon BBN Technologies.

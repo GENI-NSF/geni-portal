@@ -1,102 +1,15 @@
+# ----------------------------------------------------------------------
+# This file documents changes for versions 1.x and 2.x.
+#
+# For more releases in the 3.x series and beyond, please see CHANGES.md
+# ----------------------------------------------------------------------
+
+
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 # Note: keep milestone bullets in ticket numerical order for easier
 #       reconciliation at release time
 
 = GENI Portal Release Notes =
-
-== 3.4 ==
- * Improve error handling for failed slice searches on admin page (#1417)
- * Show slice member usernames on slice search (#1432)
- * Add version number to localStorage (#1479)
- * Add ability to clear success/failure/error messages on pages (#1565)
- * Provide a useful message when a user is in no active projects (#1567)
- * Migrate management scripts from geni-portal to geni-ch (geni-ch #101).
- * Allow users to pick default homepage tab (#1579)
-
-== 3.3 ==
- * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
-   Wireless Account Management page (wimax-enable.php) accordinlgy (#1392).
- * Changes for Wireless management cover previous wimax tickets. 
-   (#772, #773, #1058, #1076, #1136).
- * Store timestamps in UTC for last_seen, lead requests, and KM asserted attributes. (#1446)
- * Update slice table view to match dashboard style
- * Store username with saved filters/sorts to fix confusion on shared computers (#1477)
- * Add user preferences to the portal (#1526)
-  * Allow users to pick a default slice view (#1482)
-  * Allow users to pick between default homepage view: cards or table (#1498)
- * Cleanup dashboard code (#1506)
- * Fix width of footer to match main cards. (#1555)
- * Add secondary sort for slices (#1560)
-
-== 3.2 ==
- * Move SR certs from geni-portal to geni-ch (geni-ch #102).
- * Fix bug where login screen gets embedded in logs card on session timeout (#1460)
- * Allow for sorting of slices by project name on dashboard (#1497)
- * Update slice page to use new tab/cards style (#1509)
- * Make "has n slices" a link to the slice card showing those slices (#1511)
- * Make project names on slice cards a link to that project (#1512)
- * Update profile page to use new tab/cards style (#1513)
- * Update project page to use new tab/cards style (#1514)
- * Move alerts above main content, below header (#1516)
- * Fix formatting of the aggregate view on the slice page (#1518)
- * Show links to profile pages in header even when "$load_user" false (#1519)
- * Add link to projects tab from new slice page when not in any projects (#1524)
- * Fix php warnings about undefined indices on admin page (#1535)
- * Remove references to map initialization code in cards.js (#1544)
- * Allow for switching between arbitrary cards in cards.js (#1545)
- * Fixed broken renew button on the (new) slice page (#1549)
- * Fix issue where the "last_seen" table was not being populated (#1550)
- * Clean up code in header.php, remove references to old header tabs (#1553)
- * Fix bug where login screen gets embedded in slices and projects logs cards
-   on session timeout (#1557)
-
-== 3.1.1 ==
- * Remove obsolete files (from Makefiles too)
-
-== 3.1 ==
- * Migrate schema files for CH tables to geni-ch (geni-ch #103)
- * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc.
-   (#1457, #1491)
- * Fix CSS on Jacks expanded views (#1458)
- * Fix erroneous warning when renewing slices on the dashboard (#1481)
- * Handle text overflow for project names and lead names on dashboard (#1484)
- * Replace OpenLayers maps on the portal with Google maps (PR #1428)
-  * Includes dashboard "Map" tab, the small welcome page map, and both slice
-    geo views ("Geographic View" and "Geo Map").
-  * This fixes the half loaded map in the "Geographic View" slice tab (#1272)
- * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
- * Fix formatting on the SSH tab of the profile page to be clearer (#1485)
- * Update welcome page to use new portal CSS styles. (PR #1501)
- * Make projects.php redirect to projects tab on the dashbaord (#1487)
- * Add Google Analytics (via adding header) to jacks expanded views (#1488)
- * Fix bug where hamburger menu would expand on every page resize (#1500)
- * Add google analytics to flack page (#1504)
- * Add link to GENI Bibliography (#1510)
-
-== 3.0 ==
- * Add create image function for PG/IG racks within jacks-app (#1389).
- * Remove account and identity (and associated) tables, scripts and clients (#299)
- * Restore 'Manage Resources' functionality (#1448)
- * Update Portal with new look and feel. Some key features:
-  * The home page has been re-designed using tabs, and 'cards' for each project or slice. (#1146)
-  * To act on a slice or project, click '...'
-  * 'Projects' and 'Slices' pages are tabs on the home page, reachable from the header menus under 'Home'
-  * Links from the 'Tools' section of the old home page are now largely under 'Partners' or 'Tools'
-    in the header, available on every page.
-  * To launch a tool in a slice context (jFed, GENI Desktop, LabWiki), use the button on the slice page.
-  * You can now renew slice resources directly from the home page. (#711)
-  * A Slice card indicates (using colors and icons) if the slice or resources expire soon. (#613)
-  * Flack has been removed. (#1451)
-  * Added a link to the page to request a SAVI account. (#1455)
-  * The GENI Wireless button is now under 'Manage Accounts' on the profile, 
-    with direct links to wireless testbeds under 'Partners' (#1262)
- * Avoid always storing profile changes as lead requests. (#1463)
- * Avoid listing all profile edits as having changed the telephone number. (#1339)
- * Fix undefined variable in log_db_error (#1467)
- * Fix infinite redirect on wimax-enable with no projects (#1464)
- * Fix issue where length of renewal wrong in slice actions dropdown. (#1471)
- * Fix issue where renew button in slice dropdown would try and shorten slice lifetime (#1473)
- * Fix issue where create slice button was disabled when project_id was given in URL params (#1478)
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)

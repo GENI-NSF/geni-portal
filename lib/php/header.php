@@ -57,22 +57,26 @@ function check_km_authorization($user)
 /*
  * We want to syslog whenever we have a new shib session ID
  */
-$CURRENT_SHIB_ID_TAG = "CURRENT_SHIB_ID";
-$current_shib_id = $_SERVER["Shib-Session-ID"];
-if(!isset($_SESSION)) { session_start(); }
-$shib_id_changed = false;
-if(!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
-   $_SESSION[$CURRENT_SHIB_ID_TAG] != $current_shib_id) {
-  $shib_id_changed = true;
-}
-// error_log("NEW SHIB_ID = " . $current_shib_id);
-if ($shib_id_changed) {
-  $eppn = "No EPPN Found";
-  if (array_key_exists("eppn", $_SERVER)) {
-    $eppn = strtolower($_SERVER["eppn"]);
+if (array_key_exists("Shib-Session-ID", $_SERVER)) {
+  $CURRENT_SHIB_ID_TAG = "CURRENT_SHIB_ID";
+  $current_shib_id = $_SERVER["Shib-Session-ID"];
+  if (!isset($_SESSION)) {
+    session_start();
   }
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . $eppn);
-  $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
+  $shib_id_changed = false;
+  if (!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
+      $_SESSION[$CURRENT_SHIB_ID_TAG] != $current_shib_id) {
+    $shib_id_changed = true;
+  }
+  // error_log("NEW SHIB_ID = " . $current_shib_id);
+  if ($shib_id_changed) {
+    $eppn = "No EPPN Found";
+    if (array_key_exists("eppn", $_SERVER)) {
+      $eppn = strtolower($_SERVER["eppn"]);
+    }
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . $eppn);
+    $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
+  }
 }
 
 $extra_js = array();
@@ -82,29 +86,21 @@ function add_js_script($script_url)
   $extra_js[] = $script_url;
 }
 
-function show_header($title, $load_user=1, $show_cards=false){
+/**
+ * Display the HTML preamble and HTML head block.
+ *
+ * This is modularized to facilitate sharing with pages that
+ * should not show the standard menubar header.
+ */
+function show_html_head($title) {
   global $extra_js;
-  global $in_maintenance_mode;
-  global $in_lockdown_mode;
   global $portal_analytics_enable;
   global $portal_analytics_string;
-  global $has_maintenance_alert;
-  global $maintenance_alert;
-  global $portal_jquery_url; 
-  global $portal_jqueryui_js_url; 
-  global $portal_jqueryui_css_url; 
-  global $portal_datatablesjs_url; 
-  global $user;
+  global $portal_jquery_url;
+  global $portal_jqueryui_js_url;
+  global $portal_jqueryui_css_url;
+  global $portal_datatablesjs_url;
 
-  if ($load_user) {
-    global $user;
-    if (!isset($user)) {
-      $user = geni_loadUser();
-    }
-    check_km_authorization($user);
-    record_last_seen($user, $_SERVER['REQUEST_URI']);
-  }
-  
   echo '<!DOCTYPE HTML>';
   echo '<html lang="en">';
   echo '<head>';
@@ -124,27 +120,21 @@ function show_header($title, $load_user=1, $show_cards=false){
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 480px)" href="/common/css/mobile-portal.css" />';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Droid+Sans+Mono|Material+Icons" rel="stylesheet" type="text/css">';
 
-  if(isset($portal_analytics_enable)) {
-    if($portal_analytics_enable) {
-      // FIXME: Allow some users (e.g. operators) to bypass tracking
-      echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
-      echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
-      echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
-      echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
-      
-      if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
-        /* Use the following tracking IDs depending on which server this will be running on
-          portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
-          portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
-        */
-        $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
-      }
-      
-      echo $portal_analytics_string;
-      
-      echo "ga('send', 'pageview');";
-      echo '</script>';
+  if (isset($portal_analytics_enable) && $portal_analytics_enable) {
+    echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+    echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+    echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+    echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+    if (! isset($portal_analytics_string)) {
+      /* Use the following tracking IDs depending on which server this will be running on
+        portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+        portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+      */
+      $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
     }
+    echo $portal_analytics_string;
+    echo "ga('send', 'pageview');";
+    echo '</script>';
   }
 
   /* for proper scaling on mobile devices/ mobile web app support */ 
@@ -153,6 +143,25 @@ function show_header($title, $load_user=1, $show_cards=false){
 
   /* Close the "head" */
   echo '</head>';
+
+}
+
+function show_header($title, $load_user=1, $show_cards=false){
+  global $in_maintenance_mode;
+  global $in_lockdown_mode;
+  global $has_maintenance_alert;
+  global $maintenance_alert;
+  global $user;
+
+  if ($load_user) {
+    global $user;
+    if (!isset($user)) {
+      $user = geni_loadUser();
+    }
+    check_km_authorization($user);
+    record_last_seen($user, $_SERVER['REQUEST_URI']);
+  }
+  show_html_head($title);
   echo '<body>';
   echo '<script>';
   // For header interactivity

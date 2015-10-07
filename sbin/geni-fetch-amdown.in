@@ -1,0 +1,201 @@
+#!/usr/bin/env python
+
+# ----------------------------------------------------------------------
+# Copyright (c) 2013-2015 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the ' Work' ) to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED ' AS IS' , WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
+import argparse
+import httplib
+import json
+import re
+import ssl
+import sys
+import xmlrpclib
+
+
+class ChapiResponse(object):
+    def __init__(self, response):
+        self.code = response['code']
+        self.value = response['value']
+        self.output = response['output']
+
+
+class Aggregate(object):
+
+    ATTRIBUTES = '_GENI_SERVICE_ATTRIBUTES'
+
+    def __init__(self, sr_record):
+        self.url = sr_record['SERVICE_URL']
+        self.amtype = sr_record[self.ATTRIBUTES]['UI_AM_TYPE']
+        self.categories = sr_record[self.ATTRIBUTES]['UI_AM_CAT'].split()
+        self.name = sr_record['SERVICE_NAME']
+        self.urn = sr_record['SERVICE_URN']
+        self.short_name = sr_record['_GENI_SERVICE_SHORT_NAME']
+
+    def isExoGENI(self):
+        return self.amtype == 'ui_exogeni_am'
+
+    def isInstaGENI(self):
+        return self.amtype == 'ui_instageni_am'
+
+    def isOpenGENI(self):
+        if self.amtype == 'ui_other_am':
+            url = urlparse(self.url)
+            return url.port == 5002
+        else:
+            return False
+
+    def isStitchable(self):
+        return 'ui_stitchable' in self.categories
+
+    def exogeni_site(self):
+        """
+        """
+        site = None
+        eg_prefix = 'urn:publicid:IDN+exogeni.net:'
+        eg_suffix = '+authority+am'
+        if (self.isExoGENI and
+                self.urn.startswith(eg_prefix) and
+                self.urn.endswith(eg_suffix)):
+            site = self.urn[len(eg_prefix):-len(eg_suffix)]
+        return site
+
+
+class ServiceRegistry(object):
+
+    SERVICE_TYPE_AGGREGATE = 0
+
+    def __init__(self, url):
+        self.url = url
+        self.proxy = xmlrpclib.ServerProxy(self.url)
+
+    def get_services(self):
+        result = ChapiResponse(self.proxy.get_services())
+        if result.code == 0:
+            return result.value
+        else:
+            raise(Exception("Error from SR: %r" %
+                            result.output))
+
+    def get_aggregates(self):
+        services = self.get_services()
+        aggregates = [Aggregate(s) for s in services
+                      if s['SERVICE_TYPE'] == self.SERVICE_TYPE_AGGREGATE]
+        return aggregates
+
+
+def fetch_amdown(key_file, cert_file, host='alerts.gpolab.bbn.com',
+                 path='/cgi-bin/amdown.cgi'):
+    # The rules tighten up in Python 2.7.9. If a lower version,
+    # do the obvious thing. If 2.7.9 or higher, create an empty
+    # ssl context to avoid issues with the server's self-signed
+    # certificate.
+    if sys.version_info < (2,7,9):
+        c = httplib.HTTPSConnection(host=host, key_file=key_file,
+                                    cert_file=cert_file)
+    else:
+        ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        c = httplib.HTTPSConnection(host=host, key_file=key_file,
+                                    cert_file=cert_file, context=ctx)
+    c.request('GET', path)
+    response = c.getresponse()
+    #    print response.status, response.reason
+    data = response.read()
+    c.close()
+    # We get: [["gpo-ig"], ["utah-ig"], ["rencivmsite"]]
+    # We want: ['gpo-ig', 'utah-ig', 'rcivmsite']
+    list_of_lists = json.loads(data)
+    down_ams = [am_list[0] for am_list in list_of_lists]
+    return down_ams
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('cert', help='Location of portal certificate')
+    parser.add_argument('key', help='Location of portal private key')
+    parser.add_argument('-s', '--settings',
+                        default='@pkgsysconfdir@/settings.php',
+                        help='location of settings.php')
+    parser.add_argument('-d', '--dest',
+                        default='@pkgsysconfdir@/am-status.json',
+                        help='destination of output file')
+    return parser.parse_args(argv)
+
+
+def parse_settings(settings_file):
+    result = None
+    pattern = '\$service_registry_url\s*=\s*\'(.*)\''
+    prog = re.compile(pattern)
+    with open(settings_file, 'r') as settings:
+        for line in settings:
+            m = prog.match(line)
+            if m:
+                result = m.group(1)
+    return result
+
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    args = parse_args(argv)
+
+    down_ams = fetch_amdown(args.key, args.cert)
+
+    # init_logging(options)
+    sr_url = parse_settings(args.settings)
+    sr = ServiceRegistry(sr_url)
+    am_status = {}
+    aggs = sr.get_aggregates()
+    agg_lookup_tbl = dict()
+    for agg in aggs:
+        # Initialize the status dictionary. All aggregates are assumed
+        # to be up.
+        am_status[agg.urn] = 'up'
+
+        # Index by short name
+        agg_lookup_tbl[agg.short_name] = agg
+        # Build a map for ExoGENI site names
+        eg_site = agg.exogeni_site()
+        if eg_site:
+            agg_lookup_tbl[eg_site] = agg
+
+    for da in down_ams:
+        if da in agg_lookup_tbl:
+            urn = agg_lookup_tbl[da].urn
+            am_status[urn] = 'down'
+        else:
+            # Unknown aggregate
+            # TODO: should we log to syslog?
+            # print "Unknown down aggregate: %s" % (da)
+            pass
+
+    # Write the data out to the destination file
+    with open(args.dest, "w") as out:
+        json.dump(am_status, out, indent=2)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
