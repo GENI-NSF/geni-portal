@@ -36,10 +36,10 @@ sudo yum install -y emacs-nox git texinfo
 sudo yum install -y python-sqlalchemy python-psycopg2 postgresql
 sudo yum install -y httpd mod_ssl
 sudo yum install -y shibboleth
-sudo yum install -y php php-pear
+sudo yum install -y php php-pear php-pgsql
 sudo yum install -y php-xmlrpc
 
-sudo pear install mdb2
+sudo pear install mdb2 MDB2_Driver_pgsql
 
 # 2. Install geni-tools [Should be dependency]
 git clone https://github.com/GENI-NSF/geni-tools.git
@@ -97,9 +97,29 @@ ln -s ~/geni-portal ~/proto-ch
 cd ~/geni-portal/bin
 ./do-make-install.sh
 
+# Install GENI PORTAL tables
+cd ~/geni-portal/templates
+DB_HOST=`./geni-install-templates --print_parameter db_host`
+DB_USER=`./geni-install-templates --print_parameter db_user`
+DB_DATABASE=`./geni-install-templates --print_parameter db_name`
+DB_PASSWORD=`./geni-install-templates --print_parameter db_pass`
+PSQL="psql -U $DB_USER -h $DB_HOST $DB_DATABASE"
+echo "$DB_HOST:*:$DB_DATABASE:$DB_USER:$DB_PASSWORD"  > ~/.pgpass
+chmod 0600 ~/.pgpass
+
+PORTAL_DIR=/usr/share/geni-ch/portal
+$PSQL -f $PORTAL_DIR/db/postgresql/schema.sql  # Note: This gives an error on defining last_seen and then bails. Update fixes it.
+for upd in $PORTAL_DIR/db/postgresql/update-*.sql
+do
+   $PSQL -f $upd
+done
+
+
 # Note: We need to install in /usr/share/geni-ch/www, not /var/www which is what do-make-install does.
 
 # We need to install the portal cert/key from the CH machine in /usr/share/geni-ch/portal
+
+
 
 # Our problem now is that the APT VM can't get to our CH. Not routable. Need to
 # use a CH that you can get to from the APT VM.
