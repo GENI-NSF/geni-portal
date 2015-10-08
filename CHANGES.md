@@ -2,6 +2,8 @@
 
 # [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
 
+* Check errors when loading am status data
+  ([#1614](https://github.com/GENI-NSF/geni-portal/issues/1614))
 
 # [Release 3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
 
