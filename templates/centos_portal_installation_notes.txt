@@ -1,24 +1,3 @@
-Notes on getting portalup and running from fresh portalinstall
-
-sudo yum update -y
-
-# Disable SELinux:
-sudo sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/g" \
-     /etc/selinux/config
-sudo reboot
-
-# If no DNS name is set, set it in /etc/hosts
-
-# If we've allocated from GRAM, need to open up ports 80, 443, 8443, 8444
-# On the GRAM machine:
-# WIth slice and project name changed appropriately
-source /etc/novarc 
-nova --os-username=admin-ch.geni.net:COUNT+slice+CENTOS-TEST --os-password="sliceMaster:-)" --os-tenant-name=ch.geni.net:COUNT+slice+CENTOS-TEST secgroup-add-rule ch.geni.net:COUNT+slice+CENTOS-TEST_secgrp tcp 80 80 0.0.0.0/0
-nova --os-username=admin-ch.geni.net:COUNT+slice+CENTOS-TEST --os-password="sliceMaster:-)" --os-tenant-name=ch.geni.net:COUNT+slice+CENTOS-TEST secgroup-add-rule ch.geni.net:COUNT+slice+CENTOS-TEST_secgrp tcp 443 443 0.0.0.0/0
-nova --os-username=admin-ch.geni.net:COUNT+slice+CENTOS-TEST --os-password="sliceMaster:-)" --os-tenant-name=ch.geni.net:COUNT+slice+CENTOS-TEST secgroup-add-rule ch.geni.net:COUNT+slice+CENTOS-TEST_secgrp tcp 8443 8444 0.0.0.0/0
-
-------- No need to do any of this with apt resources -----
-
 # 0. Update yum
 
 sudo yum update -y
@@ -114,14 +93,26 @@ do
    $PSQL -f $upd
 done
 
+# Install km and portal certs from CH machine
+# <*** From Dev Host ***>
+scp $CH_HOST:/usr/share/geni-ch/portal/"portal-*.pem" /tmp
+scp $CH_HOST:/usr/share/geni-ch/portal/"kml-*.pem" /tmp
+scp /tmp/"*.pem" $PORTAL_HOST:/tmp
 
-# Note: We need to install in /usr/share/geni-ch/www, not /var/www which is what do-make-install does.
+<*** On portal host ***>
+sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
+sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 
-# We need to install the portal cert/key from the CH machine in /usr/share/geni-ch/portal
+# Insert portal as recognized CH tool
+PORTAL_URN="urn:publicid:IDN+$CH_HOST+authority+portal"
+$PSQL -c "insert into ma_client (client_name, client_urn) values ('portal', '$PORTAL_URN')"
+
+sudo service httpd restart
 
 
 
-# Our problem now is that the APT VM can't get to our CH. Not routable. Need to
-# use a CH that you can get to from the APT VM.
+
+
+
 
 
