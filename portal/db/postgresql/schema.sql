@@ -229,7 +229,7 @@ DROP TABLE IF EXISTS last_seen;
 CREATE TABLE last_seen (
   id SERIAL,
   member_id UUID NOT NULL,
-  ts timestamp not null default NOW() AT TIME ZONE 'UTC',
+  ts timestamp not null default (NOW() AT TIME ZONE 'UTC'),
   request_uri VARCHAR,
   PRIMARY KEY (id)
 );
@@ -271,7 +271,7 @@ CREATE TABLE lead_request (
   requester_urn   VARCHAR NOT NULL,
   requester_uuid  UUID NOT NULL,
   requester_eppn  VARCHAR NOT NULL,
-  request_ts timestamp NOT NULL default NOW() AT TIME ZONE 'UTC',
+  request_ts timestamp NOT NULL default (NOW() AT TIME ZONE 'UTC'),
   approver VARCHAR default '',
   notes VARCHAR default '',
   reason VARCHAR default '',

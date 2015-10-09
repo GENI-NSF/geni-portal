@@ -4,6 +4,8 @@
 
 * Check errors when loading am status data
   ([#1614](https://github.com/GENI-NSF/geni-portal/issues/1614))
+* Fix a SQL syntax error in the portal schema
+  ([#1615](https://github.com/GENI-NSF/geni-portal/issues/1615))
 
 # [Release 3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
 
