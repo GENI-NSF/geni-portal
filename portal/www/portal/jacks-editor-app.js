@@ -69,7 +69,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    am_id : am_id, 
 	    name: allAms[am_id]['name'],
 	    url : allAms[am_id]['url'],
-	    id : allAms[am_id]['urn']
+	    id : allAms[am_id]['urn'],
+        status : allAms[am_id]['status']
 	};
 	this.sortedAms.push(entry);
     }

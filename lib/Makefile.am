@@ -1,5 +1,28 @@
 svcdatadir = $(pkgdatadir)/lib
 
+edit = sed \
+	-e 's|@VERSION[@]|$(VERSION)|g'
+
+TEMPLATES = \
+	php/settings.php
+
+TEMPLATES.IN = $(TEMPLATES:%=%.in)
+
+$(TEMPLATES): Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+		test -f ./$@.in || srcdir=$(srcdir)/; \
+		$(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	mv $@.tmp $@
+
+%: $(srcdir)/%.in
+
+# Distribute but do not install
+EXTRA_DIST = $(TEMPLATES.IN)
+
+CLEANFILES = $(TEMPLATES)
+
 nobase_dist_svcdata_DATA = \
 	php/abac.php \
 	php/am_client.php \
@@ -19,7 +42,7 @@ nobase_dist_svcdata_DATA = \
 	php/header.php \
 	php/home-active.php \
 	php/irods_utils.php \
-        php/jacks-app.php \
+	php/jacks-app.php \
 	php/jacks-editor-app.php \
 	php/json_util.php \
 	php/logging_client.php \

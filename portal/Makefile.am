@@ -6,6 +6,7 @@
 svcdatadir = $(pkgdatadir)/portal
 gcfsrcdir = $(svcdatadir)/gcf/src
 gcfsrcgenidir = $(gcfsrcdir)/geni
+pkgsysconfdir = $(sysconfdir)/geni-ch
 
 # This is silly -- easier to rename the file in git
 # TODO: rename the file in git and remove this extraneous target
@@ -27,6 +28,31 @@ svcwebmapolthemeimgdir = /var/www/common/map/OpenLayers-2.13/theme/default/img
 svcwebtopdir = /var/www
 svcwebpolicydir = /var/www/policy
 
+edit = sed \
+	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	-e 's|@pkgsysconfdir[@]|$(pkgsysconfdir)|g' \
+	-e 's|@prefix[@]|$(prefix)|g'
+
+TEMPLATES = \
+	www/amstatus.php
+
+TEMPLATES.IN = $(TEMPLATES:%=%.in)
+
+$(TEMPLATES): Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+		test -f ./$@.in || srcdir=$(srcdir)/; \
+		$(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	mv $@.tmp $@
+
+%: $(srcdir)/%.in
+
+# Distribute but do not install
+EXTRA_DIST = $(TEMPLATES.IN)
+
+CLEANFILES = $(TEMPLATES)
 
 nobase_dist_svcdata_DATA = \
 	apache2-http.conf \
@@ -202,8 +228,7 @@ dist_svcweb_DATA = \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
-        www/portal/wimax-enable.php \
-        www/portal/wimax-enable-new.php \
+	www/portal/wimax-enable.php \
 	www/portal/wireless_operations.php \
 	www/portal/wireless_redirect.php 
 
@@ -390,6 +415,7 @@ dist_svcwebmapolthemeimg_DATA =  \
   www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel.png
 
 dist_svcwebtop_DATA = \
+    www/amstatus.php \
 	www/index.php \
 	www/login-help.php \
 	www/favicon.ico

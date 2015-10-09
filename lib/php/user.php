@@ -445,19 +445,21 @@ function geni_load_user_by_eppn($eppn, $sfcred)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   //  $attrs = array('eppn' => $eppn);
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
   $signer = Portal::getInstance($sfcred);
   $member = ma_lookup_member_by_eppn($ma_url, $signer, $eppn);
   //error_log("MEMBER = " . print_r($member, True));
-  if (is_null($member) || !isset($member->certificate)) {
+  if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
-  } else {
-    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found member for EPPN " . $eppn);
   }
   $user = new GeniUser();
   $user->init_from_member($member);
   $user->sfcred = $sfcred;
+  if (! $sfcred && ! $user->portalIsAuthorized()) {
+    // Portal is not authorized (no inside certificate)
+    // and no speaks-for cred has been supplied.
+    relative_redirect("kmhome.php");
+  }
   return $user;
 }
 

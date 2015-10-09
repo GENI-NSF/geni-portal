@@ -278,6 +278,17 @@ function assureJacksEditorApp(initial_rspec) {
 	    canvasOptions.aggregates = aggregates;
 	}
 
+    /* Add status info to compute ams */
+    $.each(jacks_all_compute_ams, function(index, value) {
+        var agg_urn = value.urn;
+        if (agg_urn in jacks_am_status) {
+            value.status = jacks_am_status[agg_urn];
+        } else {
+            // Assume aggregate is up unless we know otherwise
+            value.status = 'up';
+        }
+    });
+
 	jacksEditorApp = new JacksEditorApp('#jacks-editor-pane',
 					'#jacks-editor-status',
 					'#jacks-editor-buttons',
