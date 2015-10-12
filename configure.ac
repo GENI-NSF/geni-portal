@@ -48,5 +48,5 @@ AC_CONFIG_FILES([Makefile etc/Makefile bin/Makefile])
 AC_CONFIG_FILES([sr/Makefile lib/Makefile])
 AC_CONFIG_FILES([kmtool/Makefile portal/Makefile openid/Makefile])
 AC_CONFIG_FILES([ca/Makefile sbin/Makefile ch/Makefile man/Makefile])
-AC_CONFIG_FILES([doc/Makefile])
+AC_CONFIG_FILES([doc/Makefile templates/Makefile])
 AC_OUTPUT
