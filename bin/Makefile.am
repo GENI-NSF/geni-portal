@@ -37,5 +37,3 @@ endif
 
 localpythondir = $(subst /usr/lib,/usr/local/lib,$(pythondir))
 nobase_dist_localpython_DATA = portal_utils/__init__.py portal_utils/orbit_interface.py
-
-cleandb:

@@ -4,4 +4,3 @@ dist_man_MANS = \
 	geni-parse-map-data.1 \
 	geni-sync-wireless.1 \
 	geni-watch-omni.1
-cleandb:

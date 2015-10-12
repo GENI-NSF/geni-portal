@@ -34,5 +34,3 @@ dist_sbin_SCRIPTS = \
 	update_user_certs.py \
 	gen-drop-constraints.sql \
 	gen-add-constraints.sql
-
-cleandb:

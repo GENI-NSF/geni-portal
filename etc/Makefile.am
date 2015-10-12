@@ -34,5 +34,3 @@ dist_pkgsysconf_DATA = \
 pkgsysconf_DATA = \
 	ch-services.ini \
 	example-services.ini
-
-cleandb:

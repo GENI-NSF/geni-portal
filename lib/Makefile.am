@@ -96,5 +96,3 @@ nobase_dist_svcdata_DATA = \
 	php/user.php \
 	php/user-preferences.php \
 	php/util.php
-
-cleandb:
