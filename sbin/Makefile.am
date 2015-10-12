@@ -7,7 +7,8 @@ edit = sed \
 	-e 's|@prefix[@]|$(prefix)|g'
 
 TEMPLATES = \
-	geni-fetch-amdown
+	geni-fetch-amdown \
+	geni-portal-install-templates
 
 TEMPLATES.IN = $(TEMPLATES:%=%.in)
 
@@ -28,6 +29,7 @@ CLEANFILES = $(TEMPLATES)
 
 dist_sbin_SCRIPTS = \
 	geni-fetch-amdown \
+	geni-portal-install-templates \
 	import_database.py \
 	renew-certs \
 	portal-backup \
