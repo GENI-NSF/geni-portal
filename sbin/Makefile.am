@@ -1,10 +1,12 @@
 pkgsysconfdir = $(sysconfdir)/geni-ch
+templatesdir = $(pkgdatadir)/templates
 
 edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
 	-e 's|@pkgsysconfdir[@]|$(pkgsysconfdir)|g' \
-	-e 's|@prefix[@]|$(prefix)|g'
+	-e 's|@prefix[@]|$(prefix)|g' \
+	-e 's|@templatesdir[@]|$(templatesdir)|g'
 
 TEMPLATES = \
 	geni-fetch-amdown \
