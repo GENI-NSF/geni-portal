@@ -24,8 +24,15 @@ sudo yum install -y --nogpgcheck geni-tools
 sudo pear install mdb2 MDB2_Driver_pgsql
 
 #2. Install Portal software [This should be done from an RPM...]
+
+# default installation goes to /var/www. Make it a link into the
+# geni-ch install area for now
+sudo mkdir -p /usr/share/geni-ch/www
+sudo ln -s /usr/share/geni-ch/www /var/www
+
 git clone https://github.com/tcmitchell/geni-portal.git
 cd geni-portal
+git checkout transition
 ./autogen.sh
 ./configure --prefix=/usr --sysconfdir=/etc
 make
@@ -47,10 +54,12 @@ cd /tmp
 wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 cd shibboleth-embedded-ds-1.1.0-geni.3
+sudo mkdir -p /usr/share/geni-ch/www/eds
 sudo cp *.css *.js *.html *.gif *.png /usr/share/geni-ch/www/eds
 
 # 4. Set up Variables
-cd ~/geni-portal/templates
+sudo cp /usr/share/geni-ch/templates/parameters.json \
+        /etc/geni-ch/parameters.json
 # Edit parameters.json [Especially note portal_host, ch_host and db_host]
 sudo ./geni-install-templates
 
@@ -79,20 +88,21 @@ sudo service tomcat6 restart
 
 
 # Install GENI PORTAL tables
-DB_HOST=`geni-install-templates --print_parameter db_host`
-DB_USER=`geni-install-templates --print_parameter db_user`
-DB_DATABASE=`geni-install-templates --print_parameter db_name`
-DB_PASSWORD=`geni-install-templates --print_parameter db_pass`
+DB_HOST=`geni-portal-install-templates --print_parameter db_host`
+DB_USER=`geni-portal-install-templates --print_parameter db_user`
+DB_DATABASE=`geni-portal-install-templates --print_parameter db_name`
+DB_PASSWORD=`geni-portal-install-templates --print_parameter db_pass`
 PSQL="psql -U $DB_USER -h $DB_HOST $DB_DATABASE"
 echo "$DB_HOST:*:$DB_DATABASE:$DB_USER:$DB_PASSWORD"  > ~/.pgpass
 chmod 0600 ~/.pgpass
 
 $PSQL -f /usr/share/geni-ch/portal/db/postgresql/schema.sql
-$PSQL -f /usr/share/geni-ch/kmtool/db/postgresql/schema.sql
+$PSQL -f /usr/share/geni-ch/km/db/postgresql/schema.sql
 
 # Install km and portal certs from CH machine
-scp $CH_HOST:/usr/share/geni-ch/portal/"portal-*.pem" /tmp
-scp $CH_HOST:/usr/share/geni-ch/portal/"kml-*.pem" /tmp
+CH_HOST=`geni-portal-install-templates --print_parameter ch_host`
+scp $CH_HOST:/usr/share/geni-ch/portal/portal-*.pem /tmp
+scp $CH_HOST:/usr/share/geni-ch/km/km-*.pem /tmp
 
 sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
@@ -101,12 +111,4 @@ sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 PORTAL_URN="urn:publicid:IDN+$CH_HOST+authority+portal"
 $PSQL -c "insert into ma_client (client_name, client_urn) values ('portal', '$PORTAL_URN')"
 
-sudo service httpd restart
-
-
-
-
-
-
-
-
+sudo systemctl restart httpd.service
