@@ -23,12 +23,11 @@ sudo yum install -y --nogpgcheck geni-tools
 
 sudo pear install mdb2 MDB2_Driver_pgsql
 
-#2. Install Portal software [This should be done from an RPM...]
 
-# default installation goes to /var/www. Make it a link into the
-# geni-ch install area for now
-sudo mkdir -p /usr/share/geni-ch/www
-sudo ln -s /usr/share/geni-ch/www /var/www
+# If needed, add an entry (CNAME) for the host in /etc/hosts
+
+
+#2. Install Portal software [This should be done from an RPM...]
 
 git clone https://github.com/tcmitchell/geni-portal.git
 cd geni-portal
@@ -54,14 +53,14 @@ cd /tmp
 wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 cd shibboleth-embedded-ds-1.1.0-geni.3
-sudo mkdir -p /usr/share/geni-ch/www/eds
-sudo cp *.css *.js *.html *.gif *.png /usr/share/geni-ch/www/eds
+sudo mkdir -p /var/www/eds
+sudo cp *.css *.js *.html *.gif *.png /var/www/eds
 
 # 4. Set up Variables
 sudo cp /usr/share/geni-ch/templates/parameters.json \
         /etc/geni-ch/parameters.json
 # Edit parameters.json [Especially note portal_host, ch_host and db_host]
-sudo ./geni-install-templates
+sudo /sbin/geni-portal-install-templates
 
 # 5. Install and run Shib SP
 sudo /tmp/install-sp-centos.sh
