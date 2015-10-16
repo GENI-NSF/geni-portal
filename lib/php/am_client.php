@@ -261,6 +261,41 @@ function write_logger_configuration_file($dir) {
 
 }
 
+/**
+ * Write an aggregate nickname cache based on the service registry
+ * entries.
+ *
+ * Returns TRUE on success, FALSE on failure
+ *
+ * It stinks that the SCS URL and latest_omni_version are hardcoded here.
+ * The SCS URL could eventually be in the service registry. Not sure how
+ * we figure out what the current version of omni is.
+ */
+function write_agg_nick_cache($dest)
+{
+  $anc = '[omni_default]' . PHP_EOL;
+  $anc .= 'scs_url=https://geni-scs.net.internet2.edu:8443/geni/xmlrpc' . PHP_EOL;
+  $anc .= 'latest_omni_version=2.9,No newer omni version available' . PHP_EOL;
+  $anc .= PHP_EOL;
+  $anc .= '[aggregate_nicknames]' . PHP_EOL;
+
+  $aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  foreach ($aggs as $agg) {
+    $sn = $agg[SR_ARGUMENT::SERVICE_SHORT_NAME];
+    $urn = $agg[SR_ARGUMENT::SERVICE_URN];
+    $url = $agg[SR_ARGUMENT::SERVICE_URL];
+    if ($sn && $urn && $url) {
+      // Only write this aggregate if we have all the necessary info
+      $anc .= "$sn=$urn,$url" . PHP_EOL;
+    }
+  }
+
+  // file_put_contents returns FALSE on failure
+  // or the number of bytes written on success
+  $result = file_put_contents($dest, $anc);
+  return $result !== FALSE;
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_urls: URL of AM to which to connect (could be list of URLs)
@@ -283,6 +318,8 @@ function invoke_omni_function($am_urls, $user, $args,
 			      $omni_invocation_dir=NULL, 
 			      $api_version="2")
 {
+  global $portal_gcf_dir;
+
   /* $file_manager only holds on to non-critical files (i.e., those
      that can be deleted regardless of whether the call was successful
      or not). */
@@ -433,15 +470,10 @@ function invoke_omni_function($am_urls, $user, $args,
         }
     }
 
-    // FIXME: If SR had AM nicknames, we could write a nickname to the
-    // omni_config here. Or all known nicknames in the SR. That's
-    // likely better than relying on the shared agg nick cache. For
-    // now, copy a fixed file to a temp place (avoiding 1 omni
-    // downloading a new copy while another reads, or 2 readers
-    // conflicting somehow)
-    global $portal_gcf_dir;
-    if (!copy($portal_gcf_dir . '/agg_nick_cache.base', $tmp_agg_cache)) {
-      error_log("Failed to copy Agg Nick Cache from " . $portal_gcf_dir . '/agg_nick_cache.base to ' . $tmp_agg_cache);
+    # Create the aggregate nickname cache file
+    if (! write_agg_nick_cache($tmp_agg_cache)) {
+      error_log("Failed to write the aggregate nickname cache.");
+      // Now what? Continue?
     }
 
     // FIXME: Get the /CH URL from a portal/www/portal/settings.php entry?
