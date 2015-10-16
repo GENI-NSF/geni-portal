@@ -78,6 +78,7 @@ class SR_ARGUMENT
   const SERVICE_CERT = "service_cert";
   const SERVICE_ATTRIBUTES = "service_attributes";
   const SERVICE_ATTRIBUTE_SETS = "service_attribute_sets";
+  const SERVICE_SHORT_NAME = "short_name";
 }
 
 /* Name of table to which the SR persists/retrieves model state */
