@@ -39,7 +39,18 @@ $AM_STATUS_FILE = "@pkgsysconfdir@/am-status.json";
 function load_am_status($fname)
 {
   $str_data = file_get_contents($fname);
-  $data = json_decode($str_data, true);
+  if ($str_data === FALSE) {
+    # Unable to read am status data file. The error has already been
+    # logged by PHP. Return an empty array.
+    $data = array();
+  } else {
+    $data = json_decode($str_data, true);
+    if (is_null($data)) {
+      # json_decode has failed, return empty array
+      error_log("Unable to JSON decode data in $fname");
+      $data = array();
+    }
+  }
   return $data;
 }
 

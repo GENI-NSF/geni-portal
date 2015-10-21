@@ -1,5 +1,18 @@
 # GENI Portal Release Notes
 
+# [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
+
+* Generate agg_nick_cache from SR data
+  ([#1408](https://github.com/GENI-NSF/geni-portal/issues/1408))
+* Check errors when loading am status data
+  ([#1614](https://github.com/GENI-NSF/geni-portal/issues/1614))
+* Fix a SQL syntax error in the portal schema
+  ([#1615](https://github.com/GENI-NSF/geni-portal/issues/1615))
+* Move iRODS certs to clearinghouse
+  ([#1616](https://github.com/GENI-NSF/geni-portal/issues/1616))
+* Exclude VTS aggregates from portal
+  ([#1619](https://github.com/GENI-NSF/geni-portal/issues/1619))
+
 # [Release 3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
 
 * Fix a renew bug on Firefox

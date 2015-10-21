@@ -44,7 +44,8 @@ $SRCHAPI2PORTAL =
         'SERVICE_NAME' => SR_TABLE_FIELDNAME::SERVICE_NAME,
         'SERVICE_DESCRIPTION' => SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION,
 	'_GENI_SERVICE_ATTRIBUTES' => SERVICE_ATTRIBUTE_TAG,
-        'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE);
+        'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE,
+        '_GENI_SERVICE_SHORT_NAME' => SR_ARGUMENT::SERVICE_SHORT_NAME);
 
 /**
  * Convert chapi services to legacy services.
@@ -71,10 +72,27 @@ function get_services()
   $converted_services = array();
   foreach ($services as $service) {
     $converted_service = service_chapi2portal($service);
+    // Some services are in SR but invisible to portal
+    if (excluded_service($converted_service)) continue; 
     $converted_services[] = $converted_service;
   }
   set_session_cached(SERVICE_REGISTRY_CACHE_TAG, $converted_services);
   return $converted_services;
+}
+
+// Is this service (in SR) excluded from portal
+function excluded_service($service)
+{
+  // 10-19-2015. Exclude VTS Aggregates from Portal (though they are in SR).
+  //  error_log("SERVICE = " . print_r($service, true));
+  if (($service[SR_TABLE_FIELDNAME::SERVICE_TYPE] == 
+       SR_SERVICE_TYPE::AGGREGATE_MANAGER) &&
+      (lookup_service_attribute($service, SERVICE_ATTRIBUTE_AM_TYPE) == 
+       SERVICE_ATTRIBUTE_VTS_AM)) {
+    //    error_log("Excluding VTS");
+    return true;
+  }
+  return false;
 }
 
 /**
