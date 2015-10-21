@@ -808,7 +808,7 @@ function do_global_node_addition()
 function do_global_node_addition_internal()
 {
     var rspec_string = $('#current_rspec_text').val();
-    $.get("gemini_add_global_node.php", {rspec : rspec_string},
+    $.post("gemini_add_global_node.php", {rspec : rspec_string},
 	  function(rt, st, xhr) {
 	      var revised_rspec = xhr.responseText;
 	      jacksEditorApp.setTopology(revised_rspec);
