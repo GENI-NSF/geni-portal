@@ -1,5 +1,8 @@
 # GENI Portal Release Notes
 
+# [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
+
+
 # [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
 
 * Generate agg_nick_cache from SR data
