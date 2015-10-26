@@ -25,8 +25,9 @@
 require_once('gemini_rspec_routines.php');
 
 // error_log("GET = " . print_r($_GET, true));
+// error_log("POST = " . print_r($_POST, true));
 
-$orig_rspec = $_GET['rspec'];
+$orig_rspec = $_POST['rspec'];
 $revised_rspec = add_gemini($orig_rspec);
 
 print $revised_rspec;
