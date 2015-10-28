@@ -1,4 +1,4 @@
-AC_INIT([geni-ch], [3.6], [portal-help@geni.net])
+AC_INIT([geni-ch], [3.7], [portal-help@geni.net])
 #AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 #AM_INIT_AUTOMAKE([foreign -Wall])
 AM_INIT_AUTOMAKE([foreign -Wall -Wno-portability])

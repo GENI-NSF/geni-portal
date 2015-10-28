@@ -139,6 +139,7 @@ const SERVICE_ATTRIBUTE_AM_TYPE = "UI_AM_TYPE";
 const SERVICE_ATTRIBUTE_INSTAGENI_AM = "ui_instageni_am";
 const SERVICE_ATTRIBUTE_EXOGENI_AM = "ui_exogeni_am";
 const SERVICE_ATTRIBUTE_FOAM_AM = "ui_foam_am";
+const SERVICE_ATTRIBUTE_VTS_AM = "ui_vts_am";
 const SERVICE_ATTRIBUTE_OTHER_AM = "ui_other_am";
 const SERVICE_ATTRIBUTE_AM_CAT = "UI_AM_CAT";
 const SERVICE_ATTRIBUTE_DEV_CAT = "ui_dev_cat";

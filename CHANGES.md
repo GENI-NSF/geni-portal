@@ -1,5 +1,10 @@
 # GENI Portal Release Notes
 
+# [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
+
+* "Add Global Node" gets "URI too long" for large topology
+  ([#1622](https://github.com/GENI-NSF/geni-portal/issues/1622))
+
 # [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
 
 * Generate agg_nick_cache from SR data
@@ -10,6 +15,8 @@
   ([#1615](https://github.com/GENI-NSF/geni-portal/issues/1615))
 * Move iRODS certs to clearinghouse
   ([#1616](https://github.com/GENI-NSF/geni-portal/issues/1616))
+* Exclude VTS aggregates from portal
+  ([#1619](https://github.com/GENI-NSF/geni-portal/issues/1619))
 
 # [Release 3.5](https://github.com/GENI-NSF/geni-portal/milestones/3.5)
 
