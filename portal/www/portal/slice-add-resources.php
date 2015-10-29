@@ -266,7 +266,7 @@ print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
 ?>
-<p><a href="/amstatus.php">View current aggregate status</a></p>
+<p><a href="/amstatus.php" target="_blank">View current aggregate status</a></p>
 <?php
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose File' to temporarily upload an RSpec for this reservation only.</p>";
 
