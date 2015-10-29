@@ -32,8 +32,15 @@ bin_SCRIPTS = \
 	geni-get-ad-rspecs
 
 if INSTALL_GITHASH
-dist_pkgsysconf_DATA = geni-ch-githash
+pkgsysconf_DATA = geni-ch-githash
 endif
 
+# GPO Lab
+# Install in /usr/local/lib, not /usr/lib
+PYFILES = portal_utils/__init__.py portal_utils/orbit_interface.py
 localpythondir = $(subst /usr/lib,/usr/local/lib,$(pythondir))
-nobase_dist_localpython_DATA = portal_utils/__init__.py portal_utils/orbit_interface.py
+if GPO_LAB
+  nobase_dist_localpython_DATA = $(PYFILES)
+else
+  nobase_dist_python_DATA = $(PYFILES)
+endif

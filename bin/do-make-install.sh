@@ -9,6 +9,6 @@ set -e
 cd ~/proto-ch
 autoreconf --install
 ./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-    --sbindir=/usr/local/sbin --mandir=/usr/local/man
+    --sbindir=/usr/local/sbin --mandir=/usr/local/man --enable-gpo-lab
 make
 sudo make install
