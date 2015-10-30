@@ -573,6 +573,7 @@ function add_one_login(am_id, slice_id, lastCall)
 		check_for_completeness(am_id, slice_id, lastCall);
 		return;
 	    }
+        ansibleInventory.clear(am_id);
 	    for (var i in resources ){
 		var client = resources[i];
 		firstrow = true;
@@ -589,6 +590,7 @@ function add_one_login(am_id, slice_id, lastCall)
 			login += " -p "+port;
 			anchor_login += ":"+port;
 		    }
+            ansibleInventory.add(am_id, client_id, hostname, port);
 		    // check for a div with an ID for the aggregates AND
 		    // then update it's descendant td with an ID for the client_id
 		    if (firstrow) {
@@ -1010,3 +1012,39 @@ function doOnRenew(baseURL) {
   tempURL += '&sliver_expiration='+slice_expiration;
   doOnChecked(tempURL);
 }
+
+
+//----------------------------------------------------------------------
+// Ansible Inventory
+//----------------------------------------------------------------------
+var ansibleInventory = {};
+ansibleInventory.data = {};
+ansibleInventory.parent = '#ansibleInventory';
+ansibleInventory.add = function(am_id, client_id, host, port) {
+    if (! (am_id in ansibleInventory.data)) {
+        ansibleInventory.data[am_id] = [];
+    }
+    ansibleInventory.data[am_id].push({client_id: client_id,
+                                       host: host,
+                                       port: port});
+    ansibleInventory.updateUI();
+};
+ansibleInventory.clear = function (am_id) {
+    ansibleInventory.data[am_id] = [];
+    ansibleInventory.updateUI();
+};
+ansibleInventory.updateUI = function() {
+    var bodyTxt = "";
+    for (var am_id in ansibleInventory.data) {
+         var items = ansibleInventory.data[am_id];
+         for (var idx in items) {
+            var host = items[idx];
+            var entry = host.client_id + " ansible_host=" + host.host;
+            if (host.port != 22) {
+                entry += " ansible_port=" + host.port;
+            }
+            bodyTxt += entry + "\n";
+         }
+     }
+     $(ansibleInventory.parent).text(bodyTxt);
+};
