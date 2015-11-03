@@ -4,6 +4,8 @@
 
 * "Add Global Node" gets "URI too long" for large topology
   ([#1622](https://github.com/GENI-NSF/geni-portal/issues/1622))
+* Force aggregate status page in a tab
+  ([#1624](https://github.com/GENI-NSF/geni-portal/issues/1624))
 
 # [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
 
