@@ -46,6 +46,14 @@
         "name": "exogeni.net:slNet"
       },
       {
+        "id": "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am",
+        "name": "exogeni.net:tamuvmsite"
+      },
+      {
+        "id": "urn:publicid:IDN+exogeni.net:tamuNet+authority+am",
+        "name": "exogeni.net:tamuNet"
+      },
+      {
         "id": "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am",
         "name": "exogeni.net:ucdvmsite"
       },
@@ -230,7 +238,6 @@
       },
       {
         "icon": "https://portal.geni.net/images/Xen-VM.svg",
-        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD",
         "name": "Xen VM",
         "type": "emulab-xen"
       },
@@ -243,7 +250,6 @@
       {
         "hardware": "pc",
         "icon": "https://portal.geni.net/images/RawPC-IG.svg",
-        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD",
         "name": "Raw PC IG",
         "type": "raw-pc"
       },
@@ -272,6 +278,22 @@
       {
         "id": "dl360",
         "name": "dl360"
+      },
+      {
+        "id": "pcvm3500",
+        "name": "pcvm3500"
+      },
+      {
+        "id": "pc3500",
+        "name": "pc3500"
+      },
+      {
+        "id": "delay-pc3500",
+        "name": "delay-pc3500"
+      },
+      {
+        "id": "pc3500-vm",
+        "name": "pc3500-vm"
       },
       {
         "id": "delay-pc3400",
@@ -304,22 +326,6 @@
       {
         "id": "pc3300",
         "name": "pc3300"
-      },
-      {
-        "id": "pcvm3500",
-        "name": "pcvm3500"
-      },
-      {
-        "id": "pc3500",
-        "name": "pc3500"
-      },
-      {
-        "id": "delay-pc3500",
-        "name": "delay-pc3500"
-      },
-      {
-        "id": "pc3500-vm",
-        "name": "pc3500-vm"
       },
       {
         "id": "d710",
@@ -406,6 +412,18 @@
         "name": "pcgen01-4p-v1"
       },
       {
+        "id": "pcvmgen04lsi",
+        "name": "pcvmgen04lsi"
+      },
+      {
+        "id": "pcgen04lsi-vm",
+        "name": "pcgen04lsi-vm"
+      },
+      {
+        "id": "pcgen04lsi",
+        "name": "pcgen04lsi"
+      },
+      {
         "id": "pcvmgen05",
         "name": "pcvmgen05"
       },
@@ -440,10 +458,6 @@
       {
         "id": "ALIX",
         "name": "ALIX"
-      },
-      {
-        "id": "SELVIE",
-        "name": "SELVIE"
       },
       {
         "id": "NITOSCM",
@@ -646,13 +660,13 @@
         "nomac": true
       },
       {
-        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD",
-        "name": "Standard 32-bit Fedora 15 image"
-      },
-      {
         "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS",
         "name": "Ubuntu 12.04 with OVS for ProtoGeni (by Niky)",
         "nomac": true
+      },
+      {
+        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD",
+        "name": "Standard 32-bit Fedora 15 image"
       },
       {
         "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:CENTOS63-64-STD",
@@ -835,6 +849,1190 @@
         "name": "ethernet-coreswitch"
       }
     ],
+    "site_info": {
+      "urn:publicid:IDN+apt.emulab.net+authority+cm": {
+        "hardware": [
+          "lan",
+          "r320",
+          "pcvm",
+          "r720",
+          "c6220",
+          "pcsanhost",
+          "r320-vm",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "r720-vm",
+          "interconnect",
+          "c6220-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am": {
+        "hardware": [],
+        "types": [
+          "m1.medium",
+          "default-vm",
+          "m1.tiny",
+          "m1.large",
+          "m1.small",
+          "m1.super",
+          "m1.xlarge"
+        ]
+      },
+      "urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+authority+am": {
+        "hardware": [],
+        "types": [
+          "m1.medium",
+          "default-vm",
+          "m1.tiny",
+          "m1.large",
+          "m1.small",
+          "m1.super",
+          "m1.xlarge"
+        ]
+      },
+      "urn:publicid:IDN+emulab.net+authority+cm": {
+        "hardware": [
+          "80211a",
+          "netfpga",
+          "80211",
+          "pc2400c2",
+          "delay-pc850",
+          "pcvmpg-i2",
+          "gec16-port",
+          "xcvr2450",
+          "motehost",
+          "delay-d710",
+          "emote",
+          "pcvm2830qx2",
+          "pcivy-vm",
+          "delay-pc3000",
+          "pcRemote",
+          "d820",
+          "bbg",
+          "pcvm2400hp",
+          "delay",
+          "wire",
+          "pcvm",
+          "80211g",
+          "bbgeni-vm",
+          "pcsanhost",
+          "nuc5300",
+          "pc2400w",
+          "pc2gen",
+          "gec16port",
+          "netfpga2",
+          "pc850-vm",
+          "pc",
+          "pcpg-i2",
+          "pcvm2000",
+          "pc850",
+          "pcvm3000",
+          "ixp",
+          "pc3000-vm",
+          "ipv4",
+          "pcvm850",
+          "80211b",
+          "lan",
+          "hp5406",
+          "delay-pc2000",
+          "pcpg-i2-vm",
+          "d710-vm",
+          "pcvwa",
+          "d2100-vm",
+          "pcivy",
+          "pcvroninet",
+          "pm-mote",
+          "pcvmpg",
+          "pc6000",
+          "d710",
+          "flex900",
+          "pcvmivy",
+          "pcpg",
+          "interconnect",
+          "spp-vm",
+          "pcvron",
+          "pc2000",
+          "ixp-bv",
+          "pc2830qx2",
+          "pc2400hp",
+          "d2100",
+          "bbgeni",
+          "enodeb",
+          "pc2830qx2-vm",
+          "sppvm",
+          "nuc5300-vm",
+          "powermon",
+          "pc2000-vm",
+          "switch",
+          "bbgenivm",
+          "spp",
+          "d820-vm",
+          "pc3000",
+          "interconnect-vm",
+          "pcpg-vm",
+          "pc2400hp-vm",
+          "gpuhost"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:bbnNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "XOSmall",
+          "EC2C1Medium",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "XOLarge",
+          "EucaM1Small",
+          "EC2M1Small",
+          "EucaC1Medium",
+          "EucaM1XLarge",
+          "XOMedium",
+          "EC2M1Large",
+          "EucaM1Large",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:nictaNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:nictavmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud"
+        ],
+        "types": [
+          "XOLarge",
+          "EC2C1Medium",
+          "EucaM1Large",
+          "EucaC1XLarge",
+          "XOMedium",
+          "EC2M1XLarge",
+          "EucaM1Small",
+          "XOSmall",
+          "EucaC1Medium",
+          "EC2M1Small",
+          "EC2M1Large",
+          "EucaM1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:osfNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "XOSmall",
+          "EC2C1Medium",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "EucaM1Large",
+          "XOLarge",
+          "EucaM1Small",
+          "EC2M1Small",
+          "EucaC1Medium",
+          "XOMedium",
+          "EC2M1Large",
+          "EucaM1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:slNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:slvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "XOLarge",
+          "EC2C1Medium",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "XOMedium",
+          "EucaM1XLarge",
+          "EucaM1Small",
+          "XOSmall",
+          "EucaC1Medium",
+          "EC2M1Small",
+          "EC2M1Large",
+          "EucaM1Large",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:tamuNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "EC2M1Small",
+          "EC2C1Medium",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "XOLarge",
+          "EucaM1Small",
+          "XOSmall",
+          "EucaC1Medium",
+          "EucaM1XLarge",
+          "XOMedium",
+          "EC2M1Large",
+          "EucaM1Large",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:ucdNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "XOLarge",
+          "EC2C1Medium",
+          "EucaM1Large",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "XOMedium",
+          "EucaM1Small",
+          "XOSmall",
+          "EucaC1Medium",
+          "EC2M1Small",
+          "EC2M1Large",
+          "EucaM1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:uflvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "XOSmall",
+          "EC2C1Medium",
+          "EucaM1Large",
+          "EucaC1XLarge",
+          "XOMedium",
+          "XOLarge",
+          "EucaM1Small",
+          "EucaC1Medium",
+          "EucaM1XLarge",
+          "EC2M1Small",
+          "EC2M1Large",
+          "EC2M1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:uhNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "EC2M1Small",
+          "EC2C1Medium",
+          "EucaM1Large",
+          "EucaC1XLarge",
+          "XOLarge",
+          "EC2M1XLarge",
+          "EucaM1Small",
+          "XOSmall",
+          "EucaC1Medium",
+          "XOMedium",
+          "EC2M1Large",
+          "EucaM1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:wsuNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud",
+          "orca-iscsi-luns"
+        ],
+        "types": [
+          "XOSmall",
+          "EC2C1Medium",
+          "EucaM1Large",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "XOMedium",
+          "XOLarge",
+          "EucaM1Small",
+          "EucaC1Medium",
+          "EC2M1Small",
+          "EC2M1Large",
+          "EucaM1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+exogeni.net:wvnNet+authority+am": {
+        "hardware": [
+          "orca-transit-net-vlan"
+        ],
+        "types": []
+      },
+      "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am": {
+        "hardware": [
+          "orca-vm-cloud"
+        ],
+        "types": [
+          "XOSmall",
+          "EC2C1Medium",
+          "EucaM1Large",
+          "EC2M1XLarge",
+          "EucaC1XLarge",
+          "XOMedium",
+          "XOLarge",
+          "EucaM1Small",
+          "EucaC1Medium",
+          "EC2M1Small",
+          "EC2M1Large",
+          "EucaM1XLarge",
+          "XOXlarge"
+        ]
+      },
+      "urn:publicid:IDN+geni.case.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+geni.it.cornell.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+geni.kettering.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "delay-dl360",
+          "dl360-G7"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+geni.uchicago.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+genirack.nyu.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "delay-dl360",
+          "dl360-G7"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+glab077.e4.ukl.german-lab.de:gcf+authority+am": {
+        "hardware": [],
+        "types": [
+          "m1.medium",
+          "m1.tiny",
+          "m1.large",
+          "m1.small",
+          "m1.super",
+          "m1.xlarge"
+        ]
+      },
+      "urn:publicid:IDN+instageni.cenic.net+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.clemson.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "dl360-G7",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "delay-dl360",
+          "dl360-G7"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.illinois.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.iu.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.maxgigapop.net+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.metrodatacenter.com+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.northwestern.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "delay-dl360",
+          "dl360-G7"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.nps.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.nysernet.org+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "dl360-G7",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.rutgers.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.sox.net+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.stanford.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.umkc.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.utc.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+instageni.wisc.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+lan.sdn.uky.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "delay-dl360",
+          "dl360-G7"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "dl360",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+uky.emulab.net+authority+cm": {
+        "hardware": [
+          "delay-pc2400",
+          "pcvm3500",
+          "pc3500",
+          "delay-pc3300",
+          "pc2400-vm",
+          "pc3400-vm",
+          "delay-pc3000",
+          "pcvm",
+          "delay",
+          "pc",
+          "pcvm3300",
+          "ipv4",
+          "pcvm3000",
+          "pc2400",
+          "pc3400",
+          "pc3000-vm",
+          "lan",
+          "pc3300-vm",
+          "delay-pc3400",
+          "interconnect",
+          "pcvm2400",
+          "pc3500-vm",
+          "delay-pc3500",
+          "switch",
+          "pc3300",
+          "pc3000",
+          "interconnect-vm",
+          "pcvm3400"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+utah.cloudlab.us+authority+cm": {
+        "hardware": [
+          "lan",
+          "interconnect",
+          "pcsanhost",
+          "dboxvm-vm",
+          "dboxvm",
+          "m400",
+          "pc",
+          "switch",
+          "ipv4",
+          "interconnect-vm",
+          "pcvm"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+utah.geniracks.net+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+utahddc.geniracks.net+authority+cm": {
+        "hardware": [
+          "lan",
+          "pcvm",
+          "dl360",
+          "interconnect",
+          "dl360-vm",
+          "delay",
+          "pc",
+          "switch",
+          "ipv4",
+          "delay-dl360",
+          "interconnect-vm"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm": {
+        "hardware": [
+          "flex900",
+          "pcgrid-1p",
+          "pcgen01-5p-v1-vm",
+          "ZOTAC-vm",
+          "xcvr2450",
+          "pcgen04lsi-vm",
+          "80211b",
+          "80211a",
+          "pcvm",
+          "80211g",
+          "SWITCHPORT",
+          "pcvmgen01-5p-v1",
+          "pcvmgen04lsi",
+          "ZOTAC",
+          "delay",
+          "pc",
+          "pcgen04lsi",
+          "pcgen02-4p-vm",
+          "pcgen01-4p-v1",
+          "pcgen01-6p",
+          "pcgen02-4p",
+          "pcgen01-4p",
+          "ipv4",
+          "lan",
+          "pcgen02-2p",
+          "pcvmgen02-4p",
+          "pcgen01-5p-v1",
+          "delay-pcgen02-2p",
+          "interconnect",
+          "delay-pcgen02-4p",
+          "pcvmgen02-2p",
+          "80211",
+          "switch",
+          "pcgen02-2p-vm",
+          "interconnect-vm",
+          "pcgen01-5p"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+wall2.ilabt.iminds.be+authority+cm": {
+        "hardware": [
+          "supernode",
+          "pcgen04raid-2p-vm",
+          "pcgen03-5p",
+          "pcgen05-vm",
+          "pcgen03-3p-vm",
+          "pcgen03-6p-vm",
+          "pcvmgen03-2p",
+          "netfpga2",
+          "pcvmgen04raid-2p",
+          "gpunode-vm",
+          "gpunode2",
+          "delay-pcgen04-2p",
+          "pcvmgen03-4p",
+          "delay-pcgen03-4p",
+          "pcvm",
+          "delay-pcgen05",
+          "SWITCHPORT",
+          "pcsanhost",
+          "delay-pcgen03-6p",
+          "switch",
+          "pcvmgen03-5p",
+          "delay",
+          "pc",
+          "pcgen04raid-2p",
+          "delay-pcgen03-2p",
+          "pcgen05",
+          "pcgen03-4p",
+          "pcgen03-2p",
+          "ipv4",
+          "netfpga",
+          "pcgen03-6p",
+          "lan",
+          "pcgen03-4p-vm",
+          "pcgen03-5p-vm",
+          "pcgen04lsi-2p",
+          "interconnect",
+          "pcvmgen03-1p",
+          "pcgen04-1p-vm",
+          "pcvmgen03-6p",
+          "delay-pcgen03-3p",
+          "gpunode",
+          "pcvmgen03-3p",
+          "netfpga2-vm",
+          "pcgen03-1p-vm",
+          "pcgen04lsi-2p-vm",
+          "delay-pcgen03-5p",
+          "pcgen04-2p-vm",
+          "pcvmgen05",
+          "pcvmgen04-2p",
+          "pcgen03-2p-vm",
+          "pcgen04-2p",
+          "supernode-vm",
+          "netfpga-vm",
+          "pcgen03-1p",
+          "pcvmgen04lsi-2p",
+          "pcgen04-1p",
+          "interconnect-vm",
+          "gpunode2-vm",
+          "pcgen03-3p",
+          "pcvmgen04-1p"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      },
+      "urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm": {
+        "hardware": [
+          "LTE-FEMTOCELL",
+          "flex900",
+          "DSS-vm",
+          "SERVER1P",
+          "ZOTAC-vm",
+          "xcvr2450",
+          "USRP",
+          "SERVER5P-vm",
+          "80211b",
+          "80211a",
+          "pcvm",
+          "80211g",
+          "TLVAP",
+          "MOBILE-vm",
+          "pc",
+          "SERVER5P",
+          "ipv4",
+          "lan",
+          "ZOTAC",
+          "DSS",
+          "WARP",
+          "SERVER1P-vm",
+          "RASPBERRYPI",
+          "NITOSCM",
+          "MOBILE",
+          "80211",
+          "ALIX",
+          "switch"
+        ],
+        "types": [
+          "emulab-openvz",
+          "emulab-xen",
+          "raw-pc"
+        ]
+      }
+    },
     "types": [
       {
         "id": "ExoGENI-M4",
@@ -881,12 +2079,12 @@
         "name": "m1.xlarge"
       },
       {
-        "id": "XOLarge",
-        "name": "XOLarge"
-      },
-      {
         "id": "XOSmall",
         "name": "XOSmall"
+      },
+      {
+        "id": "XOLarge",
+        "name": "XOLarge"
       },
       {
         "id": "XOMedium",
@@ -2033,19 +3231,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+geni.uchicago.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+apt.emulab.net+authority+cm"
         ],
         "images": [
@@ -2221,32 +3406,6 @@
           "!"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
           "XOMedium"
         ]
       }
@@ -2260,7 +3419,33 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
         ]
       }
     },
@@ -3671,13 +4856,13 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm"
+          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
         ],
         "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+          "!"
         ],
         "types": [
-          "raw-pc"
+          "XOMedium"
         ]
       }
     },
@@ -3703,33 +4888,20 @@
           "!"
         ],
         "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOMedium"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
           "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
         ]
       }
     },
@@ -4507,19 +5679,6 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.metrodatacenter.com+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
         ],
         "types": [
           "raw-pc"
@@ -4961,49 +6120,10 @@
           "urn:publicid:IDN+instageni.iu.edu+authority+cm"
         ],
         "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.iu.edu+authority+cm"
-        ],
-        "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
         ]
       }
     },
@@ -5029,6 +6149,19 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
         ]
       }
@@ -5036,6 +6169,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.clemson.edu+authority+cm"
         ],
         "images": [
@@ -6167,13 +7313,52 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
         ],
         "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+          "!"
         ],
         "types": [
-          "raw-pc"
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOXlarge"
         ]
       }
     },
@@ -6755,7 +7940,7 @@
           "urn:publicid:IDN+instageni.utc.edu+authority+cm"
         ],
         "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
         ],
         "types": [
           "raw-pc"
@@ -7666,19 +8851,6 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.nps.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
         ],
         "types": [
           "raw-pc"
@@ -8045,32 +9217,6 @@
           "!"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
           "XOMedium"
         ]
       }
@@ -8084,7 +9230,33 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
         ]
       }
     },
@@ -8949,19 +10121,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+instageni.wisc.edu+authority+cm"
         ],
         "images": [
@@ -9954,19 +11113,6 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
         ],
         "types": [
           "raw-pc"
@@ -11243,32 +12389,6 @@
           "!"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
           "XOMedium"
         ]
       }
@@ -11282,7 +12402,33 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
         ]
       }
     },
@@ -11737,33 +12883,20 @@
           "!"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
           "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOSmall"
         ]
       }
     },
@@ -11783,6 +12916,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+geni.kettering.edu+authority+cm"
         ],
         "hardware": [
@@ -12124,33 +13270,7 @@
           "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
         ],
         "hardware": [
-          "pcgrid-1p"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
           "pcgen01-5p-v1-vm"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "pcgen01-4p-v1"
         ],
         "types": [
           "emulab-openvz"
@@ -12203,19 +13323,6 @@
         ],
         "hardware": [
           "ZOTAC-vm"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "pcgen01-4p"
         ],
         "types": [
           "emulab-openvz"
@@ -12332,10 +13439,10 @@
           "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
         ],
         "hardware": [
-          "pcgen01-5p"
+          "pcgen04lsi"
         ],
         "types": [
-          "emulab-openvz"
+          "!"
         ]
       }
     },
@@ -12436,7 +13543,33 @@
           "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
         ],
         "hardware": [
+          "pcgen04lsi-vm"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
+        ],
+        "hardware": [
           "pcgen01-4p"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
+        ],
+        "hardware": [
+          "pcvmgen04lsi"
         ],
         "types": [
           "!"
@@ -12579,7 +13712,7 @@
           "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
         ],
         "hardware": [
-          "pcgrid-1p"
+          "pcgen04lsi"
         ],
         "types": [
           "emulab-xen"
@@ -12593,19 +13726,6 @@
         ],
         "hardware": [
           "pcgen01-5p-v1-vm"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "pcgen01-4p-v1"
         ],
         "types": [
           "emulab-xen"
@@ -12670,7 +13790,20 @@
           "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
         ],
         "hardware": [
-          "pcgen01-4p"
+          "pcgen04lsi-vm"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
+        ],
+        "hardware": [
+          "pcvmgen04lsi"
         ],
         "types": [
           "emulab-xen"
@@ -12775,19 +13908,6 @@
         ],
         "hardware": [
           "ZOTAC"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wall1.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "pcgen01-5p"
         ],
         "types": [
           "emulab-xen"
@@ -13116,32 +14236,6 @@
         ],
         "types": [
           "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
         ]
       }
     },
@@ -13167,7 +14261,33 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
         ]
       }
     },
@@ -13525,6 +14645,58 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
         ],
         "hardware": [
@@ -13619,72 +14791,7 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
-          "delay-pc3400"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
-          "pc3400"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
-          "pcvm3400"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
-          "pc3400-vm"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
-          "pc3300-vm"
+          "pcvm3500"
         ],
         "types": [
           "!"
@@ -13710,19 +14817,6 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
-          "pc3500-vm"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
           "delay-pc3300"
         ],
         "types": [
@@ -13736,7 +14830,7 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
-          "pcvm3500"
+          "pc3500-vm"
         ],
         "types": [
           "!"
@@ -13814,6 +14908,19 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
+          "pc3300-vm"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
           "pc3400"
         ],
         "types": [
@@ -13843,6 +14950,71 @@
           "!"
         ],
         "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
+          "delay-pc3400"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
+          "pc3400"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
+          "pcvm3400"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
+          "pc3400-vm"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
           "emulab-xen"
         ]
       }
@@ -13853,7 +15025,7 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
-          "pc3300-vm"
+          "pcvm3500"
         ],
         "types": [
           "emulab-xen"
@@ -13879,19 +15051,6 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
-          "pc3500-vm"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+uky.emulab.net+authority+cm"
-        ],
-        "hardware": [
           "delay-pc3300"
         ],
         "types": [
@@ -13905,7 +15064,7 @@
           "urn:publicid:IDN+uky.emulab.net+authority+cm"
         ],
         "hardware": [
-          "pcvm3500"
+          "pc3500-vm"
         ],
         "types": [
           "emulab-xen"
@@ -13971,6 +15130,19 @@
         ],
         "hardware": [
           "pc3400-vm"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+uky.emulab.net+authority+cm"
+        ],
+        "hardware": [
+          "pc3300-vm"
         ],
         "types": [
           "emulab-xen"
@@ -14675,33 +15847,20 @@
           "!"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
           "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOSmall"
         ]
       }
     },
@@ -14721,6 +15880,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.northwestern.edu+authority+cm"
         ],
         "hardware": [
@@ -14998,19 +16170,6 @@
         ],
         "hardware": [
           "USRP"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "SELVIE"
         ],
         "types": [
           "emulab-openvz"
@@ -15257,19 +16416,6 @@
           "urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm"
         ],
         "hardware": [
-          "SELVIE"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
           "SERVER1P-vm"
         ],
         "types": [
@@ -15479,19 +16625,6 @@
         ],
         "hardware": [
           "USRP"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "SELVIE"
         ],
         "types": [
           "emulab-xen"
@@ -15726,19 +16859,6 @@
         ],
         "hardware": [
           "USRP"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+wilab2.ilabt.iminds.be+authority+cm"
-        ],
-        "hardware": [
-          "SELVIE"
         ],
         "types": [
           "raw-pc"
@@ -18692,6 +19812,40 @@
       "node2": {
         "aggregates": [
           "urn:publicid:IDN+exogeni.net:slNet+authority+am"
+        ]
+      }
+    },
+    {
+      "link": {
+        "linkTypes": [
+          "lan"
+        ]
+      },
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ]
+      },
+      "node2": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ]
+      }
+    },
+    {
+      "link": {
+        "linkTypes": [
+          "lan"
+        ]
+      },
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuNet+authority+am"
+        ]
+      },
+      "node2": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuNet+authority+am"
         ]
       }
     },
