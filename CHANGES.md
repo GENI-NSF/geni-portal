@@ -1,5 +1,8 @@
 # GENI Portal Release Notes
 
+# [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
+
+
 # [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
 
 * "Add Global Node" gets "URI too long" for large topology
