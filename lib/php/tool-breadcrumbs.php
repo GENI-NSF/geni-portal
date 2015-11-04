@@ -121,7 +121,7 @@ $parents = array("profile.php" => "home.php",
 // Note %project_name, %slice_name, %member_name will be filled in later
 // Note ?project_id in script name in some places
 $names = array("home.php" => "Home",
-	      "profile.php" => "Profle",
+	      "profile.php" => "Profile",
 	      "admin.php" => "Admin",
 	      "projects.php" => "Projects",
 	      "slices.php" => "Slices",
