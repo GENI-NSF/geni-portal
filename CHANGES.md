@@ -1,5 +1,14 @@
 # GENI Portal Release Notes
 
+# [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
+
+* "Add Global Node" gets "URI too long" for large topology
+  ([#1622](https://github.com/GENI-NSF/geni-portal/issues/1622))
+* Force aggregate status page in a tab
+  ([#1624](https://github.com/GENI-NSF/geni-portal/issues/1624))
+* Add an ansible inventory to the details page
+  ([#1630](https://github.com/GENI-NSF/geni-portal/issues/1630))
+
 # [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
 
 * Generate agg_nick_cache from SR data
