@@ -165,7 +165,9 @@ foreach ($lead_requests as $lead_request) {
   $requester_uuids[] = $lead_request['requester_uuid'];
 }
 
-$requester_details = lookup_member_details($ma_url, $user, $requester_uuids); 
+if ($requester_uuids) {
+  $requester_details = lookup_member_details($ma_url, $user, $requester_uuids);
+}
 
 print "<table><tr><th>Name</th><th>Link</th><th>Requested At</th><th>Email</th><th>Admin Notes</th><th>Actions</th></tr>";
 

@@ -574,8 +574,8 @@ $preference_descriptions = array(
 foreach($possible_prefs as $pref_name => $pref_values) {
   print $preference_descriptions[$pref_name];
   print "<select id='default_{$pref_name}' class='preferenceselect'>";
+  $user_value = get_preference($user->urn(), $pref_name);
   foreach ($pref_values as $pref_value) {
-    $user_value = get_preference($user->urn(), $pref_name);
     $selected = $pref_value == $user_value ? "selected" : "";
     print "<option value='$pref_value' $selected>$pref_value</option>";
   }
