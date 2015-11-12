@@ -1,9 +1,12 @@
 # GENI Portal Release Notes
 
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
- * Join this project must correctly check return indicating
-   an existing request to join this project. 
+* Join this project must correctly check return indicating
+  an existing request to join this project. 
   ([#1637](https://github.com/GENI-NSF/geni-portal/issues/1637))
+* `get_project` uses wrong variable name for result. `lookup_project_details`
+  should bail when given empty list of projet UIDs.
+  ([#1639](https://github.com/GENI-NSF/geni-portal/issues/1639))
 
 # [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
 
