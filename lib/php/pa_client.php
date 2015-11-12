@@ -474,7 +474,7 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
   if (! isset($project_uuids) || is_null($project_uuids) || count($project_uuids) == 0) {
-    error_log("Asked to lookup detils on no projects");
+    error_log("Asked to lookup details on no project uuids");
     return array();
   }
   $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
