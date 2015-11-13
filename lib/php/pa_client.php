@@ -84,11 +84,11 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
   return $project_id;
 }
 
-// return list of project ids
+// return list of project ids from non expired projects
 function get_projects($sa_url, $signer)
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array('match'=>array(),
+  $options = array('match'=>array('PROJECT_EXPIRED'=>"false"),
 		   'filter'=>array('PROJECT_UID'));
   $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
