@@ -9,6 +9,9 @@
   ([#1639](https://github.com/GENI-NSF/geni-portal/issues/1639))
 * Support properly importing the `lead_request` table into a new database.
   ([#1643](https://github.com/GENI-NSF/geni-portal/issues/1643))
+* Skip re-generating user certs on DB import by default.
+  Use `--regen_certs` for old behavior.
+  ([#1644](https://github.com/GENI-NSF/geni-portal/issues/1644))
 
 # [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
 
