@@ -58,6 +58,7 @@ class DatabaseImporter:
         self._new_authority = self._options.new_authority
         self._new_portal_urn = "urn:publicid:IDN+%s+authority+portal" \
             % self._new_authority
+        self._regencerts = self._options.regen_certs
 
 
     def parse_args(self):
@@ -67,6 +68,7 @@ class DatabaseImporter:
         parser.add_option("--new_hostname", help="name of new CH hostname")
         parser.add_option("--old_authority", help="name of old CH authority")
         parser.add_option("--new_authority", help="name of new CH authority")
+        parser.add_option("--regen_certs", help="Re-generate all user certs (don't just expire them) (default %default)", default=False, action="store_true")
         options, args = parser.parse_args(self._argv)
 
         if not options.dump_file or \
@@ -284,14 +286,24 @@ class DatabaseImporter:
         self.execute(['chmod', '0600', pgpass_tmp], 'root')
         self.execute(['mv', pgpass_tmp, '~www-data'], 'root')
 
-        # Run update_user_certs as www-data
-        update_user_certs_cmd = \
-            ['python', '/usr/local/sbin/update_user_certs.py', 
-             '--ma_cert_file', self.ma_cert_filename, 
-             '--ma_key_file', self.ma_key_filename, 
-             '--old_authority', self._old_authority, 
-             '--new_authority', self._new_authority]
-        self.execute(update_user_certs_cmd, 'www-data')
+        if not self._regencerts:
+            # Don't regenerate all certs. Instead, just expire all certs
+            expire_inside_certs_cmd = \
+                psql_cmd + ['-c', '"' + "update ma_inside_key set expiration=now() at time zone 'utc'" + '"']
+            self.execute(expire_inside_certs_cmd)
+            expire_outside_certs_cmd = \
+                psql_cmd + ['-c', '"' + "update ma_outside_cert set expiration=now() at time zone 'utc'" + '"']
+            self.execute(expire_outside_certs_cmd)
+        else:
+            # Re generate all user certs
+            # Run update_user_certs as www-data
+            update_user_certs_cmd = \
+                                    ['python', '/usr/local/sbin/update_user_certs.py', 
+                                     '--ma_cert_file', self.ma_cert_filename, 
+                                     '--ma_key_file', self.ma_key_filename, 
+                                     '--old_authority', self._old_authority, 
+                                     '--new_authority', self._new_authority]
+            self.execute(update_user_certs_cmd, 'www-data')
 
         # Remove the .pgpass file from ~www-data
         self.execute(['rm', '~www-data/'+pgpass], 'root')
