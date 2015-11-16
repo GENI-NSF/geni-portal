@@ -77,7 +77,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     // sort list
     this.sortedAms.sort(function(am1, am2) {
-	    if (am1.name < am2.name)
+	    if (am1.name.toLowerCase() < am2.name.toLowerCase())
 		return -1;
 	    else
 		return 1;
