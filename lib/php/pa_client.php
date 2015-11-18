@@ -84,15 +84,15 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
   return $project_id;
 }
 
-// return list of project ids
+// return list of project ids from non expired projects
 function get_projects($sa_url, $signer)
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array('match'=>array(),
+  $options = array('match'=>array('PROJECT_EXPIRED'=>"false"),
 		   'filter'=>array('PROJECT_UID'));
   $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
-  return array_map(function($x) { return $x['PROJECT_UID']; }, $slices);
+  return array_map(function($x) { return $x['PROJECT_UID']; }, $res);
 }
 
 // return list of project ids
@@ -103,7 +103,7 @@ function get_projects_by_lead($sa_url, $signer, $lead_id)
 		   'filter'=>array('PROJECT_UID'));
   $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
-  return array_map(function($x) { return $x['PROJECT_UID']; }, $slices);
+  return array_map(function($x) { return $x['PROJECT_UID']; }, $res);
 }
 
 $PACHAPI2PORTAL = array('PROJECT_UID'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID,
@@ -473,6 +473,10 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
   //  error_log("PIDS = " . print_r($project_uuids, true));
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
+  if (! isset($project_uuids) || is_null($project_uuids) || count($project_uuids) == 0) {
+    error_log("Asked to lookup details on no project uuids");
+    return array();
+  }
   $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
   $options = array_merge($options, $client->options());
   $results = $client->lookup_projects($client->creds(), $options);
