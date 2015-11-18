@@ -1,6 +1,10 @@
 # GENI Portal Release Notes
 
+# [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
+
+
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
+
 * Join this project must correctly check return indicating
   an existing request to join this project. 
   ([#1637](https://github.com/GENI-NSF/geni-portal/issues/1637))
