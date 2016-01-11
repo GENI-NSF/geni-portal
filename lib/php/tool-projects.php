@@ -61,19 +61,19 @@ usort($project_objects, "project_name_compare");
 /*   error_log("PROJ (orig) = " . print_r($project, true)); */
 /* } */
 
-$expired_projects = array();
-$unexpired_projects = array();
-foreach($project_objects as $project) {
-  //  error_log("PROJ = " . print_r($project, true));
-  $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-  $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-  if(convert_boolean($expired)) 
-    $expired_projects[$project_id] = $project;
-  else
-    $unexpired_projects[$project_id] = $project;
-}
+// $expired_projects = array();
+// $unexpired_projects = array();
+// foreach($project_objects as $project) {
+//   //  error_log("PROJ = " . print_r($project, true));
+//   $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+//   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+//   if(convert_boolean($expired)) 
+//     $expired_projects[$project_id] = $project;
+//   else
+//     $unexpired_projects[$project_id] = $project;
+// }
 
-$project_objects = $unexpired_projects;
+// $project_objects = $unexpired_projects;
 
 /* foreach($project_objects as $project) { */
 /*   error_log("PROJ (unexp) = " . print_r($project, true)); */
@@ -231,7 +231,6 @@ if (isset($reqs) && count($reqs) > 0) {
   $project_lead_names = lookup_member_names_for_rows($ma_url, $user, $projects, 
 						PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
 
-  print "<br/>\n";
   print "<h3>Projects you Asked to Join</h3>\n";
   print "Found " . count($reqs) . " outstanding project join request(s) by you:<br/>\n";
   print "<div class='tablecontainer'>";
@@ -258,7 +257,6 @@ if (isset($reqs) && count($reqs) > 0) {
   }
   print "</table>\n";
   print "</div>";
-  print "<br/><br/>\n";
 } else {
   print "<div class='announce'><p>No outstanding project join requests by you.</p></div>\n";
 }
