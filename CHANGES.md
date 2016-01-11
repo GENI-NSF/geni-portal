@@ -1,7 +1,8 @@
 # GENI Portal Release Notes
 
 # [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
-
+* Make project table view show expired projects.
+  ([#1651](https://github.com/GENI-NSF/geni-portal/issues/1651))
 
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
 
