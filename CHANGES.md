@@ -2,6 +2,8 @@
 
 # [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
 
+* Add "New Project" button to project table view.
+  ([#1650](https://github.com/GENI-NSF/geni-portal/issues/1650))
 
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
 
