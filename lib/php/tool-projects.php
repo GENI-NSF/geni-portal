@@ -94,7 +94,7 @@ if ($in_lockdown_mode) {
   $disable_project_lead = "disabled";
 }
 
-print "<h2>My Projects</h2>\n";
+print "<h2>Projects</h2>\n";
 
 // The idea here was to show this table only if the user is a lead or admin on _some_ project
 // But we don't have an easy way to check that
@@ -131,6 +131,14 @@ print "<h2>My Projects</h2>\n";
 /* } else { */
 /*   error_log("user not allowed to add project members"); */
 /* } */
+
+if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+  print "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
+  print "<a class='button' href='join-project.php'>Join a Project</a>";
+} else {
+  print "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
+  print "<a class='button' href='modify.php?belead=belead'>Ask to be a Project Lead</a>";
+}
 
 $project_request_map = array();
 if (count($project_objects) > 0) {
