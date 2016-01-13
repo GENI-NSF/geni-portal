@@ -1,6 +1,11 @@
 # GENI Portal Release Notes
 
 # [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
+
+* Add "New Project" button to project table view.
+  ([#1650](https://github.com/GENI-NSF/geni-portal/issues/1650))
+* Make project table view show expired projects.
+  ([#1651](https://github.com/GENI-NSF/geni-portal/issues/1651))
 * Fix bug where log and map tabs wouldn't show up if table view 
   was preffered view on the dashboard.
   ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))

@@ -61,20 +61,6 @@ usort($project_objects, "project_name_compare");
 /*   error_log("PROJ (orig) = " . print_r($project, true)); */
 /* } */
 
-$expired_projects = array();
-$unexpired_projects = array();
-foreach($project_objects as $project) {
-  //  error_log("PROJ = " . print_r($project, true));
-  $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-  $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-  if(convert_boolean($expired)) 
-    $expired_projects[$project_id] = $project;
-  else
-    $unexpired_projects[$project_id] = $project;
-}
-
-$project_objects = $unexpired_projects;
-
 /* foreach($project_objects as $project) { */
 /*   error_log("PROJ (unexp) = " . print_r($project, true)); */
 /* } */
@@ -94,7 +80,7 @@ if ($in_lockdown_mode) {
   $disable_project_lead = "disabled";
 }
 
-print "<h2>My Projects</h2>\n";
+print "<h2>Projects</h2>\n";
 
 // The idea here was to show this table only if the user is a lead or admin on _some_ project
 // But we don't have an easy way to check that
@@ -131,6 +117,14 @@ print "<h2>My Projects</h2>\n";
 /* } else { */
 /*   error_log("user not allowed to add project members"); */
 /* } */
+
+if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+  print "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
+  print "<a class='button' href='join-project.php'>Join a Project</a>";
+} else {
+  print "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
+  print "<a class='button' href='modify.php?belead=belead'>Ask to be a Project Lead</a>";
+}
 
 $project_request_map = array();
 if (count($project_objects) > 0) {
@@ -231,7 +225,6 @@ if (isset($reqs) && count($reqs) > 0) {
   $project_lead_names = lookup_member_names_for_rows($ma_url, $user, $projects, 
 						PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
 
-  print "<br/>\n";
   print "<h3>Projects you Asked to Join</h3>\n";
   print "Found " . count($reqs) . " outstanding project join request(s) by you:<br/>\n";
   print "<div class='tablecontainer'>";
@@ -258,7 +251,6 @@ if (isset($reqs) && count($reqs) > 0) {
   }
   print "</table>\n";
   print "</div>";
-  print "<br/><br/>\n";
 } else {
   print "<div class='announce'><p>No outstanding project join requests by you.</p></div>\n";
 }
