@@ -61,20 +61,6 @@ usort($project_objects, "project_name_compare");
 /*   error_log("PROJ (orig) = " . print_r($project, true)); */
 /* } */
 
-// $expired_projects = array();
-// $unexpired_projects = array();
-// foreach($project_objects as $project) {
-//   //  error_log("PROJ = " . print_r($project, true));
-//   $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-//   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-//   if(convert_boolean($expired)) 
-//     $expired_projects[$project_id] = $project;
-//   else
-//     $unexpired_projects[$project_id] = $project;
-// }
-
-// $project_objects = $unexpired_projects;
-
 /* foreach($project_objects as $project) { */
 /*   error_log("PROJ (unexp) = " . print_r($project, true)); */
 /* } */
