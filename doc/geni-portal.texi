@@ -304,6 +304,54 @@ geni-disable-user -k <private key> -c <certificate> \
         -u https://ch.geni.net -m <username>
 @end example
 
+@section Reset an iRODS password
+@cindex iRODS
+
+If a user forgets their iRODS password they have no way of resetting it
+through the iRODS user interface. An Operator can manually reset their
+password using the iRODS command line tools. Once the password is reset
+they can log in to iRODS and change it themselves.
+
+The first step is to determine the GENI username of the individual
+whose password needs recovering. You may be able to get this from the
+Admin interface on the portal, by asking them, or by searching the
+iRODS related messages in @code{portal_error.log}.
+
+Next, download and install the iRODS ``icommands'' package. There are ready
+built packages available for CentOS 7, so that is the easiest path. Downloads
+are available from @code{https://irods.org/download/}. As of this writing
+the current version of icommands is 4.1.7. To install this package on CentOS
+7:
+
+@example
+sudo yum install -y epel-release
+sudo yum localinstall irods-icommands-4.1.7-centos7-x86_64.rpm
+@end example
+
+Now run @code{iinit} to initialize the settings. The values required are as
+follows:
+
+@example
+Host name:       geni-gimi.renci.org
+Port number:     1247
+irods user name: rods
+irods zone:      geniRenci
+password:        @emph{see /etc/geni-ch/settings.php}
+@end example
+
+Now you can run @code{iadmin} to enter the admin interface.
+
+@itemize @bullet
+@item Try @code{help} to see available commands
+@item To remove a user: @code{rm user geni-<username>}
+@item To change a user's password:
+      @code{moduser geni-<username> password <new password>}
+@end itemize
+
+User's can change their password in two ways, either by command line or
+web UI. Refer them to @code{http://groups.geni.net/geni/wiki/HowToUseiRODS}
+for information.
+
 
 @node System Administration
 @chapter System Administration
