@@ -1,6 +1,16 @@
 # GENI Portal Release Notes
 
+# [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
+
+* Add salist.json for xml-signer tool
+  ([#1268](https://github.com/GENI-NSF/geni-portal/issues/1268))
+* Add "New Project" button to project table view.
+  ([#1650](https://github.com/GENI-NSF/geni-portal/issues/1650))
+* Make project table view show expired projects.
+  ([#1651](https://github.com/GENI-NSF/geni-portal/issues/1651))
+
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
+
 * Join this project must correctly check return indicating
   an existing request to join this project. 
   ([#1637](https://github.com/GENI-NSF/geni-portal/issues/1637))

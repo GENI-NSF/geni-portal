@@ -1,0 +1,18 @@
+{
+  "identity-providers":
+  [
+    {
+      "name": "Utah Emulab",
+      "urn": "urn:publicid:IDN+emulab.net+authority+sa",
+      "pg-sa-url": "https://www.emulab.net:12369/protogeni/xmlrpc/sa",
+      "web-cert-url": "https://www.emulab.net/getsslcertjs.php3",
+      "icon": "https://www.emulab.net/protogeni/boot/utah-logo.gif"
+    },
+    {
+      "name": "GENI Clearinghouse",
+      "urn": "urn:publicid:IDN+ch.geni.net+authority+sa",
+      "pg-sa-url": "https://ch.geni.net:443/PGCH",
+      "web-cert-url": "https://portal.geni.net/secure/loadcert.php"
+    }
+  ]
+}

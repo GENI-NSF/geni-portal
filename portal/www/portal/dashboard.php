@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2015 Raytheon BBN Technologies
+// Copyright (c) 2015-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -324,13 +324,13 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
     $project_card .= "<div id='projectarea'>$project_boxes</div></div>";    
     print $project_card;   
   } else {
-    print "<div class='dashsection card' id='slices'>";
+    print "<div class='card' id='slices'>";
     unset($project_id);
-    print "<h3 class='dashtext'>Slices</h3><br><br>";
+    print "<h2>Slices</h2>";
     print "<a href='createslice.php' class='button'><i class='material-icons'>add</i>New slice</a>";
     include("tool-slices.php");
     print "</div>";
-    print "<div class='dashsection card' id='projects'>";
+    print "<div class='card' id='projects'>";
     include("tool-projects.php");
     include("tool-expired-projects.php");
     print "</div>";
