@@ -1,9 +1,19 @@
 # GENI Portal Release Notes
 
-# [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
+# [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
+
 * Fix bug where log and map tabs wouldn't show up if table view 
   was preffered view on the dashboard.
   ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))
+
+# [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
+
+* Add salist.json for xml-signer tool
+  ([#1268](https://github.com/GENI-NSF/geni-portal/issues/1268))
+* Add "New Project" button to project table view.
+  ([#1650](https://github.com/GENI-NSF/geni-portal/issues/1650))
+* Make project table view show expired projects.
+  ([#1651](https://github.com/GENI-NSF/geni-portal/issues/1651))
 
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
 
