@@ -97,6 +97,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.downloadingRspec = false;
     this.submittingRspec = false;
+    this.appendingRspec = true;
     this.passingContextToURL = null;
     this.invoking_auto_ip = false;
     this.invoking_global_node = false;
@@ -702,14 +703,136 @@ JacksEditorApp.prototype.handleSelect = function() {
  */
 JacksEditorApp.prototype.handleDownload = function() {
     this.downloadingRspec = true;
+    this.appendingRspec = false;
     this.submittingRspec = false;
     this.jacksInput.trigger('fetch-topology');
+};
+
+/**
+ * Add new rspec to existing Jacks topology. Step 1 - Get existing RSPEC.
+ */
+JacksEditorApp.prototype.handleAppend = function(rspec) {
+    console.log("Append to topology: " + rspec);
+    this.appendingRspec = true;
+    this.downloadingRspec = false;
+    this.submittingRspec = false;
+    this.RspecToAppend = rspec;
+    this.jacksInput.trigger('fetch-topology');
+};
+
+/**
+ * Add new rspec to existing Jacks topology. Step 1 - Get existing RSPEC.
+ */
+JacksEditorApp.prototype.appendToTopology = function(rspec) {
+    var new_rspec = this.RspecToAppend;
+    this.RspecToAppend = null;
+    console.log("Appending new rspec " + new_rspec);
+    console.log("To existing rspec " + rspec);
+
+    // Parse both rspecs
+    current_doc = jQuery.parseXML(rspec)
+    current_rspec = $(current_doc).find('rspec')[0]
+    new_doc = jQuery.parseXML(new_rspec)
+    new_rspec = $(new_doc).find('rspec')[0]
+
+    // For each node in the new rspec
+    //     if there is no existing node that matches CMID and CID, 
+    //          add it to current_doc otherwise drop it silently
+    new_nodes = $(new_rspec).find('node')
+    for (var i = 0; i < new_nodes.length; i++) {
+	var new_node = new_nodes[i];
+	if(!this.nodeExists(current_rspec, new_node)) {
+	    $(current_rspec).append(new_node);
+	}
+    }
+    // For each link in the new rspec
+    //     if there is no existing link that has same CID and smae interfaces
+    //         add it to current doc, otherwise drop it silently
+    new_links = $(new_rspec).find('link');
+    for(var i = 0; i < new_links.length; i++) {
+	var new_link = new_links[i];
+	if(!this.linkExists(current_rspec, new_link)) {
+	    $(current_rspec).append(new_link);
+	}
+    }
+ 
+    // Finally, push the revised topology back to Jacks
+    var revised_rspec = (new XMLSerializer()).serializeToString(current_doc);
+    this.jacksInput.trigger('change-topology', [{rspec:revised_rspec}]);
+};
+
+/*
+ * Does given node match (client_id and component_manager_id) of any
+ * node in given rspec (XML node)
+ */
+JacksEditorApp.prototype.nodeExists = function(rspec, match_node) {
+    var match_node_id = $(match_node).attr('client_id');
+    var match_node_cmid = $(match_node).attr('component_manager_id');
+
+    var nodes = $(rspec).find('node');
+    for(var i = 0; i < nodes.length; i++) {
+	var node = nodes[i];
+	var node_id = $(node).attr('client_id');
+	var node_cmid = $(node).attr('component_manager_id');
+	if(node_id == match_node_id && node_cmid == match_node_cmid) {
+	    return true;
+	}
+    }
+    return false;
+};
+
+/*
+ * Does given link match (client_id and interfaces_manager_id) of any
+ * link in given rspec (XML node)
+ */
+JacksEditorApp.prototype.linkExists = function(rspec, match_link) {
+    var match_link_id = $(match_link).attr('client_id');
+    var match_link_interfaces = $(match_link).find('interface_ref');
+
+    var links = $(rspec).find('link');
+    for(var i = 0; i < links.length; i++) {
+	var link = links[i];
+	if(this.linksAreSame(match_link, link)) {
+	    return true;
+	}
+    }
+    return false;
+}
+
+/*
+ * Do these to links have same client_id and all interface_refs of
+ * link1 are in link2?
+ */
+JacksEditorApp.prototype.linksAreSame = function(link1, link2) {
+    var link1_id = $(link1).attr('client_id');
+    var link2_id = $(link2).attr('client_id');
+    var link1_ifs = $(link1).find('interface_ref');
+    var link2_ifs = $(link2).find('interface_ref');
+    if (link1_id != link2_id) return false;
+    for(int i = 0; i < link1_ifs.length; i++) {
+	var link1_if = link1_ifs[i];
+	var link1_if_name = $(link1_if).attr('client_id');
+	var interface_found = false;
+	for(int j = 0; j < link2_ifs.length; j++) {
+	    var link2_if = link2_ifs[j];
+	    var link2_if_name = $(link2_if).attr('client_id');
+	    if (link1_if_name == link2_if_name) {
+		interface_found = true;
+		break;
+	    }
+	}
+	if(!interface_found) return false;
+    }
+    return true;
 };
 
 /**
  * Set the given topology of the editor, but doing some pre-processing first
  */
 JacksEditorApp.prototype.setTopology = function(rspec) {
+    var rspec_append = $('#rspec_append_id');
+    var is_appending = (rspec_append.length > 0 && 
+			rspec_append.prop('checked'));
     if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
     sites = null;
     if (this.currentTopology) {
@@ -719,8 +842,11 @@ JacksEditorApp.prototype.setTopology = function(rspec) {
     // Remove site tags if there are already component_manager_ids set on nodes
     rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
 
-    this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
-}
+    if (is_appending)
+	this.handleAppend(rspec);
+    else
+	this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
+};
 
 /**
  * Handle request to paste an RSpec to the portal for use by Jacks

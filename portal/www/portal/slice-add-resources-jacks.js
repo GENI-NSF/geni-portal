@@ -339,6 +339,9 @@ function jacks_fetch_topology_callback(rspecs) {
   } else if (jacksEditorApp.submittingRspec) {
       jacksEditorApp.submittingRspec = false;
       validateSubmit();
+  } else if (jacksEditorApp.appendingRspec) {
+      jacksEditorApp.appendingRspec = false;
+      jacksEditorApp.appendToTopology(rspec);
   } else if (jacksEditorApp.passingContextToURL != null) {
       var editor_url = jacksEditorApp.passingContextToURL;
       jacksEditorApp.passingContextToURL = null;
