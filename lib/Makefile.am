@@ -40,7 +40,6 @@ nobase_dist_svcdata_DATA = \
 	php/geni_syslog.php \
 	php/guard.php \
 	php/header.php \
-	php/home-active.php \
 	php/irods_utils.php \
 	php/jacks-app.php \
 	php/jacks-editor-app.php \
