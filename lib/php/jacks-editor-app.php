@@ -195,12 +195,12 @@ function setup_jacks_editor_app_controls($enable_expansion)
   print '<input type="radio" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
   print '<b class="rb_label">Text Box</b>';
 
-  print '<div align="right">';
-  print '<input align="right" type="checkbox" name="rspec_append" id="rspec_append_id" />';
+  print '</td>';
+  print '<td>';
+  print '<input type="checkbox" name="rspec_append" id="rspec_append_id" />';
   print '<b class="rspec_append_label">Add To Existing</b>';
-  print '</div>';
-
-  print '</td></tr>';
+  print '</td>';
+  print '</tr>';
   print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
   show_rspec_chooser($user);
   print "</td></tr>";

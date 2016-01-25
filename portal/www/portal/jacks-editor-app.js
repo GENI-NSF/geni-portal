@@ -89,6 +89,12 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.verbose = false; // Print debug messages to console.log
 
+
+    // Counter for adding unique suffixes to conflicting names
+    this.name_counter = 0;
+    // Associative array for mapping original client-ids to revised client-ids
+    this.rename_mapping = [];
+
     this.sliceInfo = sliceInfo;
     this.sliceId = sliceInfo.slice_id;
     this.sliceUrn = sliceInfo.slice_urn;
@@ -709,7 +715,7 @@ JacksEditorApp.prototype.handleDownload = function() {
 };
 
 /**
- * Add new rspec to existing Jacks topology. Step 1 - Get existing RSPEC.
+ * Add new rspec to existing Jacks topology. Step 1 - Get current RSPEC.
  */
 JacksEditorApp.prototype.handleAppend = function(rspec) {
     console.log("Append to topology: " + rspec);
@@ -721,9 +727,13 @@ JacksEditorApp.prototype.handleAppend = function(rspec) {
 };
 
 /**
- * Add new rspec to existing Jacks topology. Step 1 - Get existing RSPEC.
+ * Add new rspec to existing Jacks topology. 
+ * Step 2 - Add nodes/links of new rspec to existing RSPEC
+ * Changing names of nodes/links/interfaces as needed to avoid
+ * conflicts
  */
 JacksEditorApp.prototype.appendToTopology = function(rspec) {
+
     var new_rspec = this.RspecToAppend;
     this.RspecToAppend = null;
     console.log("Appending new rspec " + new_rspec);
@@ -735,96 +745,105 @@ JacksEditorApp.prototype.appendToTopology = function(rspec) {
     new_doc = jQuery.parseXML(new_rspec)
     new_rspec = $(new_doc).find('rspec')[0]
 
-    // For each node in the new rspec
-    //     if there is no existing node that matches CMID and CID, 
-    //          add it to current_doc otherwise drop it silently
-    new_nodes = $(new_rspec).find('node')
-    for (var i = 0; i < new_nodes.length; i++) {
+    // Go through current RSPEC and keep track of all names
+    // of nodes/links/interfaces
+    var current_nodes = $(current_rspec).find('node');
+    var current_node_names = this.getListOfClientIds(current_nodes);
+    var current_links = $(current_rspec).find('link');
+    var current_link_names = this.getListOfClientIds(current_links);
+    var current_interfaces = $(current_rspec).find('interface');
+    var current_interface_names = this.getListOfClientIds(current_interfaces);
+
+    // Go through new RSPEC. 
+    // For each node, 
+    //    If client_id exists change to client_id + <counter++>
+    //    Add to currrent RSPEC
+    // For each link, 
+    //    if client_id exists, change to cient_id + <counter++>
+    //    Add to currrent RSPEC
+    // For each interaface, 
+    //    if client_id exists, change to cient_id + <counter++>
+    //    (Do note add to current RSPEC, is a child of node)
+    new_nodes = $(new_rspec).find('node');
+    for(var i = 0; i < new_nodes.length; i++) {
 	var new_node = new_nodes[i];
-	if(!this.nodeExists(current_rspec, new_node)) {
-	    $(current_rspec).append(new_node);
-	}
+	this.modifyName(new_node, current_node_names);
     }
-    // For each link in the new rspec
-    //     if there is no existing link that has same CID and smae interfaces
-    //         add it to current doc, otherwise drop it silently
+
     new_links = $(new_rspec).find('link');
     for(var i = 0; i < new_links.length; i++) {
 	var new_link = new_links[i];
-	if(!this.linkExists(current_rspec, new_link)) {
-	    $(current_rspec).append(new_link);
-	}
+	this.modifyName(new_link, current_link_names);
     }
- 
+
+    new_interfaces = $(new_rspec).find('interface');
+    for(var i = 0; i < new_interfaces.length; i++) {
+	var new_interface = new_interfaces[i];
+	this.modifyName(new_interface, current_interface_names);
+    }
+
+    new_interface_refs = $(new_rspec).find('interface_ref');
+    for(var i = 0; i < new_interface_refs.length; i++) {
+	var new_interface_ref = new_interface_refs[i];
+	this.modifyName(new_interface_ref, current_interface_names);
+    }
+
+    // Once we've changed the names, add clones of the new rspec nodes
+    // To the current rspec
+    for(var i = 0; i < new_nodes.length; i++) {
+	var new_node = new_nodes[i];
+	new_node = $(new_node).clone();
+	$(new_node).find('site').remove(); // Remove site from new nodes
+	$(current_rspec).append(new_node);
+    }
+
+    for(var i = 0; i < new_links.length; i++) {
+	var new_link = new_links[i];
+	new_link = $(new_link).clone();
+	$(current_rspec).append(new_link);
+    }
+
+    // Clear out the rename mapping so we compute it each time we add a 
+    // new rspec
+    this.rename_mapping = [];
+
+
     // Finally, push the revised topology back to Jacks
     var revised_rspec = (new XMLSerializer()).serializeToString(current_doc);
     this.jacksInput.trigger('change-topology', [{rspec:revised_rspec}]);
-};
-
-/*
- * Does given node match (client_id and component_manager_id) of any
- * node in given rspec (XML node)
- */
-JacksEditorApp.prototype.nodeExists = function(rspec, match_node) {
-    var match_node_id = $(match_node).attr('client_id');
-    var match_node_cmid = $(match_node).attr('component_manager_id');
-
-    var nodes = $(rspec).find('node');
-    for(var i = 0; i < nodes.length; i++) {
-	var node = nodes[i];
-	var node_id = $(node).attr('client_id');
-	var node_cmid = $(node).attr('component_manager_id');
-	if(node_id == match_node_id && node_cmid == match_node_cmid) {
-	    return true;
-	}
-    }
-    return false;
-};
-
-/*
- * Does given link match (client_id and interfaces_manager_id) of any
- * link in given rspec (XML node)
- */
-JacksEditorApp.prototype.linkExists = function(rspec, match_link) {
-    var match_link_id = $(match_link).attr('client_id');
-    var match_link_interfaces = $(match_link).find('interface_ref');
-
-    var links = $(rspec).find('link');
-    for(var i = 0; i < links.length; i++) {
-	var link = links[i];
-	if(this.linksAreSame(match_link, link)) {
-	    return true;
-	}
-    }
-    return false;
 }
 
-/*
- * Do these to links have same client_id and all interface_refs of
- * link1 are in link2?
+/**
+ * Get list of client_ids for all elements in list
  */
-JacksEditorApp.prototype.linksAreSame = function(link1, link2) {
-    var link1_id = $(link1).attr('client_id');
-    var link2_id = $(link2).attr('client_id');
-    var link1_ifs = $(link1).find('interface_ref');
-    var link2_ifs = $(link2).find('interface_ref');
-    if (link1_id != link2_id) return false;
-    for(int i = 0; i < link1_ifs.length; i++) {
-	var link1_if = link1_ifs[i];
-	var link1_if_name = $(link1_if).attr('client_id');
-	var interface_found = false;
-	for(int j = 0; j < link2_ifs.length; j++) {
-	    var link2_if = link2_ifs[j];
-	    var link2_if_name = $(link2_if).attr('client_id');
-	    if (link1_if_name == link2_if_name) {
-		interface_found = true;
-		break;
-	    }
-	}
-	if(!interface_found) return false;
+JacksEditorApp.prototype.getListOfClientIds = function(nodes) {
+    var ids = [];
+    for(var i = 0; i < nodes.length; i++) {
+	var node = nodes[i];
+	var node_name = $(node).attr('client_id');
+	ids.push(node_name);
     }
-    return true;
-};
+    return ids;
+}
+
+/**
+ * Modify name to name+<name_counter++> if name exists in given list
+ */
+JacksEditorApp.prototype.modifyName = function(node, names) {
+    var node_name = $(node).attr('client_id');
+    if($.inArray(node_name, names) >= 0) {
+	var new_node_name = "";
+	if (node_name in this.rename_mapping) {
+	    new_node_name = this.rename_mapping[node_name];
+	} else {
+	    new_node_name = node_name + "-" + this.name_counter;
+	    this.name_counter++;
+	    this.rename_mapping[node_name] = new_node_name;
+	}
+	$(node).attr('client_id', new_node_name);
+    }
+}
+
 
 /**
  * Set the given topology of the editor, but doing some pre-processing first
