@@ -2,6 +2,9 @@
 
 # [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
 
+* Fix bug where log and map tabs wouldn't show up if table view 
+  was preffered view on the dashboard.
+  ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))
 
 # [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
 
