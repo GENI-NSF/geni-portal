@@ -27,9 +27,18 @@
 GENI_LS_VERSION = 1; 
 
 $(document).ready(function(){
-  if ($("#slicefilterswitch").length > 0) { // they have some projects or slices
-    resume_dashboard();
-  } else { // they're a brand new user
+  if($(".nav2").length > 0) { // they are brand new user
+    if ($("#slicefilterswitch").length > 0) { // they are using card view
+      resume_dashboard();
+    } else {
+      if (localStorage.loghours) {
+        get_logs(localStorage.loghours);
+      } else {
+        $('#loglengthselector .selectorshown').html("day");
+        get_logs(24);
+      }
+    }
+  } else {
     $("#logs").hide();
     $("#map").hide();
   }
