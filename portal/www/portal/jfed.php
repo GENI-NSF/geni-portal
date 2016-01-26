@@ -46,6 +46,21 @@ if (array_key_exists("slice_id", $_REQUEST)) {
   }
 }
 
+
+$browser = getBrowser();
+$browser_name = strtolower($browser["name"]);
+$do_launch = true;
+$body_text = 'Launching jFed ...';
+
+if (strpos($browser_name, "chrom") !== false) {
+  $do_launch = false;
+  $body_text = ('jFed cannot currently be launched from Chrome.'
+                . ' Please try a different browser.');
+} else if ($slice) {
+  $body_text = "Launching jFed on slice $slice_name ...";
+}
+
+
 $jfedret = get_jfed_strs($user);
 $jfed_script_text = $jfedret[0];
 $jfed_button_start = $jfedret[1];
@@ -61,20 +76,23 @@ if (! is_null($jfed_button_start)) {
 ?>
 <div class="card">
 <h1>jFed</h1>
+  <p>
+    <?php echo $body_text; ?>
+  </p>
+
 <?php
-if ($slice) {
-  echo "Launching jFed on slice $slice_name ...";
-} else {
-  echo "Launching jFed ...";
+if ($do_launch) {
+?>
+  <script>
+  $( document ).ready(function() {
+    slice_urn = <?php echo "'$slice_urn';\n"; ?>
+    launchjFed();
+  });
+  </script>
+<?php
 }
 ?>
 
-<script>
-$( document ).ready(function() {
-  slice_urn = <?php echo "'$slice_urn';\n"; ?>
-  launchjFed();
-});
-</script>
 </div>
 
 <?php
