@@ -66,14 +66,25 @@ $jfed_script_text = $jfedret[0];
 $jfed_button_start = $jfedret[1];
 $jfed_button_part2 = $jfedret[2];
 
-show_header('GENI Portal: Launch jFed', true, true);
+// We are ignoring $jfed_button_start and $jfed_button_part2
+// because we automatically launch jFed instead of waiting for
+// the user to click the button. When they get to this page
+// they have already clicked a jFed button.
 
-if (! is_null($jfed_button_start)) {
-    print $jfed_script_text;
+if (! $jfed_script_text) {
+  // Something went wrong, but we're not sure what. Put
+  // up a message so the user does not see a blank page.
+  $do_launch = false;
+  $body_text = "Sorry, an error has occurred.";
 }
 
-if (! is_null($jfed_button_start)) {
+show_header('GENI Portal: Launch jFed', true, true);
+
+if ($jfed_script_text) {
+    print $jfed_script_text;
+}
 ?>
+
 <div class="card">
 <h1>jFed</h1>
   <p>
@@ -96,6 +107,5 @@ if ($do_launch) {
 </div>
 
 <?php
-}
 include("footer.php");
 ?>
