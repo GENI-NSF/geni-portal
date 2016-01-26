@@ -25,7 +25,6 @@
 require_once("user.php");
 require_once("header.php");
 require_once('util.php');
-require_once('tool-jfed.php');
 
 $user = geni_loadUser();
 if (! $user) {
@@ -33,56 +32,91 @@ if (! $user) {
   exit;
 }
 
-$slice = NULL;
-$slice_urn = '';
-$slice_name = '';
-if (array_key_exists("slice_id", $_REQUEST)) {
-  $slice_id = $_REQUEST['slice_id'];
-  if (uuid_is_valid($slice_id)) {
-    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-    $slice = lookup_slice($sa_url, $user, $slice_id);
-    $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-    $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-  }
-}
-
-
-$browser = getBrowser();
-$browser_name = strtolower($browser["name"]);
+// Variables that may change below
 $do_launch = true;
 $body_text = 'Launching jFed ...';
 
+//----------------------------------------------------------------------
+// If the browser is Chrome, jFed won't start so alert the user.
+//----------------------------------------------------------------------
+$browser = getBrowser();
+$browser_name = strtolower($browser["name"]);
 if (strpos($browser_name, "chrom") !== false) {
   $do_launch = false;
   $body_text = ('jFed cannot currently be launched from Chrome.'
                 . ' Please try a different browser.');
-} else if ($slice) {
-  $body_text = "Launching jFed on slice $slice_name ...";
 }
 
-
-$jfedret = get_jfed_strs($user);
-$jfed_script_text = $jfedret[0];
-$jfed_button_start = $jfedret[1];
-$jfed_button_part2 = $jfedret[2];
-
-// We are ignoring $jfed_button_start and $jfed_button_part2
-// because we automatically launch jFed instead of waiting for
-// the user to click the button. When they get to this page
-// they have already clicked a jFed button.
-
-if (! $jfed_script_text) {
-  // Something went wrong, but we're not sure what. Put
-  // up a message so the user does not see a blank page.
-  $do_launch = false;
-  $body_text = "Sorry, an error has occurred.";
+//----------------------------------------------------------------------
+// If the user doesn't have an outside certificate or if it's
+// expired, point them to creating or renewing one
+//----------------------------------------------------------------------
+if ($do_launch && ! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! $ma_url) {
+    error_log("Found no MA in SR in jfed launch()");
+    $do_launch = false;
+    $body_text = "Sorry, an error has occurred.";
+  }
 }
 
+if ($do_launch) {
+  $certresult = ma_lookup_certificate($ma_url, $user, $user->account_id);
+  $expiration_key = 'expiration';
+  $has_certificate = False;
+  $has_key = False;
+  $expired = False;
+  $expiration = NULL;
+  if (! is_null($certresult)) {
+    $has_certificate = True;
+    $has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $certresult);
+    if (array_key_exists($expiration_key, $certresult)) {
+      $expiration = $certresult[$expiration_key];
+      $now = new DateTime('now', new DateTimeZone("UTC"));
+      $expired = ($expiration < $now);
+    }
+  }
+  if ($has_certificate && ! $expired) {
+    if ($has_key) {
+      $certstring = ($certresult[MA_ARGUMENT::PRIVATE_KEY]
+                     . "\n" . $certresult[MA_ARGUMENT::CERTIFICATE]);
+      $certkey = base64_encode($certstring);
+    }
+  } else {
+    $do_launch = false;
+    $verb_phrase = "create an SSL certificate";
+    if ($expired) {
+      $verb_phrase = "renew your SSL certificate";
+    }
+    $body_text = ('You must <a href="profile.php#ssl">'
+                  . $verb_phrase
+                  . '</a> to launch jFed.');
+  }
+}
+
+//----------------------------------------------------------------------
+// Handle the slice argument if one was passed.
+//----------------------------------------------------------------------
+if ($do_launch) {
+  $slice = NULL;
+  $slice_urn = '';
+  $slice_name = '';
+  if (array_key_exists("slice_id", $_REQUEST)) {
+    $slice_id = $_REQUEST['slice_id'];
+    if (uuid_is_valid($slice_id)) {
+      $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+      $slice = lookup_slice($sa_url, $user, $slice_id);
+      $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+      $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+      $body_text = "Launching jFed on slice $slice_name ...";
+    }
+  }
+}
+
+//----------------------------------------------------------------------
+// Finally, display the page
+//----------------------------------------------------------------------
 show_header('GENI Portal: Launch jFed', true, true);
-
-if ($jfed_script_text) {
-    print $jfed_script_text;
-}
 ?>
 
 <div class="card">
@@ -94,13 +128,34 @@ if ($jfed_script_text) {
 <?php
 if ($do_launch) {
 ?>
+  <div id='java7Dialog' title=\"Old Java version detected\" style=\"display: none\">
+  <p>The latest version of jFed is only compatible with Java 8 or higher.
+     We detected that you are using an older version.</p>
+  <p>Please upgrade to Java 8 to get access to the newest version of jFed.
+     Otherwise, you can use jFed 5.3.2, which is Java 7-compatible.</p>
+  </div>
+
+  <div id='noJavaDialog' title=\"No Java detected\" style=\"display: none\">
+  <p>jFed requires Java to run. We however couldn't detect a Java
+     installation in your browser.</p>
+  <p>Please install the latest version of Java to continue.</p>
+  </div>
+
+  <script src="//java.com/js/dtjava.js"></script>
+  <script src="https://authority.ilabt.iminds.be/js/jfed_webstart_geni.js"></script>
   <script>
-  $( document ).ready(function() {
-    slice_urn = <?php echo "'$slice_urn';\n"; ?>
-    launchjFed();
-  });
+    var config = {
+      java8_jnlp: 'http://jfed.iminds.be/jfed-geni-java8.jnlp',
+      java7_jnlp: 'http://jfed.iminds.be/jfed-geni-java7.jnlp'
+    };
+    var certkey = <?php echo "'$certkey';\n"; ?>;
+    var slice_urn = <?php echo "'$slice_urn';\n"; ?>
+    $( document ).ready(function() {
+      launchjFed();
+    });
   </script>
 <?php
+// Close if ($do_launch)
 }
 ?>
 
