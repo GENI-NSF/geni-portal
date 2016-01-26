@@ -66,20 +66,23 @@ require_once('ma_constants.php');
 // But check for that 2nd arg being null - if so, avoid printing the button at all
 // See tool-slices for sample usage
 function get_jfed_strs($user) {
+  global $ma_url;
   $jfed_button_start = null;
   $jfed_script_text = '';
   $jfed_button_part2 = '';
   $certkey = '';
 
-  $browser = getBrowser();
-  if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolower($browser["platform"]),"mac") === 0) {
-    //error_log("User browser: " . $browser["name"] . " version " . $browser["version"] . " on " . $browser["platform"]);
+  // We no longer need the browser check here. It is handled in jfed.php.
 
-    // While interesting, this message appears every time a Chrome on Mac user displays this page. Too much.
-    //error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
-    $jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox.\")'";
-    return array($jfed_script_text, $jfed_button_start, '');
-  }
+  // $browser = getBrowser();
+  // if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolower($browser["platform"]),"mac") === 0) {
+  //   //error_log("User browser: " . $browser["name"] . " version " . $browser["version"] . " on " . $browser["platform"]);
+
+  //   // While interesting, this message appears every time a Chrome on Mac user displays this page. Too much.
+  //   //error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
+  //   $jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox.\")'";
+  //   return array($jfed_script_text, $jfed_button_start, '');
+  // }
 
   if (!isset($user)) {
     $user = geni_loadUser();
@@ -88,8 +91,8 @@ function get_jfed_strs($user) {
   if (! isset($ma_url)) {
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
-      error_log("Found no MA in SR!'");
-      return array('', null);
+      error_log("Found no MA in SR in get_jfed_strs()");
+      return array($jfed_script_text, $jfed_button_start, $jfed_button_part2);
     }
   }
 
@@ -127,7 +130,6 @@ function get_jfed_strs($user) {
             java7_jnlp: 'http://jfed.iminds.be/jfed-geni-java7.jnlp'
         };
         var certkey = '$certkey';
-        //var slice_urn = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
         var slice_urn = ''; // over-ridden in the onclick of the jFed button with the specific slice URN. launchjFed() uses this global. Tom says Gross!
         </script>
         <script src=\"//java.com/js/dtjava.js\"></script>
