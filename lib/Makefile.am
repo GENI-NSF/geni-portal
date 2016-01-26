@@ -81,7 +81,6 @@ nobase_dist_svcdata_DATA = \
 	php/tool-breadcrumbs.php \
 	php/tool-expired-projects.php \
 	php/tool-expired-slices.php \
-	php/tool-jfed.php \
 	php/tool-lookupids.php \
 	php/tool-projects.php \
 	php/tool-rspec-parse.php \
