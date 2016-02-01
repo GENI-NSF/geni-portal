@@ -2,6 +2,8 @@
 
 # [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
 
+* Fix PHP warning on admin page
+  ([#1430](https://github.com/GENI-NSF/geni-portal/issues/1430))
 * Fix bug where log and map tabs wouldn't show up if table view 
   was preffered view on the dashboard.
   ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))
