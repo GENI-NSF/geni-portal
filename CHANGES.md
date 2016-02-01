@@ -2,6 +2,8 @@
 
 # [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
 
+* Remove project lead checkbox from modify page for project leads
+  ([#1431](https://github.com/GENI-NSF/geni-portal/issues/1431))
 * Fix PHP warning on admin page
   ([#1430](https://github.com/GENI-NSF/geni-portal/issues/1430))
 * Fix bug where log and map tabs wouldn't show up if table view 
