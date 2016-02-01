@@ -2,6 +2,8 @@
 
 # [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
 
+* Show open project lead requests on profile
+  ([#1424](https://github.com/GENI-NSF/geni-portal/issues/1424))
 * Remove project lead checkbox from modify page for project leads
   ([#1431](https://github.com/GENI-NSF/geni-portal/issues/1431))
 * Fix PHP warning on admin page
