@@ -1,5 +1,19 @@
 # GENI Portal Release Notes
 
+# [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
+
+* Show open project lead requests on profile
+  ([#1424](https://github.com/GENI-NSF/geni-portal/issues/1424))
+* Remove project lead checkbox from modify page for project leads
+  ([#1431](https://github.com/GENI-NSF/geni-portal/issues/1431))
+* Fix PHP warning on admin page
+  ([#1430](https://github.com/GENI-NSF/geni-portal/issues/1430))
+* Fix bug where log and map tabs wouldn't show up if table view 
+  was preffered view on the dashboard.
+  ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))
+* Confine jFed launch to a single page
+  ([#1663](https://github.com/GENI-NSF/geni-portal/issues/1663))
+
 # [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
 
 * Add salist.json for xml-signer tool
