@@ -40,7 +40,6 @@ nobase_dist_svcdata_DATA = \
 	php/geni_syslog.php \
 	php/guard.php \
 	php/header.php \
-	php/home-active.php \
 	php/irods_utils.php \
 	php/jacks-app.php \
 	php/jacks-editor-app.php \
@@ -82,7 +81,6 @@ nobase_dist_svcdata_DATA = \
 	php/tool-breadcrumbs.php \
 	php/tool-expired-projects.php \
 	php/tool-expired-slices.php \
-	php/tool-jfed.php \
 	php/tool-lookupids.php \
 	php/tool-projects.php \
 	php/tool-rspec-parse.php \

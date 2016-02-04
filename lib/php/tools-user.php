@@ -28,6 +28,7 @@ require_once("cert_utils.php");
 require_once("rq_client.php");
 require_once("settings.php");
 require_once("user-preferences.php");
+require_once("db_utils.php");
 
 ?>
 
@@ -353,6 +354,19 @@ if (isset($reqs) && count($reqs) > 0) {
 }
 
 // END outstanding requests tab
+
+  // Todo: the headings on that table above made it so this request really couldn't fit
+  // so I don't know how this should be displayed.
+
+  $conn = portal_conn();
+  $sql = "SELECT * from lead_request where "
+  . "requester_urn =" . $conn->quote($user->urn(), 'text') . " and status ='open'";
+  $rows = db_fetch_rows($sql, "check duplicate lead request");
+  $open_requests = $rows[RESPONSE_ARGUMENT::VALUE];
+  if(count($open_requests) > 0){
+    print "<p>You have an outstanding project lead request</p>";
+  }
+
 echo "</div>";
 
 // BEGIN account summary tab

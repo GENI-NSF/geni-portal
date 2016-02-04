@@ -112,24 +112,24 @@ print '</textarea></li>';
 print "\n";
 
 print '</ul>';
-print '<p>';
-print '<input type="checkbox" name="projectlead" value="projectlead"';
 
 if ($is_pi) {
-  print "checked='checked'>I want to remain ";
+  print "<p>You are a GENI Project Lead.</p>";
+  print "<input type='hidden' name='projectlead' value='projectlead'>";
 } else {
+  $checked = "";
   if (array_key_exists('belead', $_REQUEST)) {
-    print "checked='checked'";
+    $checked = "checked='checked'";
   }
-  print ">Make me ";
-}
-?>
+  print "<p><input type='checkbox' name='projectlead' value='projectlead' $checked>";
+  ?>
+  Make me a 'Project Lead' who can create projects. I am a professor or senior
+  technical staff (as indicated by my profile page supplied above). I
+  want the ability to create projects, and I agree to take full
+  responsibility for all GENI resource reservations made in my projects.<br/>
+  </p>
+<?php } ?>
 
-a 'Project Lead' who can create projects. I am a professor or senior
-technical staff (as indicated by my profile page supplied above). I
-want the ability to create projects, and I agree to take full
-responsibility for all GENI resource reservations made in my projects.<br/>
-</p>
 <p>
 <input type="submit" value="Modify Account"/>
 <input type="button" value="Cancel" onclick="history.back(-1)"/>
