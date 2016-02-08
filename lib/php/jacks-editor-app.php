@@ -203,9 +203,11 @@ function setup_jacks_editor_app_controls($enable_expansion)
   print '</tr>';
   print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
   show_rspec_chooser($user);
+  print '<button type="button" disabled="disabled" id="reapply_rspec_select" onClick="rspec_onchange()">Select</button>';
   print "</td></tr>";
   print '<tr id = "rspec_file_row" hidden="hidden"><td>';
   print "<b>Select from file: </b><input type='file' name='file_select' id='file_select' onchange='fileupload_onchange()'/>";
+  print '<button type="button" disabled="disabled" id="reapply_file_select" onClick="fileupload_onchange()">Select</button>';
   // upload message: get this from slice-add-resources-jacks.js 
   // calling rspecuploadparser.php
   print "<div id='upload_message' style='display:block;'></div>";

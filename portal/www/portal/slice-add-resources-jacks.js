@@ -32,6 +32,12 @@ function fileupload_onchange()
     // change RSpec dropdown menu back to 'Choose RSpec'
     clear_other_inputs('#file_select');
 
+    // Enable/disable the auxiliary 'select' button depending on the rspec file
+    console.log("URF = " + user_rspec_file);
+    if(user_rspec_file)
+	$('#reapply_file_select').prop('disabled', false);
+    else
+	$('#reapply_file_select').prop('disabled', true);
 
 }
 
@@ -254,6 +260,9 @@ function rspec_onchange()
     // If RSPEC is unchosen, disable reserve resources
     if (rspec_opt == "") {
 	disable_reserve_resources();
+	$('#reapply_rspec_select').prop("disabled", true);
+    } else {
+	$('#reapply_rspec_select').prop("disabled", false);
     }
 }
 
