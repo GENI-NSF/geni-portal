@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -165,7 +165,9 @@ foreach ($lead_requests as $lead_request) {
   $requester_uuids[] = $lead_request['requester_uuid'];
 }
 
-$requester_details = lookup_member_details($ma_url, $user, $requester_uuids); 
+if ($requester_uuids) {
+  $requester_details = lookup_member_details($ma_url, $user, $requester_uuids);
+}
 
 print "<table><tr><th>Name</th><th>Link</th><th>Requested At</th><th>Email</th><th>Admin Notes</th><th>Actions</th></tr>";
 

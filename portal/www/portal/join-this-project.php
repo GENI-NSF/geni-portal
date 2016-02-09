@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -107,8 +107,9 @@ if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
 
 // confirm member has not already requested to join this project
 $rpids = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
-if (in_array($project_id, $rpids)) {
+if (count($rpids) > 0) {
   error_log($user->prettyName() . " already requested to join project " . $project_id);
+  // Could print rpids[0]['creation_timestamp']
   $_SESSION['lasterror'] = "You already requested to join that project.";
   relative_redirect('home.php');
 }

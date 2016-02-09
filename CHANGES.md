@@ -1,9 +1,53 @@
 # GENI Portal Release Notes
 
+# [Release 3.11](https://github.com/GENI-NSF/geni-portal/milestones/3.11)
+
+
+# [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
+
+* Show open project lead requests on profile
+  ([#1424](https://github.com/GENI-NSF/geni-portal/issues/1424))
+* Remove project lead checkbox from modify page for project leads
+  ([#1431](https://github.com/GENI-NSF/geni-portal/issues/1431))
+* Fix PHP warning on admin page
+  ([#1430](https://github.com/GENI-NSF/geni-portal/issues/1430))
+* Fix bug where log and map tabs wouldn't show up if table view 
+  was preffered view on the dashboard.
+  ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))
+* Confine jFed launch to a single page
+  ([#1663](https://github.com/GENI-NSF/geni-portal/issues/1663))
+
+# [Release 3.9](https://github.com/GENI-NSF/geni-portal/milestones/3.9)
+
+* Add salist.json for xml-signer tool
+  ([#1268](https://github.com/GENI-NSF/geni-portal/issues/1268))
+* Add "New Project" button to project table view.
+  ([#1650](https://github.com/GENI-NSF/geni-portal/issues/1650))
+* Make project table view show expired projects.
+  ([#1651](https://github.com/GENI-NSF/geni-portal/issues/1651))
+
+# [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
+
+* Join this project must correctly check return indicating
+  an existing request to join this project. 
+  ([#1637](https://github.com/GENI-NSF/geni-portal/issues/1637))
+* `get_project` uses wrong variable name for result. `lookup_project_details`
+  should bail when given empty list of projet UIDs.
+  ([#1639](https://github.com/GENI-NSF/geni-portal/issues/1639))
+* Support properly importing the `lead_request` table into a new database.
+  ([#1643](https://github.com/GENI-NSF/geni-portal/issues/1643))
+* Skip re-generating user certs on DB import by default.
+  Use `--regen_certs` for old behavior.
+  ([#1644](https://github.com/GENI-NSF/geni-portal/issues/1644))
+
 # [Release 3.7](https://github.com/GENI-NSF/geni-portal/milestones/3.7)
 
 * "Add Global Node" gets "URI too long" for large topology
   ([#1622](https://github.com/GENI-NSF/geni-portal/issues/1622))
+* Force aggregate status page in a tab
+  ([#1624](https://github.com/GENI-NSF/geni-portal/issues/1624))
+* Add an ansible inventory to the details page
+  ([#1630](https://github.com/GENI-NSF/geni-portal/issues/1630))
 
 # [Release 3.6](https://github.com/GENI-NSF/geni-portal/milestones/3.6)
 

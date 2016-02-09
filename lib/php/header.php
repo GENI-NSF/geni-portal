@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2015 Raytheon BBN Technologies
+// Copyright (c) 2011-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -31,7 +31,6 @@ require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
 require_once('cs_constants.php');
-require_once("tool-jfed.php");
 include_once('/etc/geni-ch/settings.php');
 
 require_once("user.php");
@@ -204,18 +203,6 @@ function show_header($title, $load_user=1, $show_cards=false){
   echo '<li><a href="contact-us.php">Contact Us</a></li>';
   echo '</ul></li>';
 
-  if ($load_user) {
-    if (! isset($jfed_button_start)) {
-      $jfedret = get_jfed_strs($user);
-      $jfed_script_text = $jfedret[0];
-      $jfed_button_start = $jfedret[1];
-      $jfed_button_part2 = $jfedret[2];
-      if (! is_null($jfed_button_start)) {
-        print $jfed_script_text;
-      }
-    }
-  }
-
   echo '<li class="headerlink has-sub">Partners';
   echo '<ul class="submenu">';
   echo "<li><a href='https://www.cloudlab.us/login.php' target='_blank'>CloudLab <i class='material-icons'>launch</i></a></li>";
@@ -227,12 +214,8 @@ function show_header($title, $load_user=1, $show_cards=false){
 
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
-  echo "<li><a href='gemini.php' target='_blank'>GENI Desktop<i class='material-icons'>launch</i></a></li>";
-  if ($load_user && !is_null($jfed_button_start)) {
-    echo "<li>";
-    echo $jfed_button_start . getjFedSliceScript(NULL) . $jfed_button_part2 . ">jFed<i class='material-icons'>launch</i></button>";
-    echo "</li>";
-  }
+  echo "<li><a href='gemini.php' target='_blank'>GENI Desktop <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='jfed.php' target='_blank'>jFed <i class='material-icons'>launch</i></a></li>";
   echo "<li><a href='http://labwiki.casa.umass.edu' target='_blank'>LabWiki <i class='material-icons'>launch</i></a></li>";
   echo "<li><a href='http://groups.geni.net/geni/wiki/GENIExperimenter/Tools' target='_blank' title='Omni, Geni-lib, VTS...'>Other Tools <i class='material-icons'>launch</i></a></li>";
   echo '</ul></li>';

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -117,7 +117,8 @@ function get_auth_from_urn( $urn ){
   return $auth;
 }
 
-function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $componentMgrURN=""){
+function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False,
+                            $componentMgrURN="", $am_id=null){
   $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
@@ -262,6 +263,11 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
 	echo "<tr>\n";    
 	echo "<th colspan='1'>Login</th>\n";
 	echo "<td colspan='5' class='login' id='login_".$client_id."'>";
+        if ($am_id) {
+          echo "<script>";
+          echo "ansibleInventory.add($am_id, '$client_id', '$ssh_host', $ssh_port)";
+          echo "</script>";
+        }
       } else {
       }
       echo "<a href='$ssh_url' target='_blank'>";
@@ -501,7 +507,7 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
       if ($code == 0){
 	if ($pretty){
 	  /* Parsed into a table */
-	  print_rspec_pretty($xml, False, $filterToAM, $arg_urn );
+	  print_rspec_pretty($xml, False, $filterToAM, $arg_urn, $am_id);
 	} else {
 	  //	  /* As plain XML but with newlines after each block */
 	  //	  $xml = str_replace(">", ">\n", $xml);

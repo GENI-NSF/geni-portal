@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2015 Raytheon BBN Technologies
+// Copyright (c) 2015-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -59,7 +59,11 @@ function search_for_users($term, $search_type, $signer, $ma_url)
 {
   if ($search_type == "email") {
     $results = lookup_members_by_email($ma_url, $signer, array($term));
-    return $results[$term];
+    if(array_key_exists($term, $results)) {
+      return $results[$term];
+    } else {
+      return array();
+    }
   } else {
     if($search_type == "lastname") {
       $searchkey = "MEMBER_LASTNAME";

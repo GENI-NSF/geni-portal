@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2014-2015 Raytheon BBN Technologies
+// Copyright (c) 2014-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -763,7 +763,7 @@ function make_pretty_results_table($xml, $am_id) {
             $manifestOnly = True;
         
             ob_start();
-            $obj = print_rspec_pretty($xml, $manifestOnly, $filterToAM, $am_urn);
+            $obj = print_rspec_pretty($xml, $manifestOnly, $filterToAM, $am_urn, $am_id);
             return ob_get_clean();
              
         }

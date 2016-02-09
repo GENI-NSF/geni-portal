@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2015 Raytheon BBN Technologies
+// Copyright (c) 2011-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -141,6 +141,19 @@ session_write_close();
 	  $(this).parent().attr('style', 'display: none;');
 	  $('#rawStatus').parent().attr('style', '');
 	});
+
+  $('#rawAnsible').click(function() {
+    $(this).parent().attr('style', 'display: none;');
+    $('#hideRawAnsible').parent().attr('style', '');
+    $('#ansibleInventory').attr('style', '');
+  });
+
+  $('#hideRawAnsible').click(function() {
+    $(this).parent().attr('style', 'display: none;');
+    $('#ansibleInventory').attr('style', 'display: none;');
+    $('#rawAnsible').parent().attr('style', '');
+  });
+
     });
 </script>
 
@@ -196,6 +209,13 @@ print "<p><a id='rawResource' style='cursor: pointer;'>Show Raw XML Resource Spe
 print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw XML Resource Specification</a></p>";
 print "<p><a id='rawStatus' style='cursor: pointer;'>Show Raw JSON Resource Status </a></p>";
 print "<p style='display:none;'><a id='hideRawStatus' style='cursor: pointer;'>Hide Raw JSON Resource Status </a></p>";
+?>
+<p><a id='rawAnsible' style='cursor: pointer;'>Show Ansible Inventory </a></p>
+<p style='display:none;'><a id='hideRawAnsible' style='cursor: pointer;'>
+  Hide Ansible Inventory</a></p>
+<pre style='display:none;' id='ansibleInventory'>
+</pre>
+<?php
 print "<hr/><p>";
 print "<a href='dashboard.php#slices'>Back to All slices</a>";
 print "<br/>";

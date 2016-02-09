@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2015 Raytheon BBN Technologies
+// Copyright (c) 2011-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -60,7 +60,6 @@ $parents = array("profile.php" => "home.php",
 		"project.php" => "home.php",
 		 "home.php" => "",
 		"slice.php" => "project.php",
-		"slice-old.php" => "project.php",
 		"edit-project.php?project_id" => "project.php", // If supplied pid, then go back to project
 		"edit-project.php" => "home.php", // No pid so doing new, go back to home
 		"project-member.php" => "project.php",
@@ -121,14 +120,13 @@ $parents = array("profile.php" => "home.php",
 // Note %project_name, %slice_name, %member_name will be filled in later
 // Note ?project_id in script name in some places
 $names = array("home.php" => "Home",
-	      "profile.php" => "Profle",
+	      "profile.php" => "Profile",
 	      "admin.php" => "Admin",
 	      "projects.php" => "Projects",
 	      "slices.php" => "Slices",
 	      "help.php" => "Help",
 	      "dashboard.php" => "Dashboard",
 	      "slice.php" => "Slice %slice_name",
-	      "slice-old.php" => "Slice %slice_name",
 	      "slice-jacks.php" => "Slice %slice_name",
 	      "project.php" => "Project %project_name",
 	      "edit-project.php?project_id" => "Edit Project %project_name",

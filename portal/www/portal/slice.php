@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -41,7 +41,6 @@ require_once('am_map.php');
 require_once('status_constants.php');
 require_once('maintenance_mode.php');
 require_once('am_client.php');
-require_once("tool-jfed.php");
 require_once("user-preferences.php");
 
 function cmp($a,$b) {
@@ -245,6 +244,7 @@ $slice_own_url = "mailto:$owner_email";
 $omni_url = "tool-omniconfig.php";
 $gemini_url = "gemini.php?slice_id=" . $slice_id;
 $labwiki_url = 'http://labwiki.casa.umass.edu/?slice_id=' . $slice_id;
+$jfed_url = "jfed.php?slice_id=" . $slice_id;
 
 $listres_url = 'listresources.php?slice_id='.$slice_id;
 $edit_slice_members_url = 'edit-slice-member.php?slice_id='.$slice_id."&project_id=".$slice_project_id;
@@ -294,12 +294,6 @@ if ($project_expiration) {
   // take the minimum of the two as the constraint
   $renewal_days = min($renewal_days, $portal_max_slice_renewal_days);
 }
-
-// Code to set up jfed button
-$jfedret = get_jfed_strs($user);
-$jfed_script_text = $jfedret[0];
-$jfed_button_start = $jfedret[1];
-$jfed_button_part2 = $jfedret[2];
 
 show_header('GENI Portal: Slices', true, true);
 // include("tool-breadcrumbs.php");
@@ -396,11 +390,7 @@ print "<span class='selectorshown'>Tools</span><ul class='submenu' style='width:
 print "<li $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str>GENI Desktop</li>";
 print "<li $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str>LabWiki</li>";
 print "<li onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str>Omni</li>";
-if (! is_null($jfed_button_start)) {
-  print "<li>";
-  print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $disable_buttons_str>jFed</button>";
-  print "</li>";
-}
+print "<li $add_slivers_disabled onClick=\"window.open('$jfed_url')\" $disable_buttons_str>jFed</li>";
 $map_url = "slice-map-view.php?slice_id=$slice_id";
 print "<li onClick=\"window.location='$map_url'\" $disable_buttons_str>Geo Map</li>\n";
 print "</ul></ul>";
@@ -429,11 +419,6 @@ if ($renew_slice_privilege) {
   print "</form>\n";
 }
 
-?>
-
-<?php
-// Finish jFed setup
-print $jfed_script_text;
 ?>
 
 <!-- Jacks JS and App CSS -->

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -29,7 +29,6 @@ require_once("sa_client.php");
 require_once("pa_client.php");
 require_once("util.php");
 require_once("proj_slice_member.php");
-require_once("tool-jfed.php");
 require_once("util.php");
 include("services.php");
 
@@ -151,7 +150,7 @@ function list_slice($slice,$user) {
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
   global $delete_sliver_base_url;
   global $gemini_base_url, $labwiki_base_url;
-  global $disabled, $jfed_button_start, $jfed_button_part2;
+  global $disabled;
   global $sa_url, $user;
   global $portal_max_slice_renewal_days;
 

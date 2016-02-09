@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -29,21 +29,4 @@ require_once('maintenance_mode.php');
 
 relative_redirect("dashboard.php");
 
-// include("tool-showmessage.php");
-// if (is_null($user)) {
-//   // TODO: Handle unknown state
-//   print "Unable to load user record.<br/>";
-// } else {
-//   if ($user->isRequested()) {
-//     include("home-requested.php");
-//   } else if ($user->isDisabled()) {
-//     print "User $user->eppn has been disabled.";
-//   } else if ($user->isActive()) {
-//     include("home-active.php");
-//   } else {
-//     // TODO: Handle unknown state
-//     print "Unknown account state: $user->status<br/>";
-//   }
-// }
-// include("footer.php");
 ?>

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2015 Raytheon BBN Technologies
+// Copyright (c) 2015-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,17 +22,6 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once("user.php");
-require_once("db_utils.php");
-require_once("ma_constants.php");
-require_once("ma_client.php");
-require_once("util.php");
-
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  exit();
-}
-
 // Map of preference names to choices for that pref. The first element in the array
 // of choices is the default value.
 $possible_prefs = array(
@@ -48,7 +37,6 @@ function get_preference($user_urn, $preference) {
     $sql = "SELECT * from user_preferences "
     . "where user_urn = " . $conn->quote($user_urn, 'text')
     . "and preference_name = " . $conn->quote($preference, 'text');
-    $db_res = db_fetch_row($sql);
     $db_response = db_fetch_row($sql, "Get user preference");
 
     $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];

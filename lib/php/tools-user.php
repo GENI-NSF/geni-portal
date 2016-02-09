@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2015 Raytheon BBN Technologies
+// Copyright (c) 2011-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -28,6 +28,7 @@ require_once("cert_utils.php");
 require_once("rq_client.php");
 require_once("settings.php");
 require_once("user-preferences.php");
+require_once("db_utils.php");
 
 ?>
 
@@ -353,6 +354,19 @@ if (isset($reqs) && count($reqs) > 0) {
 }
 
 // END outstanding requests tab
+
+  // Todo: the headings on that table above made it so this request really couldn't fit
+  // so I don't know how this should be displayed.
+
+  $conn = portal_conn();
+  $sql = "SELECT * from lead_request where "
+  . "requester_urn =" . $conn->quote($user->urn(), 'text') . " and status ='open'";
+  $rows = db_fetch_rows($sql, "check duplicate lead request");
+  $open_requests = $rows[RESPONSE_ARGUMENT::VALUE];
+  if(count($open_requests) > 0){
+    print "<p>You have an outstanding project lead request</p>";
+  }
+
 echo "</div>";
 
 // BEGIN account summary tab
@@ -574,8 +588,8 @@ $preference_descriptions = array(
 foreach($possible_prefs as $pref_name => $pref_values) {
   print $preference_descriptions[$pref_name];
   print "<select id='default_{$pref_name}' class='preferenceselect'>";
+  $user_value = get_preference($user->urn(), $pref_name);
   foreach ($pref_values as $pref_value) {
-    $user_value = get_preference($user->urn(), $pref_name);
     $selected = $pref_value == $user_value ? "selected" : "";
     print "<option value='$pref_value' $selected>$pref_value</option>";
   }

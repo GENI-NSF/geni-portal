@@ -166,6 +166,7 @@ dist_svcweb_DATA = \
 	www/portal/jacks-editor-app.js \
 	www/portal/jacks-editor-app-expanded.php \
 	www/portal/jacks-lib.js \
+	www/portal/jfed.php \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
@@ -209,7 +210,6 @@ dist_svcweb_DATA = \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
-	www/portal/slice-old.php \
 	www/portal/slice-table.css \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \

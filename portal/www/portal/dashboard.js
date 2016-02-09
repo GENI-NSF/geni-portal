@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-// Copyright (c) 2015 Raytheon BBN Technologies
+// Copyright (c) 2015-2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -27,9 +27,18 @@
 GENI_LS_VERSION = 1; 
 
 $(document).ready(function(){
-  if ($("#slicefilterswitch").length > 0) { // they have some projects or slices
-    resume_dashboard();
-  } else { // they're a brand new user
+  if($(".nav2").length > 0) { // they are brand new user
+    if ($("#slicefilterswitch").length > 0) { // they are using card view
+      resume_dashboard();
+    } else {
+      if (localStorage.loghours) {
+        get_logs(localStorage.loghours);
+      } else {
+        $('#loglengthselector .selectorshown').html("day");
+        get_logs(24);
+      }
+    }
+  } else {
     $("#logs").hide();
     $("#map").hide();
   }
