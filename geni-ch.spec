@@ -1,7 +1,7 @@
 %define webdir /var/www
 
 Name:           geni-ch
-Version:        3.7
+Version:        3.11
 Release:        1%{?dist}
 Summary:        GENI Experimenter Portal
 BuildArch:      noarch
@@ -47,6 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/ch/www/cainfo.html
 %{_datadir}/%{name}/ch/www/favicon.ico
 %{_datadir}/%{name}/ch/www/index.html
+%{_datadir}/%{name}/ch/www/salist.json
 %{_datadir}/%{name}/km/db/postgresql/schema.sql
 %{_datadir}/%{name}/km/db/postgresql/update-1.sql
 %{_datadir}/%{name}/lib/php/abac.php
@@ -65,7 +66,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/lib/php/geni_syslog.php
 %{_datadir}/%{name}/lib/php/guard.php
 %{_datadir}/%{name}/lib/php/header.php
-%{_datadir}/%{name}/lib/php/home-active.php
 %{_datadir}/%{name}/lib/php/irods_utils.php
 %{_datadir}/%{name}/lib/php/jacks-app.php
 %{_datadir}/%{name}/lib/php/jacks-editor-app.php
@@ -107,7 +107,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/lib/php/tool-breadcrumbs.php
 %{_datadir}/%{name}/lib/php/tool-expired-projects.php
 %{_datadir}/%{name}/lib/php/tool-expired-slices.php
-%{_datadir}/%{name}/lib/php/tool-jfed.php
 %{_datadir}/%{name}/lib/php/tool-lookupids.php
 %{_datadir}/%{name}/lib/php/tool-projects.php
 %{_datadir}/%{name}/lib/php/tool-rspec-parse.php
@@ -498,6 +497,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/jacks-editor-app.css
 %{webdir}/secure/jacks-editor-app.js
 %{webdir}/secure/jacks-lib.js
+%{webdir}/secure/jfed.php
 %{webdir}/secure/join-project.php
 %{webdir}/secure/join-this-project.php
 %{webdir}/secure/km_utils.php
@@ -550,7 +550,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/slice-map-data.php
 %{webdir}/secure/slice-map-view.php
 %{webdir}/secure/slice-member.php
-%{webdir}/secure/slice-old.php
 %{webdir}/secure/slice-table.css
 %{webdir}/secure/slice.php
 %{webdir}/secure/slicecred.php
