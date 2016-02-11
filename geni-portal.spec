@@ -10,6 +10,10 @@ License:        GENI Public License
 URL:            https://github.com/GENI-NSF/geni-portal
 Source:         %{legacy_name}-%{version}.tar.gz
 Group:          Applications/Internet
+BuildRequires:  httpd, texinfo
+Requires:       python-sqlalchemy, python-psycopg2, postgresql, httpd
+Requires:       mod_ssl, shibboleth, php, php-pear, php-pgsql, php-xmlrpc
+Requires:       geni-tools php-pear-MDB2 php-pear-MDB2-Driver-pgsql
 
 %description
 GENI Portal provides an web interface to the GENI Federation Services
