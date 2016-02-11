@@ -28,7 +28,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 %make_install
-rm –f $RPM_BUILD_ROOT%{_infodir}/dir
+rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
