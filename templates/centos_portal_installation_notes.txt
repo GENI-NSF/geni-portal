@@ -21,7 +21,8 @@ sudo yum install -y php php-pear php-pgsql
 sudo yum install -y php-xmlrpc
 sudo yum install -y --nogpgcheck geni-tools
 
-sudo pear install mdb2 MDB2_Driver_pgsql
+sudo yum install -y epel-release
+sudo yum install -y php-pear-MDB2 php-pear-MDB2-Driver-pgsql
 
 
 # If needed, add an entry (CNAME) for the host in /etc/hosts
