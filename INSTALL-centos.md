@@ -8,14 +8,14 @@ sudo yum update -y
 
 Add Shibboleth repository:
 
-```shell
+```bash
 wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo
 sudo cp security\:shibboleth.repo /etc/yum.repos.d/
 ```
 
 Add GENI repository:
 
-```shell
+```bash
 wget http://www.gpolab.bbn.com/experiment-support/gposw/centos/geni.repo
 sudo cp geni.repo /etc/yum.repos.d/
 ```
@@ -25,7 +25,7 @@ sudo cp geni.repo /etc/yum.repos.d/
 These must be done separately in order to fullfill the geni-portal
 dependencies that are in the EPEL repository.
 
-```shell
+```bash
 sudo yum install -y epel-release
 sudo yum install -y --nogpgcheck geni-portal
 
