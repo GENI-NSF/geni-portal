@@ -65,21 +65,27 @@ below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... --
 ln -s ~/shib /tmp
 
 # 3c. Install Embedded Discovery Service
+```bash
 cd /tmp
 wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 cd shibboleth-embedded-ds-1.1.0-geni.3
 sudo mkdir -p /var/www/eds
 sudo cp *.css *.js *.html *.gif *.png /var/www/eds
+```
 
 # 4. Set up Variables
+```bash
 sudo cp /usr/share/geni-ch/templates/parameters.json \
         /etc/geni-ch/parameters.json
 # Edit parameters.json [Especially note portal_host, ch_host and db_host]
 sudo /sbin/geni-portal-install-templates
+```
 
 # 5. Install and run Shib SP
+```bash
 sudo /tmp/install-sp-centos.sh
+```
 
 # 6. Set up SP with IDP
 # <*** From Development machine *** >
@@ -114,16 +120,21 @@ chmod 0600 ~/.pgpass
 $PSQL -f /usr/share/geni-ch/portal/db/postgresql/schema.sql
 $PSQL -f /usr/share/geni-ch/km/db/postgresql/schema.sql
 
-# Install km and portal certs from CH machine
+# 7. Install km and portal certs from CH machine
+```bash
 CH_HOST=`geni-portal-install-templates --print_parameter ch_host`
 scp $CH_HOST:/usr/share/geni-ch/portal/portal-*.pem /tmp
 scp $CH_HOST:/usr/share/geni-ch/km/km-*.pem /tmp
 
 sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
+```
 
-# Insert portal as recognized CH tool
+# 8. Insert portal as recognized CH tool
 PORTAL_URN="urn:publicid:IDN+$CH_HOST+authority+portal"
 $PSQL -c "insert into ma_client (client_name, client_urn) values ('portal', '$PORTAL_URN')"
 
+# 9. Restart HTTPD service
+```bash
 sudo systemctl restart httpd.service
+```
