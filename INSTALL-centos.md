@@ -48,11 +48,12 @@ get fleshed out.
 
 # 3. InstallSHIB SW [This should be done from an RPM...]
 # <*** From development machine ***>
+```bash
 export PORTAL_HOST=aptvm072-1.apt.emulab.net
 cd ~/shib
 /usr/bin/rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' \
                --exclude '#*#' --exclude '.#*' ../shib $PORTAL_HOST:
-
+```
 
 # 3b. Prep shib. No longer need prep-shib-centos.sh
 ln -s ~/shib /tmp
