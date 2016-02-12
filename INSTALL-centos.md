@@ -33,9 +33,11 @@ sudo yum install -y --nogpgcheck geni-portal
 
 
 # Add a line mapping public facing IP address to fully-qualified domain name:
+```bash
 cp /etc/hosts /tmp/hosts
 echo "`hostname -i`  `hostname -f`" >> /tmp/hosts
 sudo cp /tmp/hosts /etc/hosts
+```
 
 -----
 
