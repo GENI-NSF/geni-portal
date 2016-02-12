@@ -27,7 +27,8 @@ dependencies that are in the EPEL repository.
 
 ```shell
 sudo yum install -y epel-release
-sudo yum install -y geni-portal
+sudo yum install -y --nogpgcheck geni-portal
+
 ```
 
 -----
