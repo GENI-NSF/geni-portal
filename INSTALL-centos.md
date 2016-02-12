@@ -78,7 +78,7 @@ sudo cp *.css *.js *.html *.gif *.png /var/www/eds
 ```bash
 sudo cp /usr/share/geni-ch/templates/parameters.json \
         /etc/geni-ch/parameters.json
-# Edit parameters.json [Especially note portal_host, ch_host and db_host]
+# Edit /etc/geni-ch/parameters.json [Especially note portal_host, ch_host and db_host]
 sudo /sbin/geni-portal-install-templates
 ```
 
