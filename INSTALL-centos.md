@@ -31,16 +31,18 @@ sudo yum install -y --nogpgcheck geni-portal
 
 ```
 
+
+# Add a line mapping public facing IP address to fully-qualified domain name:
+cp /etc/hosts /tmp/hosts
+echo "`hostname -i`  `hostname -f`" >> /tmp/hosts
+sudo cp /tmp/hosts /etc/hosts
+
 -----
 
 Below here needs work. Move this marker down as more of the instructions
 get fleshed out.
 
 -----
-
-# If needed, add an entry (CNAME) for the host in /etc/hosts
-
-Explain this. Need a fully qualified domain name.
 
 # 3. InstallSHIB SW [This should be done from an RPM...]
 # <*** From development machine ***>
