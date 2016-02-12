@@ -49,12 +49,17 @@ get fleshed out.
 
 # 3. Install Shibboleth Software [This should be done from an RPM...]
 # <*** From development machine ***>
+# For now, we're not copying, just seeing what we need in subsequent steps.
 ```bash
 export PORTAL_HOST=`hostname -f`
 cd ~/shib
 /usr/bin/rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' \
                --exclude '#*#' --exclude '.#*' ../shib $PORTAL_HOST:
 ```
+
+# 3a. Edit shibbolet attribute-map.xml
+Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
+below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
 
 # 3b. Prep shib. No longer need prep-shib-centos.sh
 ln -s ~/shib /tmp
