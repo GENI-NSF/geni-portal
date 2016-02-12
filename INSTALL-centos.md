@@ -67,7 +67,7 @@ sudo /sbin/geni-portal-install-templates
 sudo /tmp/install-sp-centos.sh
 
 # 6. Set up SP with IDP
-# <*** From Development machine *** > 
+# <*** From Development machine *** >
 
 export IDP_HOST=cetaganda.gpolab.bbn.com
 wget https://$PORTAL_HOST/Shibboleth.sso/Metadata --no-check-certificate
@@ -75,7 +75,7 @@ scp Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
 
 # <*** From $IDP_HOST ***>
 
-If adding a new server add an entry like this to 
+If adding a new server add an entry like this to
 /opt/shibboleth-idp/conf/relying-party.xml:
 
   <metadata:MetadataProvider xsi:type="FilesystemMetadataProvider"
