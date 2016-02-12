@@ -1,42 +1,38 @@
-# 0. Update yum
+# Ensure OS is up to date
 
+```shell
 sudo yum update -y
+```
 
-# 1. Install dependencies
+# Add yum repositories
 
-# Set up repo for shibboleth
+Add Shibboleth repository:
+
+```shell
 wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo
 sudo cp security\:shibboleth.repo /etc/yum.repos.d/
+```
 
-# Set up repo for GENI packages
+Add GENI repository:
+
+```shell
 wget http://www.gpolab.bbn.com/experiment-support/gposw/centos/geni.repo
 sudo cp geni.repo /etc/yum.repos.d/
+```
 
-sudo yum install -y automake autoconf
-sudo yum install -y emacs-nox git texinfo
-sudo yum install -y python-sqlalchemy python-psycopg2 postgresql
-sudo yum install -y httpd mod_ssl
-sudo yum install -y shibboleth
-sudo yum install -y php php-pear php-pgsql
-sudo yum install -y php-xmlrpc
-sudo yum install -y --nogpgcheck geni-tools
+# Install portal
 
+These must be done separately in order to fullfill the geni-portal
+dependencies that are in the EPEL repository.
+
+```shell
 sudo yum install -y epel-release
-sudo yum install -y php-pear-MDB2 php-pear-MDB2-Driver-pgsql
-
+sudo yum install -y geni-portal
+```
 
 # If needed, add an entry (CNAME) for the host in /etc/hosts
 
-
-#2. Install Portal software [This should be done from an RPM...]
-
-git clone https://github.com/tcmitchell/geni-portal.git
-cd geni-portal
-git checkout transition
-./autogen.sh
-./configure --prefix=/usr --sysconfdir=/etc
-make
-sudo make install
+Explain this. Need a fully qualified domain name.
 
 # 3. InstallSHIB SW [This should be done from an RPM...]
 # <*** From development machine ***>
