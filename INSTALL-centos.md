@@ -108,7 +108,8 @@ sudo cp /tmp/$PORTAL_HOST-metadata.xml /opt/shibboleth-idp/metadata
 sudo service tomcat6 restart
 
 
-# Install GENI PORTAL tables
+# 7. Install GENI PORTAL tables
+```bash
 DB_HOST=`geni-portal-install-templates --print_parameter db_host`
 DB_USER=`geni-portal-install-templates --print_parameter db_user`
 DB_DATABASE=`geni-portal-install-templates --print_parameter db_name`
@@ -119,8 +120,9 @@ chmod 0600 ~/.pgpass
 
 $PSQL -f /usr/share/geni-ch/portal/db/postgresql/schema.sql
 $PSQL -f /usr/share/geni-ch/km/db/postgresql/schema.sql
+```
 
-# 7. Install km and portal certs from CH machine
+# 8. Install km and portal certs from CH machine
 ```bash
 CH_HOST=`geni-portal-install-templates --print_parameter ch_host`
 scp $CH_HOST:/usr/share/geni-ch/portal/portal-*.pem /tmp
@@ -130,11 +132,13 @@ sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 ```
 
-# 8. Insert portal as recognized CH tool
+# 9. Insert portal as recognized CH tool
+```bash
 PORTAL_URN="urn:publicid:IDN+$CH_HOST+authority+portal"
 $PSQL -c "insert into ma_client (client_name, client_urn) values ('portal', '$PORTAL_URN')"
+```
 
-# 9. Restart HTTPD service
+# 10. Restart HTTPD service
 ```bash
 sudo systemctl restart httpd.service
 ```
