@@ -1,6 +1,6 @@
 # Ensure OS is up to date
 
-```shell
+```bash
 sudo yum update -y
 ```
 
