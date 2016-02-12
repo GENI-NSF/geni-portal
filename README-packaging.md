@@ -2,7 +2,7 @@
 
 The geni-portal distribution includes the information needed to build an
 rpm package. In order to build the package you must first install
-the rpm packaging tools. On CentOS 6 and 7, the tools can be
+the rpm packaging tools. On CentOS 7, the tools can be
 installed with the following commands:
 
 ```
@@ -23,7 +23,7 @@ Once the tar file has been downloaded,
 follow these steps to build the package:
 
 ```
-VERSION=2.2
+VERSION=3.11
 tar zxf geni-ch-${VERSION}.tar.gz
 mv geni-ch-${VERSION}.tar.gz "${HOME}"/rpmbuild/SOURCES
 mv geni-ch-${VERSION}/geni-portal.spec "${HOME}"/rpmbuild/SPECS
