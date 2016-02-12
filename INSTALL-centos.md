@@ -30,6 +30,13 @@ sudo yum install -y epel-release
 sudo yum install -y geni-portal
 ```
 
+-----
+
+Below here needs work. Move this marker down as more of the instructions
+get fleshed out.
+
+-----
+
 # If needed, add an entry (CNAME) for the host in /etc/hosts
 
 Explain this. Need a fully qualified domain name.
