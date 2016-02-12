@@ -46,10 +46,10 @@ get fleshed out.
 
 -----
 
-# 3. InstallSHIB SW [This should be done from an RPM...]
+# 3. Install Shibboleth Software [This should be done from an RPM...]
 # <*** From development machine ***>
 ```bash
-export PORTAL_HOST=aptvm072-1.apt.emulab.net
+export PORTAL_HOST=`hostname -f`
 cd ~/shib
 /usr/bin/rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' \
                --exclude '#*#' --exclude '.#*' ../shib $PORTAL_HOST:
