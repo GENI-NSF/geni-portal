@@ -89,20 +89,6 @@ sudo mkdir -p /var/www/eds
 sudo cp *.css *.js *.html *.gif *.png /var/www/eds
 
 ```
-# 3d. Connect Shib SP to IDP
-
-```
-scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /etc/shibboleth/$IDP_HOST-idp-metadata.xml 
-```
-
-Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
-
-'''
-       <!-- trust the identity provider at $IDP_HOST -->
-        <MetadataProvider type="XML"
-                          file="idp-metadata-$IDP_HOST.xml"/>
-'''
-
 
 # 4. Set up Variables
 ```bash
@@ -141,6 +127,21 @@ If adding a new server, add an entry like this to
 sudo cp /tmp/$PORTAL_HOST-metadata.xml /opt/shibboleth-idp/metadata
 sudo service tomcat6 restart
 ```
+
+```
+# On portal host:
+scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /etc/shibboleth/$IDP_HOST-idp-metadata.xml 
+```
+
+Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
+
+```
+       <!-- trust the identity provider at $IDP_HOST -->
+        <MetadataProvider type="XML"
+                          file="idp-metadata-$IDP_HOST.xml"/>
+```
+
+
 
 # 7. Install GENI PORTAL tables
 ```bash
