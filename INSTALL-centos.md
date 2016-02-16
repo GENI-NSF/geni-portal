@@ -1,10 +1,24 @@
-# Ensure OS is up to date
+# Introduction
+
+For installing the GENI Portal Software, shell windows on three servers are required:
+ * The Portal host 
+ * The IdP host
+ * The development host (from which the user can scp from/to the other hosts)
+
+Unless specified otherwise, all commands are to be done on the Portal host.
+
+In addition, these environment variables must be defined on the appropriate windows referring to the addresses of the given host:
+ * $PORTAL_HOST : the address of the host on which we're installing the GENI Portal
+ * $CH_HOST : the address of the GENI Clearinghouse to which the Portal is being associated
+ * $IDP_HOST : The address of the IdP (Identity Provider) to which the Portal is being associated
+
+# Install Portal Software
+
+Ensure OS is up to date
 
 ```bash
 sudo yum update -y
 ```
-
-# Add yum repositories
 
 Add Shibboleth repository:
 
@@ -20,7 +34,7 @@ wget http://www.gpolab.bbn.com/experiment-support/gposw/centos/geni.repo
 sudo cp geni.repo /etc/yum.repos.d/
 ```
 
-# Install portal
+Install GENI portal software
 
 These must be done separately in order to fullfill the geni-portal
 dependencies that are in the EPEL repository.
@@ -39,7 +53,7 @@ sudo reboot
 ```
 
 
-# Map public facing IP address to fully-qualified domain name:
+Map public facing IP address to fully-qualified domain name:
 
 ```bash
 cp /etc/hosts /tmp/hosts
@@ -47,16 +61,10 @@ echo "`hostname -i`  `hostname -f`" >> /tmp/hosts
 sudo cp /tmp/hosts /etc/hosts
 ```
 
------
-
-Below here needs work. Move this marker down as more of the instructions
-get fleshed out.
-
------
 
 # 3. Install Shibboleth Software [This should be done from an RPM...]
-# <*** From development machine ***>
-# For now, we're not copying, just seeing what we need in subsequent steps.
+<*** From development machine ***>
+For now, we're not copying, just seeing what we need in subsequent steps.
 ```bash
 export PORTAL_HOST=`hostname -f`
 cd ~/shib
@@ -64,7 +72,7 @@ cd ~/shib
                --exclude '#*#' --exclude '.#*' ../shib $PORTAL_HOST:
 ```
 
-# 3a. Edit shibbolet attribute-map.xml
+# 3a. Edit shibboleth attribute-map.xml
 Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
 below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
 
@@ -79,7 +87,22 @@ tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 cd shibboleth-embedded-ds-1.1.0-geni.3
 sudo mkdir -p /var/www/eds
 sudo cp *.css *.js *.html *.gif *.png /var/www/eds
+
 ```
+# 3d. Connect Shib SP to IDP
+
+```
+scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /etc/shibboleth/$IDP_HOST-idp-metadata.xml 
+```
+
+Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
+
+'''
+       <!-- trust the identity provider at $IDP_HOST -->
+        <MetadataProvider type="XML"
+                          file="idp-metadata-$IDP_HOST.xml"/>
+'''
+
 
 # 4. Set up Variables
 ```bash
@@ -95,16 +118,15 @@ sudo /tmp/install-sp-centos.sh
 ```
 
 # 6. Set up SP with IDP
-# <*** From Development machine *** >
 
 ```bash
+# On development host:
 export IDP_HOST=cetaganda.gpolab.bbn.com
 wget https://$PORTAL_HOST/Shibboleth.sso/Metadata --no-check-certificate
 scp Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
 ```
 
-# <*** From $IDP_HOST ***>
-
+On IDP host:
 If adding a new server, add an entry like this to
 /opt/shibboleth-idp/conf/relying-party.xml:
 
