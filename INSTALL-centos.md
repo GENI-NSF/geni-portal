@@ -136,10 +136,12 @@ $PSQL -f /usr/share/geni-ch/km/db/postgresql/schema.sql
 
 # 8. Install km and portal certs from CH machine
 ```bash
-CH_HOST=`geni-portal-install-templates --print_parameter ch_host`
+# On Development Host:
 scp $CH_HOST:/usr/share/geni-ch/portal/portal-*.pem /tmp
 scp $CH_HOST:/usr/share/geni-ch/km/km-*.pem /tmp
+scp /tmp/portal-*.pem /tmp/km-*.pem $PORTAL_HOST:/tmp
 
+# On Portal Host:
 sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 ```
