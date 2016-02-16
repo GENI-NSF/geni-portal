@@ -128,13 +128,13 @@ sudo service tomcat6 restart
 
 ```
 # On development host:
-scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /tmp/$IDP_HOST-idp-metadata.xml 
-scp /tmp/$IDP_HOST-idp-metadata.xml $PORTAL_HOST:/tmp
+scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /tmp/idp-metadata-$IDP_HOST.xml 
+scp /tmp/idp-metadata-$IDP_HOST.xml $PORTAL_HOST:/tmp
 ```
 
 ``` 
 # On portal host:
-sudo cp /tmp/$IDP_HOST-idp-metadata.xml /etc/shibboleth
+sudo cp /tmp/idp-metadata-$IDP_HOST.xml /etc/shibboleth
 
 Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
 
