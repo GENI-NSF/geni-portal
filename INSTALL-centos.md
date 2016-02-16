@@ -101,10 +101,12 @@ scp Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
 If adding a new server, add an entry like this to
 /opt/shibboleth-idp/conf/relying-party.xml:
 
+```
   <metadata:MetadataProvider xsi:type="FilesystemMetadataProvider"
     xmlns="urn:mace:shibboleth:2.0:metadata"
     id="$PORTAL_HOST-metadata"
     metadataFile="/opt/shibboleth-idp/metadata/$PORTAL_HOST-metadata.xml"/>
+```
 
 ```bash
 sudo cp /tmp/$PORTAL_HOST-metadata.xml /opt/shibboleth-idp/metadata
