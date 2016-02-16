@@ -120,9 +120,8 @@ scp Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
     xmlns="urn:mace:shibboleth:2.0:metadata"
     id="$PORTAL_HOST-metadata"
     metadataFile="/opt/shibboleth-idp/metadata/$PORTAL_HOST-metadata.xml"/>
-```
 
-```bash
+
 sudo cp /tmp/$PORTAL_HOST-metadata.xml /opt/shibboleth-idp/metadata
 sudo service tomcat6 restart
 ```
@@ -139,7 +138,6 @@ sudo cp /tmp/$IDP_HOST-idp-metadata.xml /etc/shibboleth
 
 Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
 
-```
        <!-- trust the identity provider at $IDP_HOST -->
         <MetadataProvider type="XML"
                           file="idp-metadata-$IDP_HOST.xml"/>
