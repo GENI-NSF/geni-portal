@@ -31,6 +31,13 @@ sudo yum install -y --nogpgcheck geni-portal
 
 ```
 
+# If using an APT Centos7 image, do this:
+```bash
+sudo yum reinstall polkit\* power
+
+sudo reboot
+```
+
 
 # Map public facing IP address to fully-qualified domain name:
 
