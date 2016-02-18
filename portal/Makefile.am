@@ -139,6 +139,7 @@ dist_svcweb_DATA = \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
 	www/portal/edit-slice.php \
+	www/portal/env.php \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
