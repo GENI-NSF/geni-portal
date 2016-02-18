@@ -47,7 +47,7 @@ sudo yum install -y --nogpgcheck geni-portal
 
 ```bash
 # If using an APT Centos7 image, do this:
-sudo yum reinstall polkit\* power
+sudo yum reinstall -y polkit\* power
 sudo reboot
 ```
 
