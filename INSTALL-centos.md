@@ -7,7 +7,7 @@ For installing the GENI Portal Software, shell windows on three servers are requ
 
 Unless specified otherwise, all commands are to be done on the Portal host.
 
-In addition, these environment variables must be defined on the appropriate windows referring to the addresses of the given host:
+In addition, these environment variables must be defined on the appropriate windows referring to the addresses of the given hosts:
  * $PORTAL_HOST : the address of the host on which we're installing the GENI Portal
  * $CH_HOST : the address of the GENI Clearinghouse to which the Portal is being associated
  * $IDP_HOST : The address of the IdP (Identity Provider) to which the Portal is being associated
@@ -106,7 +106,6 @@ sudo /tmp/install-sp-centos.sh
 
 ```bash
 # On development host:
-export IDP_HOST=cetaganda.gpolab.bbn.com
 wget -O /tmp/Metadata https://$PORTAL_HOST/Shibboleth.sso/Metadata --no-check-certificate
 scp /tmp/Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
 ```
