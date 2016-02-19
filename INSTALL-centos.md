@@ -46,10 +46,25 @@ sudo yum install -y --nogpgcheck geni-portal
 ```
 
 ```bash
-# If using an APT Centos7 image, do this:
+# IF there are updates on a development machine not in the RPM, do this:
+
+# On development machine:
+rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' --exclude '#*#' \
+--exclude '.#*' ~/geni-portal $PORTAL_HOST:
+
+# On portal host:
+sudo yum install -y texinfo # One-time
+ln -s ~/geni-portal ~/proto-ch # One-time
+ ~/geni-portal/bin/do-make-install.sh
+```
+
+
+```bash
+# IF using an APT Centos7 image, do this:
 sudo yum reinstall -y polkit\* power
 sudo reboot
 ```
+
 
 
 Map public facing IP address to fully-qualified domain name:
