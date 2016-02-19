@@ -7,7 +7,7 @@ For installing the GENI Portal Software, shell windows on three servers are requ
 
 Unless specified otherwise, all commands are to be done on the Portal host.
 
-In addition, these environment variables must be defined on the appropriate windows referring to the addresses of the given host:
+In addition, these environment variables must be defined on the appropriate windows referring to the addresses of the given hosts:
  * $PORTAL_HOST : the address of the host on which we're installing the GENI Portal
  * $CH_HOST : the address of the GENI Clearinghouse to which the Portal is being associated
  * $IDP_HOST : The address of the IdP (Identity Provider) to which the Portal is being associated
@@ -46,10 +46,25 @@ sudo yum install -y --nogpgcheck geni-portal
 ```
 
 ```bash
-# If using an APT Centos7 image, do this:
-sudo yum reinstall polkit\* power
+# IF there are updates on a development machine not in the RPM, do this:
+
+# On development machine:
+rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' --exclude '#*#' \
+--exclude '.#*' ~/geni-portal $PORTAL_HOST:
+
+# On portal host:
+sudo yum install -y texinfo # One-time
+ln -s ~/geni-portal ~/proto-ch # One-time
+ ~/geni-portal/bin/do-make-install.sh
+```
+
+
+```bash
+# IF using an APT Centos7 image, do this:
+sudo yum reinstall -y polkit\* power
 sudo reboot
 ```
+
 
 
 Map public facing IP address to fully-qualified domain name:
@@ -61,25 +76,16 @@ sudo cp /tmp/hosts /etc/hosts
 ```
 
 
-# 3. Install Shibboleth Software [This should be done from an RPM...]
-<*** From development machine ***>
-For now, we're not copying, just seeing what we need in subsequent steps.
-```bash
-export PORTAL_HOST=`hostname -f`
-cd ~/shib
-/usr/bin/rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' \
-               --exclude '#*#' --exclude '.#*' ../shib $PORTAL_HOST:
-```
+# 3. Install Shibboleth Software 
 
+```
 # 3a. Edit shibboleth attribute-map.xml
 Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
 below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
+```
 
-# 3b. Prep shib. No longer need prep-shib-centos.sh
-ln -s ~/shib /tmp
-
-# 3c. Install Embedded Discovery Service
 ```bash
+# 3b. Install Embedded Discovery Service
 cd /tmp
 wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
@@ -93,7 +99,7 @@ sudo cp *.css *.js *.html *.gif *.png /var/www/eds
 ```bash
 sudo cp /usr/share/geni-ch/templates/parameters.json \
         /etc/geni-ch/parameters.json
-# Edit /etc/geni-ch/parameters.json [Especially note portal_host, ch_host and db_host]
+# Edit /etc/geni-ch/parameters.json [Especially note portal_host, ch_host, db_host and idp_host]
 sudo /sbin/geni-portal-install-templates
 ```
 
@@ -106,9 +112,8 @@ sudo /tmp/install-sp-centos.sh
 
 ```bash
 # On development host:
-export IDP_HOST=cetaganda.gpolab.bbn.com
-wget https://$PORTAL_HOST/Shibboleth.sso/Metadata --no-check-certificate
-scp Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
+wget -O /tmp/Metadata https://$PORTAL_HOST/Shibboleth.sso/Metadata --no-check-certificate
+scp /tmp/Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
 ```
 
 ```
@@ -134,13 +139,9 @@ scp /tmp/idp-metadata-$IDP_HOST.xml $PORTAL_HOST:/tmp
 
 ``` 
 # On portal host:
-sudo cp /tmp/idp-metadata-$IDP_HOST.xml /etc/shibboleth
-
-Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
-
-       <!-- trust the identity provider at $IDP_HOST -->
-        <MetadataProvider type="XML"
-                          file="idp-metadata-$IDP_HOST.xml"/>
+# Add host-specific extensions to IDP metadata for GENI logo, name, etc.
+sed -e "/<Extensions>/r /tmp/idp-metadata-extension.xml" /tmp/idp-metadata-$IDP_HOST.xml > /tmp/idp-metadata-$IDP_HOST.extended.xml
+sudo cp /tmp/idp-metadata-$IDP_HOST.extended.xml /etc/shibboleth/idp-metadata-$IDP_HOST.xml
 ```
 
 
@@ -171,13 +172,7 @@ sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 ```
 
-# 9. Insert portal as recognized CH tool
-```bash
-PORTAL_URN="urn:publicid:IDN+$CH_HOST+authority+portal"
-$PSQL -c "insert into ma_client (client_name, client_urn) values ('portal', '$PORTAL_URN')"
-```
-
-# 10. Restart HTTPD service
+# 9. Restart HTTPD service
 ```bash
 sudo systemctl restart httpd.service
 ```
