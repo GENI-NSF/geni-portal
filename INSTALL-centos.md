@@ -84,7 +84,7 @@ sudo cp *.css *.js *.html *.gif *.png /var/www/eds
 ```bash
 sudo cp /usr/share/geni-ch/templates/parameters.json \
         /etc/geni-ch/parameters.json
-# Edit /etc/geni-ch/parameters.json [Especially note portal_host, ch_host and db_host]
+# Edit /etc/geni-ch/parameters.json [Especially note portal_host, ch_host, db_host and idp_host]
 sudo /sbin/geni-portal-install-templates
 ```
 
@@ -127,12 +127,6 @@ scp /tmp/idp-metadata-$IDP_HOST.xml $PORTAL_HOST:/tmp
 # Add host-specific extensions to IDP metadata for GENI logo, name, etc.
 sed -e "/<Extensions>/r /tmp/idp-metadata-extension.xml" /tmp/idp-metadata-$IDP_HOST.xml > /tmp/idp-metadata-$IDP_HOST.extended.xml
 sudo cp /tmp/idp-metadata-$IDP_HOST.extended.xml /etc/shibboleth/idp-metadata-$IDP_HOST.xml
-
-Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
-
-       <!-- trust the identity provider at $IDP_HOST -->
-        <MetadataProvider type="XML"
-                          file="idp-metadata-$IDP_HOST.xml"/>
 ```
 
 
