@@ -109,6 +109,7 @@ sudo /tmp/install-sp-centos.sh
 export IDP_HOST=cetaganda.gpolab.bbn.com
 wget https://$PORTAL_HOST/Shibboleth.sso/Metadata --no-check-certificate
 scp Metadata $IDP_HOST:/tmp/$PORTAL_HOST-metadata.xml
+rm Metadata
 ```
 
 ```
