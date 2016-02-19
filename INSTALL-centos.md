@@ -134,7 +134,9 @@ scp /tmp/idp-metadata-$IDP_HOST.xml $PORTAL_HOST:/tmp
 
 ``` 
 # On portal host:
-sudo cp /tmp/idp-metadata-$IDP_HOST.xml /etc/shibboleth
+# Add host-specific extensions to IDP metadata for GENI logo, name, etc.
+sed -e "/<Extensions>/r /tmp/idp-metadata-extension.xml" /tmp/idp-metadata-$IDP_HOST.xml > /tmp/idp-metadata-$IDP_HOST.extended.xml
+sudo cp /tmp/idp-metadata-$IDP_HOST.extended.xml /etc/shibboleth/idp-metadata-$IDP_HOST.xml
 
 Edit /etc/shibboleth/shibboleth2.xml to add <MetadataProvider> data for IDP:
 
