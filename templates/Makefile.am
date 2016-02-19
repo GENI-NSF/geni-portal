@@ -2,6 +2,7 @@
 templatesdir = $(pkgdatadir)/templates
 
 dist_templates_DATA = \
+	idp-metadata-extension.xml.tmpl \
 	install-sp-centos.sh.tmpl \
 	parameters.json \
 	portal-ssl.conf.tmpl \

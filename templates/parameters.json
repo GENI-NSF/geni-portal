@@ -30,6 +30,10 @@
 	      "doc" : "Nost of PORTAL database instance"
 	   },
 	   {
+	      "name" : "idp_host",
+	      "doc" : "Nost of IdP host to which PORTAL authenticates"
+	   },
+	   {
 	      "name" : "db_name",
 	      "default" : "portal",
 	      "doc" : "Name of PORTAL database instance"

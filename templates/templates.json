@@ -38,6 +38,13 @@
 	      "destination" : "/etc/httpd/conf.d/portal-ssl.conf",
 	      "owner" : "root:root",
 	      "protection" : "0644"
+           },
+	   {
+	      "doc" : "Extensions to IDP Metadata for GENI labels/images at EDS",
+	      "source" : "idp-metadata-extension.xml.tmpl",
+	      "destination" : "/tmp/idp-metadata-extension.xml",
+	      "owner" : "root:root",
+	      "protection" : "0644"
            }
        ]
 }

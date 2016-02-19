@@ -91,9 +91,9 @@
         <!--
         <MetadataProvider type="XML" file="partner-metadata.xml"/>
         -->
-        <!-- trust the identity provider at cetaganda.gpolab.bbn.com -->
+        <!-- trust the identity provider at @idp_host@ -->
         <MetadataProvider type="XML"
-                          file="idp-metadata-cetaganda.xml"/>
+                          file="idp-metadata-@idp_host@.xml"/>
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" path="attribute-map.xml"/>

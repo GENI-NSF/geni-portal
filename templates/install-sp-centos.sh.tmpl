@@ -56,46 +56,9 @@ cp portal-@portal_host@.key /etc/pki/tls/private
 cp portal-@portal_host@.csr /etc/pki/tls/private
 
 
-# Copy "default site" web files into place
-if [ -d common/www/localhost ]; then
-  cp -r common/www/localhost /var/www/localhost
-fi
-
-#----------------------------------------------------------------------
-# Configure Shibboleth SP
-#----------------------------------------------------------------------
-
-SHIB_SP_DIR=/tmp/shib/sp
-
-#-----
-# First, copy the common shibboleth config
-#-----
-if [ -d $SHIB_SP_DIR/common ]; then
-  if [ -d $SHIB_SP_DIR/common/shibboleth ]; then
-      mkdir -p /etc/shibboleth
-    cp $SHIB_SP_DIR/common/shibboleth/* /etc/shibboleth
-  fi
-fi
-
-#-----
-# Next, copy the host-specific shibboleth config files
-#-----
-GENI_APACHE_CONFIG_DIR=/usr/share/geni-ch/www
-mkdir -p $GENI_APACHE_CONFIG_DIR
-for d in $SHIB_SP_DIR/common/www/*; do
-  echo "Copying ${d} to $GENI_APACHE_CONFIG_DIR"
-  /bin/cp -R ${d} $GENI_APACHE_CONFIG_DIR
-done
 
 # Restart the Shib Daemon and apache
 service ntpd restart
 service shibd restart
 service httpd restart
 
-echo 'Check for HOST specific files - portal-ssl an'
-echo "Edit $HOST ch-ssl and portal-ssl files to point to correct addresses and names"
-echo 'Edit /etc/shibboleth/shibboleth2.xml'
-echo 'Then restart services'
-echo 'service ntpd restart'
-echo 'service shibd restart'
-echo 'service httpd restart'
