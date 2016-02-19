@@ -61,25 +61,16 @@ sudo cp /tmp/hosts /etc/hosts
 ```
 
 
-# 3. Install Shibboleth Software [This should be done from an RPM...]
-<*** From development machine ***>
-For now, we're not copying, just seeing what we need in subsequent steps.
-```bash
-export PORTAL_HOST=`hostname -f`
-cd ~/shib
-/usr/bin/rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' \
-               --exclude '#*#' --exclude '.#*' ../shib $PORTAL_HOST:
-```
+# 3. Install Shibboleth Software 
 
+```
 # 3a. Edit shibboleth attribute-map.xml
 Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
 below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
+```
 
-# 3b. Prep shib. No longer need prep-shib-centos.sh
-ln -s ~/shib /tmp
-
-# 3c. Install Embedded Discovery Service
 ```bash
+# 3b. Install Embedded Discovery Service
 cd /tmp
 wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
@@ -172,13 +163,7 @@ sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 ```
 
-# 9. Insert portal as recognized CH tool
-```bash
-PORTAL_URN="urn:publicid:IDN+$CH_HOST+authority+portal"
-$PSQL -c "insert into ma_client (client_name, client_urn) values ('portal', '$PORTAL_URN')"
-```
-
-# 10. Restart HTTPD service
+# 9. Restart HTTPD service
 ```bash
 sudo systemctl restart httpd.service
 ```
