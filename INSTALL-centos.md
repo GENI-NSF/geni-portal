@@ -60,6 +60,7 @@ ln -s ~/geni-portal ~/proto-ch # One-time
 
 
 ```bash
+# *** BBN ONLY ***
 # IF using an APT Centos7 image, do this:
 sudo yum reinstall -y polkit\* power
 sudo reboot
