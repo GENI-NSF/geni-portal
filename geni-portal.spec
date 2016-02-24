@@ -231,6 +231,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/portal/gcf/src/stitcher_php.pyc
 %{_datadir}/%{legacy_name}/portal/gcf/src/stitcher_php.pyo
 %{_datadir}/%{legacy_name}/sr/certs/genidesktop.netlab.uky.edu.pem
+%{_datadir}/%{legacy_name}/templates/idp-metadata-extension.xml.tmpl
 %{_datadir}/%{legacy_name}/templates/install-sp-centos.sh.tmpl
 %{_datadir}/%{legacy_name}/templates/parameters.json
 %{_datadir}/%{legacy_name}/templates/portal-ssl.conf.tmpl
@@ -478,6 +479,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/edit-project.php
 %{webdir}/secure/edit-slice-member.php
 %{webdir}/secure/edit-slice.php
+%{webdir}/secure/env.php
 %{webdir}/secure/error-text.php
 %{webdir}/secure/flack.css
 %{webdir}/secure/flack.php
