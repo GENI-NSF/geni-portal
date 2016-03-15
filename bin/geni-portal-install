@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Determine location of this script
+declare LOCATION
+LOCATION=$0
+LOCATION=${LOCATION%/*}
+
+# exit on error
+set -e
+
+# echo commands
+set -x
+
+cd "${LOCATION}"/..
+./autogen.sh
+./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
+    --sbindir=/usr/local/sbin --mandir=/usr/local/man
+make
+sudo make install
