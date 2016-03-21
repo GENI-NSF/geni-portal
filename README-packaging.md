@@ -8,6 +8,7 @@ installed with the following commands:
 ```
 yum install rpm-build rpmdevtools rpmlint
 yum groupinstall "Development Tools"
+yum install httd texinfo
 ```
 
 As a regular user (not root), set up an rpm build area:
@@ -19,7 +20,19 @@ rpmdev-setuptree
 Download the geni-ch tar file. Check for the file on the releases tab at
 the [GitHub project page](https://github.com/GENI-NSF/geni-portal).
 
-Once the tar file has been downloaded,
+Alternatively, instead of downloading the geni-ch tar file, you can create it as follows:
+```
+git clone https://github.com/GENI-NSF/geni-portal.git
+git checkout transition
+./autogen.sh
+./configure
+make dist
+cp geni-portal/geni-ch-3.11.tar.gz ~/rpmbuild/SOURCES
+cp geni-portal/geni-portal.spec ~/rpmbuild/SPECS
+rpmbuild -ba geni-portal.spec
+```
+
+Once the tar file has been downloaded or created,
 follow these steps to build the package:
 
 ```
