@@ -59,6 +59,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.allAms = allAms;
 
     this.selectedNodes = [];
+    this.selectedSites = [];
     this.currentTopology = null;
     this.nodeCounter = 0;
 
@@ -793,7 +794,22 @@ JacksEditorApp.prototype.appendToTopology = function(rspec) {
     for(var i = 0; i < new_nodes.length; i++) {
 	var new_node = new_nodes[i];
 	new_node = $(new_node).clone();
-	$(new_node).find('site').remove(); // Remove site from new nodes
+
+	// Remove site from new nodes, causing it to show up in new site
+	$(new_node).find('site').remove(); 
+
+	// If a single site is selected, and the node's site is not specified
+	// Otherwise, remove the site so that a new site is created.
+	if (this.selectedSites.length == 1) {
+	    if (this.selectedSites[0].urn == undefined) {
+		var site_name = this.selectedSites[0].id;
+		$(new_node).append('<site xmlns="http://www.protogeni.net/resources/rspec/ext/jacks/1" id = "' + site_name + '"/>');
+	    } else {
+		var site_cmid = this.selectedSites[0].urn;
+		$(new_node).attr('component_manager_id', site_cmid);
+	    }
+	}
+
 	$(current_rspec).append(new_node);
     }
 
@@ -943,6 +959,11 @@ JacksEditorApp.prototype.onSelectionEvent = function(event) {
     if (event.type == "node") {
 	// Node has key, name
 	this.selectedNodes = event.items;
+    } else if (event.type == 'site') {
+	this.selectedSites = event.items;
+    } else if (event.type == 'none') {
+	this.selectedSites = [];
+	this.selectedNodes = [];
     }
 }
 
