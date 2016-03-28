@@ -719,7 +719,7 @@ JacksEditorApp.prototype.handleDownload = function() {
  * Add new rspec to existing Jacks topology. Step 1 - Get current RSPEC.
  */
 JacksEditorApp.prototype.handleAppend = function(rspec) {
-    console.log("Append to topology: " + rspec);
+    //    console.log("Append to topology: " + rspec);
     this.appendingRspec = true;
     this.downloadingRspec = false;
     this.submittingRspec = false;
@@ -737,8 +737,8 @@ JacksEditorApp.prototype.appendToTopology = function(rspec) {
 
     var new_rspec = this.RspecToAppend;
     this.RspecToAppend = null;
-    console.log("Appending new rspec " + new_rspec);
-    console.log("To existing rspec " + rspec);
+    //    console.log("Appending new rspec " + new_rspec);
+    //    console.log("To existing rspec " + rspec);
 
     // Parse both rspecs
     current_doc = jQuery.parseXML(rspec)
@@ -877,7 +877,7 @@ JacksEditorApp.prototype.setTopology = function(rspec) {
     // Remove site tags if there are already component_manager_ids set on nodes
     rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
 
-    if (is_appending)
+    if (is_appending && !this.invoking_auto_ip)
 	this.handleAppend(rspec);
     else
 	this.jacksInput.trigger('change-topology', [{rspec: rspec}]);

@@ -33,7 +33,7 @@ function fileupload_onchange()
     clear_other_inputs('#file_select');
 
     // Enable/disable the auxiliary 'select' button depending on the rspec file
-    console.log("URF = " + user_rspec_file);
+    // console.log("URF = " + user_rspec_file);
     if(user_rspec_file)
 	$('#reapply_file_select').prop('disabled', false);
     else
@@ -359,8 +359,8 @@ function jacks_fetch_topology_callback(rspecs) {
       jacksEditorApp.invoking_global_node = false;
       do_global_node_addition_internal();
   } else if (jacksEditorApp.invoking_auto_ip) {
-      jacksEditorApp.invoking_auto_ip = false;
       do_auto_ip_assignment_internal();
+      jacksEditorApp.invoking_auto_ip = false;
   } else if (jacksEditorApp.invoking_selection_duplicate_nolinks) {
       jacksEditorApp.invoking_selection_duplicate_nolinks = false;
       do_selection_duplicate_internal(false);
