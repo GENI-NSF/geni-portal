@@ -139,8 +139,6 @@ dist_svcweb_DATA = \
 	www/portal/edit-slice-member.php \
 	www/portal/edit-slice.php \
 	www/portal/error-text.php \
-	www/portal/flack.css \
-	www/portal/flack.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/gemini_add_global_node.php \
