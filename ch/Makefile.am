@@ -6,6 +6,3 @@ nobase_dist_svcdata_DATA = \
 	www/favicon.ico \
 	www/cainfo.html \
 	www/salist.json
-
-# "cleandb" target is for compatibility, but nothing to do here.
-cleandb:

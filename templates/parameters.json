@@ -1,0 +1,63 @@
+{
+	"__doc__" : [
+	   "This file contains a list of parameters to be substituted into",
+	   "template files by the geni-install-templates program.", 
+	   "Each parameter has a name (to be matched against @X@ in the ",
+	   "template file). A default may be provided, in which case ",
+	   "the value is optional. Otherwise the value is required."
+	], 
+	"__parameters__" : [
+	   {
+	      "name" : "portal_cert_name",
+	      "default" : "portal-@portal_host@-cert.pem",
+	      "doc" : "SSL certificate file for Apache to front PORTAL host"
+	   },
+	   {
+	      "name" : "portal_key_name",
+	      "default" : "portal-@portal_host@-key.pem",
+	      "doc" : "SSL private key file for Apache to front PORTAL host"
+	   },
+	   {
+	      "name" : "portal_host",
+	      "doc" : "SSL private key file for Apache to front PORTAL host"
+	   },
+	   {
+	      "name" : "ch_host",
+	      "doc" : "Nost of CLEARINGHOUSE instance"
+	   },
+	   {
+	      "name" : "db_host",
+	      "doc" : "Nost of PORTAL database instance"
+	   },
+	   {
+	      "name" : "idp_host",
+	      "doc" : "Nost of IdP host to which PORTAL authenticates"
+	   },
+	   {
+	      "name" : "db_name",
+	      "default" : "portal",
+	      "doc" : "Name of PORTAL database instance"
+	   },
+	   {
+	      "name" : "db_pass",
+	      "value" : "portal",
+	      "doc" : "Password of PORTAL database user"
+	   },
+	   {
+	      "name" : "db_user",
+	      "default" : "portal",
+	      "doc" : "Name of PORTAL database user"
+	   },
+	   {
+	      "name" : "pkgdatadir",
+	      "default" : "/usr/share/geni-ch",
+	      "doc" : "Directory root in which PORTAL data files are installed"
+	   },
+	   {
+	      "name" : "pkgsysconfdir",
+	      "default" : "/etc/geni-ch",
+	      "doc" : "Name of location of system config files"
+	   }
+
+	]
+}

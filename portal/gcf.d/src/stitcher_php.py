@@ -26,11 +26,16 @@
 import string
 import sys
 #import gcf.oscript as omni
-import stitcher
 import os.path
 from optparse import OptionParser
 import json
 import time
+
+try:
+  import stitcher
+except ImportError:
+  import imp
+  stitcher = imp.load_source('stitcher', '/bin/stitcher')
 
 def main(argv=None):
 
