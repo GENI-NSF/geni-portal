@@ -700,4 +700,10 @@ function make_project_actions_dropdown($project_id, $expired) {
   </section>
 </div>
 
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#aggtable').DataTable({paging: false});
+  });
+</script>
+
 <?php include("footer.php"); ?>

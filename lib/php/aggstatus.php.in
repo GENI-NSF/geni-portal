@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 
 $AM_STATUS_FILE = "@pkgsysconfdir@/am-status.json";
+$AM_STATUS_MON_FILE = "@pkgsysconfdir@/am-status-mon.json";
 
 /**
  * Load a mapping from URN to status. This is a JSON file,
@@ -62,7 +63,7 @@ function status_to_display($status)
       $result = "Down";
       break;
     default:
-      $result = "Uknown";
+      $result = "Unknown";
   }
   return $result;
 }
@@ -82,8 +83,8 @@ function status_to_icon($status)
       $icon = "report";
       break;
     default:
-      $color =  "#FBC02D";
-      $icon = "warning";
+      $color =  "#000000";
+      $icon = "help";
   }
   $result = "<i class='material-icons' style='color:$color;'>$icon</i>";
   return $result;
@@ -96,7 +97,7 @@ function status_display($status)
   return "$icon $pretty_status";
 }
 
-function make_agg_row($agg, $status_data)
+function make_agg_row($agg, $status_data, $status2_data)
 {
   $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
   $urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
@@ -105,10 +106,16 @@ function make_agg_row($agg, $status_data)
     $status = $status_data[$urn];
   }
   $status_cell = status_display($status);
+  $status2 = "?";
+  if (array_key_exists($urn, $status2_data)) {
+    $status2 = $status2_data[$urn];
+  }
+  $status2_cell = status_display($status2);
 
   $row = '<tr>';
   $row .= "<td>$name</td>";
   $row .= "<td>$status_cell</td>";
+  $row .= "<td>$status2_cell</td>";
   $row .= '</tr>';
   return $row;
 }
@@ -125,20 +132,26 @@ function cmp_aggs($a, $b) {
 
 function agg_status_table() {
   global $AM_STATUS_FILE;
+  global $AM_STATUS_MON_FILE;
 
   $aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   usort($aggs, "cmp_aggs");
 
   $status_data = load_am_status($AM_STATUS_FILE);
+  $status_mon_data = load_am_status($AM_STATUS_MON_FILE);
 
   $table_rows = array();
   foreach ($aggs as $am) {
-    $table_rows[] = make_agg_row($am, $status_data);
+    $table_rows[] = make_agg_row($am, $status_data, $status_mon_data);
   }
 
   $result = "<table id='aggtable'>";
   $result .= "<thead>";
-  $result .= "<tr><th>Name &#x2191;&#x2193;</th><th>AM API Status &#x2191;&#x2193;</th></tr>";
+  $result .= "<tr>";
+  $result .= "<th>Name &#x2191;&#x2193;</th>";
+  $result .= "<th>AM API Status &#x2191;&#x2193;</th>";
+  $result .= "<th>Monitoring Status &#x2191;&#x2193;</th>";
+  $result .= "</tr>";
   $result .= "</thead>";
   $result .= "<tbody>";
   foreach ($table_rows as $row) {
@@ -152,10 +165,17 @@ function agg_status_table() {
 function agg_status_legend() {
   $result = '';
   $result .= '<dl>';
-  $result .= '<dt>' . status_display("up") . '</dt>';
-  $result .= '<dd>Responding to GENI AM API calls</dd>';
-  $result .= '<dt>' . status_display("down") . '</dt>';
-  $result .= '<dd>Failed to respond to GENI AM API calls when last checked</dd>';
+  $result .= '<dt>AM API Status</dt>';'</dt>';
+  $result .= '<dd>';
+  $result .=    status_display("up") . ': Responding to GENI AM API calls <br/>';
+  $result .=    status_display("down") . ': Failed to respond to GENI AM API calls when last checked';
+  $result .= '</dd>';
+  $result .= '<dt>Monitoring Status</dt>';
+  $result .= '<dd>';
+  $result .=    status_display("up") . ': Reported as up to GENI monitoring <br/>';
+  $result .=    status_display("down") . ': Reported as down to GENI monitoring <br/>';
+  $result .=    status_display("unknown") . ': Status not known by GENI monitoring';
+  $result .= '</dd>';
   $result .= '</dl>';
   return $result;
 }
