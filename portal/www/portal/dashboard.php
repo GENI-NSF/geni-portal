@@ -35,7 +35,7 @@ require_once("cs_client.php");
 require_once("proj_slice_member.php");
 require_once("services.php");
 require_once("user-preferences.php");
-
+require_once("aggstatus.php");
 
 $user = geni_loadUser();
 
@@ -344,6 +344,7 @@ function make_navigation_tabs() {
   print "<li><a class='tab' data-tabindex=2 data-tabname='projects' href='#projects'>Projects</a></li>";
   print "<li><a class='tab' data-tabindex=3 data-tabname='logs' href='#logs'>Logs</a></li>";
   print "<li><a class='tab' data-tabindex=4 data-tabname='map' href='#map' id='maptab'>Map</a></li>";
+  print "<li><a class='tab' data-tabindex=5 data-tabname='status' href='#status' id='statustab'>Status</a></li>";
   print "</ul></div>";
 }
 
@@ -686,6 +687,17 @@ function make_project_actions_dropdown($project_id, $expired) {
       <?php include("map.html"); ?>
     </td></tr>
   </table>
+</div>
+
+<div class='card' id='status'>
+  <h3>Aggregate Status</h3>
+  <div class='tablecontainer'>
+    <?php print agg_status_table(); ?>
+  </div>
+  <section>
+    <h3>Legend</h3>
+    <?php print agg_status_legend(); ?>
+  </section>
 </div>
 
 <?php include("footer.php"); ?>
