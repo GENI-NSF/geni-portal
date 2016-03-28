@@ -86,6 +86,3 @@ dist_svcdata_DATA = \
 # There are config.php files in the server-[in]direct directories.
 #pkgsysconfdir = $(sysconfdir)/geni-ch/openid
 #nobase_dist_pkgsysconf_DATA = etc/config.php.tmpl
-
-# For compatibility
-cleandb:

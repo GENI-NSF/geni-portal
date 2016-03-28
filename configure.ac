@@ -42,11 +42,23 @@ fi
 AC_MSG_RESULT($apache_group)
 AC_SUBST(apache_group)
 
+gpolab=yes
+AM_CONDITIONAL(GPO_LAB, [test x"$gpo_lab" = xyes])
+
+AC_ARG_ENABLE([gpo_lab],
+[  --enable-gpo-lab    Turn on GPO Lab modifications],
+[case "${enableval}" in
+  yes) gpo_lab=true ;;
+  no)  gpo_lab=false ;;
+  *) AC_MSG_ERROR([bad value ${enableval} for --enable-gpo-lab]) ;;
+esac],[gpo_lab=false])
+AM_CONDITIONAL([GPO_LAB], [test x$gpo_lab = xtrue])
+
 AM_CONDITIONAL(INSTALL_GITHASH, [test -f bin/geni-ch-githash])
 
 AC_CONFIG_FILES([Makefile etc/Makefile bin/Makefile])
 AC_CONFIG_FILES([sr/Makefile lib/Makefile])
 AC_CONFIG_FILES([kmtool/Makefile portal/Makefile openid/Makefile])
-AC_CONFIG_FILES([ca/Makefile sbin/Makefile ch/Makefile man/Makefile])
-AC_CONFIG_FILES([doc/Makefile])
+AC_CONFIG_FILES([sbin/Makefile ch/Makefile man/Makefile])
+AC_CONFIG_FILES([doc/Makefile templates/Makefile])
 AC_OUTPUT

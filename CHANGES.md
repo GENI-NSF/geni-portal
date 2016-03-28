@@ -4,6 +4,9 @@
 
 * Remove Flack
   ([#1676](https://github.com/GENI-NSF/geni-portal/issues/1676))
+* Support Adding an RSPEC from a File to an existing Jacks topology
+  ([#1660](https://github.com/GENI-NSF/geni-portal/issues/1660))
+
 
 # [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)
 

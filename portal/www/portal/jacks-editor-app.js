@@ -59,6 +59,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.allAms = allAms;
 
     this.selectedNodes = [];
+    this.selectedSites = [];
     this.currentTopology = null;
     this.nodeCounter = 0;
 
@@ -89,6 +90,12 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.verbose = false; // Print debug messages to console.log
 
+
+    // Counter for adding unique suffixes to conflicting names
+    this.name_counter = 0;
+    // Associative array for mapping original client-ids to revised client-ids
+    this.rename_mapping = [];
+
     this.sliceInfo = sliceInfo;
     this.sliceId = sliceInfo.slice_id;
     this.sliceUrn = sliceInfo.slice_urn;
@@ -97,6 +104,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.downloadingRspec = false;
     this.submittingRspec = false;
+    this.appendingRspec = true;
     this.passingContextToURL = null;
     this.invoking_auto_ip = false;
     this.invoking_global_node = false;
@@ -702,14 +710,164 @@ JacksEditorApp.prototype.handleSelect = function() {
  */
 JacksEditorApp.prototype.handleDownload = function() {
     this.downloadingRspec = true;
+    this.appendingRspec = false;
     this.submittingRspec = false;
     this.jacksInput.trigger('fetch-topology');
 };
 
 /**
+ * Add new rspec to existing Jacks topology. Step 1 - Get current RSPEC.
+ */
+JacksEditorApp.prototype.handleAppend = function(rspec) {
+    //    console.log("Append to topology: " + rspec);
+    this.appendingRspec = true;
+    this.downloadingRspec = false;
+    this.submittingRspec = false;
+    this.RspecToAppend = rspec;
+    this.jacksInput.trigger('fetch-topology');
+};
+
+/**
+ * Add new rspec to existing Jacks topology. 
+ * Step 2 - Add nodes/links of new rspec to existing RSPEC
+ * Changing names of nodes/links/interfaces as needed to avoid
+ * conflicts
+ */
+JacksEditorApp.prototype.appendToTopology = function(rspec) {
+
+    var new_rspec = this.RspecToAppend;
+    this.RspecToAppend = null;
+    //    console.log("Appending new rspec " + new_rspec);
+    //    console.log("To existing rspec " + rspec);
+
+    // Parse both rspecs
+    current_doc = jQuery.parseXML(rspec)
+    current_rspec = $(current_doc).find('rspec')[0]
+    new_doc = jQuery.parseXML(new_rspec)
+    new_rspec = $(new_doc).find('rspec')[0]
+
+    // Go through current RSPEC and keep track of all names
+    // of nodes/links/interfaces
+    var current_nodes = $(current_rspec).find('node');
+    var current_node_names = this.getListOfClientIds(current_nodes);
+    var current_links = $(current_rspec).find('link');
+    var current_link_names = this.getListOfClientIds(current_links);
+    var current_interfaces = $(current_rspec).find('interface');
+    var current_interface_names = this.getListOfClientIds(current_interfaces);
+
+    // Go through new RSPEC. 
+    // For each node, 
+    //    If client_id exists change to client_id + <counter++>
+    //    Add to currrent RSPEC
+    // For each link, 
+    //    if client_id exists, change to cient_id + <counter++>
+    //    Add to currrent RSPEC
+    // For each interaface, 
+    //    if client_id exists, change to cient_id + <counter++>
+    //    (Do note add to current RSPEC, is a child of node)
+    new_nodes = $(new_rspec).find('node');
+    for(var i = 0; i < new_nodes.length; i++) {
+	var new_node = new_nodes[i];
+	this.modifyName(new_node, current_node_names);
+    }
+
+    new_links = $(new_rspec).find('link');
+    for(var i = 0; i < new_links.length; i++) {
+	var new_link = new_links[i];
+	this.modifyName(new_link, current_link_names);
+    }
+
+    new_interfaces = $(new_rspec).find('interface');
+    for(var i = 0; i < new_interfaces.length; i++) {
+	var new_interface = new_interfaces[i];
+	this.modifyName(new_interface, current_interface_names);
+    }
+
+    new_interface_refs = $(new_rspec).find('interface_ref');
+    for(var i = 0; i < new_interface_refs.length; i++) {
+	var new_interface_ref = new_interface_refs[i];
+	this.modifyName(new_interface_ref, current_interface_names);
+    }
+
+    // Once we've changed the names, add clones of the new rspec nodes
+    // To the current rspec
+    for(var i = 0; i < new_nodes.length; i++) {
+	var new_node = new_nodes[i];
+	new_node = $(new_node).clone();
+
+	// Remove site from new nodes, causing it to show up in new site
+	$(new_node).find('site').remove(); 
+
+	// If a single site is selected, and the node's site is not specified
+	// Otherwise, remove the site so that a new site is created.
+	if (this.selectedSites.length == 1) {
+	    if (this.selectedSites[0].urn == undefined) {
+		var site_name = this.selectedSites[0].id;
+		$(new_node).append('<site xmlns="http://www.protogeni.net/resources/rspec/ext/jacks/1" id = "' + site_name + '"/>');
+	    } else {
+		var site_cmid = this.selectedSites[0].urn;
+		$(new_node).attr('component_manager_id', site_cmid);
+	    }
+	}
+
+	$(current_rspec).append(new_node);
+    }
+
+    for(var i = 0; i < new_links.length; i++) {
+	var new_link = new_links[i];
+	new_link = $(new_link).clone();
+	$(current_rspec).append(new_link);
+    }
+
+    // Clear out the rename mapping so we compute it each time we add a 
+    // new rspec
+    this.rename_mapping = [];
+
+
+    // Finally, push the revised topology back to Jacks
+    var revised_rspec = (new XMLSerializer()).serializeToString(current_doc);
+    this.jacksInput.trigger('change-topology', [{rspec:revised_rspec}]);
+}
+
+/**
+ * Get list of client_ids for all elements in list
+ */
+JacksEditorApp.prototype.getListOfClientIds = function(nodes) {
+    var ids = [];
+    for(var i = 0; i < nodes.length; i++) {
+	var node = nodes[i];
+	var node_name = $(node).attr('client_id');
+	ids.push(node_name);
+    }
+    return ids;
+}
+
+/**
+ * Modify name to name+<name_counter++> if name exists in given list
+ */
+JacksEditorApp.prototype.modifyName = function(node, names) {
+    var node_name = $(node).attr('client_id');
+    if($.inArray(node_name, names) >= 0) {
+	var new_node_name = "";
+	if (node_name in this.rename_mapping) {
+	    new_node_name = this.rename_mapping[node_name];
+	} else {
+	    new_node_name = node_name + "-" + this.name_counter;
+	    this.name_counter++;
+	    this.rename_mapping[node_name] = new_node_name;
+	}
+	$(node).attr('client_id', new_node_name);
+    }
+}
+
+
+/**
  * Set the given topology of the editor, but doing some pre-processing first
  */
 JacksEditorApp.prototype.setTopology = function(rspec) {
+    var rspec_append = $('#rspec_append_id');
+    var is_appending = (rspec_append.length > 0 && 
+			rspec_append.prop('checked'));
     if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
     sites = null;
     if (this.currentTopology) {
@@ -719,8 +877,11 @@ JacksEditorApp.prototype.setTopology = function(rspec) {
     // Remove site tags if there are already component_manager_ids set on nodes
     rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
 
-    this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
-}
+    if (is_appending && !this.invoking_auto_ip)
+	this.handleAppend(rspec);
+    else
+	this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
+};
 
 /**
  * Handle request to paste an RSpec to the portal for use by Jacks
@@ -798,6 +959,11 @@ JacksEditorApp.prototype.onSelectionEvent = function(event) {
     if (event.type == "node") {
 	// Node has key, name
 	this.selectedNodes = event.items;
+    } else if (event.type == 'site') {
+	this.selectedSites = event.items;
+    } else if (event.type == 'none') {
+	this.selectedSites = [];
+	this.selectedNodes = [];
     }
 }
 

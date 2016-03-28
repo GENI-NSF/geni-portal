@@ -15,18 +15,19 @@ gcf.d/example-gcf.ini:
 
 # These two must go. Installing in a hardcoded path is bad for
 # Automake/Autoconf, and installing in /var/www is bad for Ubuntu.
-svcwebdir = /var/www/secure
-svcwebimagesdir = /var/www/images
-svcwebcommondir = /var/www/common
-svcwebcssdir = /var/www/common/css
-svcwebmapdir = /var/www/common/map
-svcwebmapdisplaydir = /var/www/common/map/1080display
-svcwebmapoldir = /var/www/common/map/OpenLayers-2.13
-svcwebmapolimgdir = /var/www/common/map/OpenLayers-2.13/img
-svcwebmapolthemedir = /var/www/common/map/OpenLayers-2.13/theme/default
-svcwebmapolthemeimgdir = /var/www/common/map/OpenLayers-2.13/theme/default/img
-svcwebtopdir = /var/www
-svcwebpolicydir = /var/www/policy
+svcwebtopdir = $(sysconfdir)/../var/www
+
+svcwebdir = $(svcwebtopdir)/secure
+svcwebimagesdir = $(svcwebtopdir)/images
+svcwebcommondir = $(svcwebtopdir)/common
+svcwebcssdir = $(svcwebtopdir)/common/css
+svcwebmapdir = $(svcwebtopdir)/common/map
+svcwebmapdisplaydir = $(svcwebtopdir)/common/map/1080display
+svcwebmapoldir = $(svcwebtopdir)/common/map/OpenLayers-2.13
+svcwebmapolimgdir = $(svcwebtopdir)/common/map/OpenLayers-2.13/img
+svcwebmapolthemedir = $(svcwebtopdir)/common/map/OpenLayers-2.13/theme/default
+svcwebmapolthemeimgdir = $(svcwebtopdir)/common/map/OpenLayers-2.13/theme/default/img
+svcwebpolicydir = $(svcwebtopdir)/policy
 
 edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
@@ -138,6 +139,7 @@ dist_svcweb_DATA = \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
 	www/portal/edit-slice.php \
+	www/portal/env.php \
 	www/portal/error-text.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
@@ -424,18 +426,4 @@ dist_svcwebpolicy_DATA = \
 # Use a hook target to create the empty trusted_roots directory
 # Note: this requirs AC_PROG_MKDIR_P in configure.ac
 install-data-local:
-	$(MKDIR_P) $(svcdatadir)/gcf.d/trusted_roots
-
-
-# To do: transition database initialization to a script using
-# the installed schema and data SQL files.
-PSQL = /usr/bin/psql
-DB.USER = portal
-DB.HOST = localhost
-DB.DB = portal
-SCHEMA.SQL = db/postgresql/schema.sql
-DATA.SQL = db/postgresql/data.sql
-
-cleandb:
-	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(SCHEMA.SQL) $(DB.DB)
-	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(DATA.SQL) $(DB.DB)
+	$(MKDIR_P) $(DESTDIR)/$(svcdatadir)/gcf.d/trusted_roots
