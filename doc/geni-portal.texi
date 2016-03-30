@@ -56,7 +56,7 @@ IN THE WORK.
 
 @menu
 * Introduction::    Introduction.
-* Installation::     Installation guide for CentOS 6.5.
+* Installation::     Installation.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
 * Updating geni-soil::  Updating geni-soil.
@@ -78,151 +78,15 @@ of software. The portal is a web site written in PHP. The
 clearinghouse is an XML-RPC server written in Python.
 
 
-
 @node Installation
 @chapter Installation
 
 @cindex installation
 
-This chapter describes installing the GENI Portal and Clearinghouse on
-CentOS 6.5.
-
-@section Prepare the host
-
-@subsection Disable SELinux
-The GENI Portal and Clearinghouse are not compatible with SELinux, so
-it must be disabled. To test for SELinux, use the @command{sestatus}
-command.
-
-@example
-$ sestatus
-SELinux status:                 disabled
-@end example
-
-@noindent
-If SELinux is enabled, google ``CentOS disable SELinux'' for
-instructions. Do not proceed until SELinux has been disabled.
-
-@subsection Disable Firewall
-
-@c FIXME
-@emph{N.B. This should not be necessary and this step should be fixed.}
-
-Disable iptables during installation. Check for the minimum ports
-later in the document.
-
-@example
-sudo service iptables stop
-@end example
-
-@section Install Shibboleth
-
-@emph{This section will be filled in later.}
-
-@section Install GENI Portal
-
-@emph{This section will be filled in later.}
-
-@emph{Include dependency on python-psutil for geni-watch-omni.}
-
-@section Install GENI Clearinghouse
-
-@subsection Install ABAC
-
-@example
-cd /usr/share/geni-ch
-sudo bash
-wget abac.deterlab.net/src/abac-0.1.7.tar.gz
-ln -s /usr/lib64/libltdl.so.7.2.1 /usr/lib64/libltdl.so
-tar xvzf abac-0.1.7.tar.gz
-ln -s abac-0.1.7 abac
-cd abac
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-        --sbindir=/usr/local/sbin PYTHON_VERSION='2.7' \
-        --with-site-perl=/usr/local/share/perl5
-make
-make install
-ln -s /usr/lib/python2.7/site-packages/_ABAC.* \
-        /usr/local/lib/python2.7/site-packages/
-exit
-@end example
-
-@subsection Install chapi
-
-@example
-cd chapi/tools
-touch ../etc/geni-chapi-githash
-install-chapi-centos.sh
-@end example
-
-@subsection Configure @code{xinetd}
-@code{xinetd} is required to serve the Flash security policy which
-enabled Flack to connect to the clearinghouse. First ensure that
-@code{xinetd} is installed:
-
-@example
-yum install xinetd
-@end example
-
-@noindent
-Next, add the Flash security policy service to @code{/etc/services} as
-follows:
-
-@example
-flashpolicy	843/tcp			# Flash Policy service
-@end example
-
-@noindent
-Finally, configure @code{xinetd} to server the flash policy by adding
-a file named ``flashpolicy'' to the directory
-@code{/etc/xinetd.d}.
-
-@example
-cp chapi/etc/xinetd.d/flashpolicy /etc/xinetd.d/flashpolicy
-@end example
-
-@section Installing Updates
-
-From time to time new versions of the GENI portal and clearinghouse
-software are released. Updating your system to the new versions of
-software is generally an easy process.
-
-Releases may be accompanied by special instructions that must be
-performed before and/or after installing the new version of the
-software. These special instructions are not covered by this manual.
-
-@subsection Updating @code{chapi}
-@cindex installing updates
-@cindex update
-@cindex chapi
-
-Updating the clearinghouse software (``chapi'') from git involves
-first updating to the latest revision of the software. Once the latest
-version of software is obtained, execute the following commands:
-@example
-autoreconf --install
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-        --sbindir=/usr/local/sbin --mandir=/usr/local/man
-make
-sudo make install
-sudo service apache2 restart
-@end example
-
-@subsection Updating @code{proto-ch}
-@cindex installing updates
-@cindex update
-@cindex proto-ch
-Updating the portal software (``proto-ch'') from git is very similar
-to the updating the clearinghouse software above.  First update to the
-latest revision of the software. Once the latest version of software
-is obtained, execute the following commands:
-@example
-autoreconf --install
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-        --sbindir=/usr/local/sbin --mandir=/usr/local/man
-make
-sudo make install
-@end example
+Installation is only supported on CentOS 7.  Installation instructions
+are found in the file @code{INSTALL-centos.md}. This file can be found
+online at
+@code{https://github.com/GENI-NSF/geni-portal/blob/develop/INSTALL-centos.md}
 
 
 @node Operations
