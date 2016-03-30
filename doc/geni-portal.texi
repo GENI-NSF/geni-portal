@@ -276,24 +276,6 @@ telling them they should renew their certificate.
 5 1 * * * /usr/local/sbin/geni-expiring-certs --days 30,14,7,2
 @end example
 
-@subsection Detect long-running omni processes
-Occasionally an operation involving one or more aggregates will take a
-long time to complete. For example, an attempt to create a stitched
-topology across several aggregates can take many minutes. The
-@code{crontab} entry below detects long-running @code{omni} or
-@code{stitcher} jobs and reports them to administrators. The jobs are
-not killed. This is only a reporting mechanism.
-
-If a long-running @code{omni} or @code{stitcher} job is reported it is
-generally best to leave it alone. If a job goes on for longer than 45
-- 60 minutes for some reason, the adminitrator can kill the job using
-the @code{kill} command with the default signal (@code{TERM}).
-
-@example
-# Check for long-running omni processes every 5 minutes
-*/5 * * * * /usr/local/bin/geni-watch-omni
-@end example
-
 @subsection Sync wireless groups and accounts
 @cindex wireless
 @pindex geni-sync-wireless
@@ -308,6 +290,25 @@ once a day) to synchronize all groups and accounts.
 00 2 * * * /usr/local/bin/geni-sync-wireless --cleanup
 @end example
 
+@subsection Fetch aggregate status information
+@cindex monitoring
+@pindex geni-fetch-amdown
+@pindex geni-fetch-aggmon
+Aggregate status information is displayed on the GENI portal. This
+information is retrieved from other GENI servers and cached locally
+for display. This crontab entry fetches the information and writes it
+to the configured @code{sysconfdir}, probably @code{/etc/geni-ch}.
+
+@emph{N.B. The entry below must appear on a single line, without the
+backslash. The use of backslash and multiple lines is for readability
+in this document}
+
+@example
+# Fetch aggregate data hourly from GPO Nagios
+0 */1 * * * /usr/local/sbin/geni-fetch-amdown \
+        /usr/share/geni-ch/portal/portal-cert.pem \
+        /usr/share/geni-ch/portal/portal-key.pem
+@end example
 
 @section Log files
 
