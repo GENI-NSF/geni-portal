@@ -63,7 +63,7 @@ function status_to_display($status)
       $result = "Down";
       break;
     default:
-      $result = "Unknown";
+      $result = "N/A";
   }
   return $result;
 }
@@ -83,8 +83,8 @@ function status_to_icon($status)
       $icon = "report";
       break;
     default:
-      $color =  "#000000";
-      $icon = "help";
+      // Use no icon by default, so return an empty string
+      return '';
   }
   $result = "<i class='material-icons' style='color:$color;'>$icon</i>";
   return $result;
@@ -174,7 +174,7 @@ function agg_status_legend() {
   $result .= '<dd>';
   $result .=    status_display("up") . ': Reported as up to GENI monitoring <br/>';
   $result .=    status_display("down") . ': Reported as down to GENI monitoring <br/>';
-  $result .=    status_display("unknown") . ': Status not known by GENI monitoring';
+  $result .=    status_display("unknown") . ': Status not available to GENI monitoring';
   $result .= '</dd>';
   $result .= '</dl>';
   return $result;
