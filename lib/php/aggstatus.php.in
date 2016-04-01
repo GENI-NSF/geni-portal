@@ -97,8 +97,20 @@ function status_display($status)
   return "$icon $pretty_status";
 }
 
+function is_foam_agg($agg)
+{
+  $service_attrs = $agg[SR_ARGUMENT::SERVICE_ATTRIBUTES];
+  $ui_type = $service_attrs[SERVICE_ATTRIBUTE_AM_TYPE];
+  return $ui_type == SERVICE_ATTRIBUTE_FOAM_AM;
+}
+
 function make_agg_row($agg, $status_data, $status2_data)
 {
+  // Skip FOAM aggregates
+  if (is_foam_agg($agg)) {
+    return '';
+  }
+
   $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
   $urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
   $status = "up";
