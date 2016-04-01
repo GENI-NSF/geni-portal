@@ -690,13 +690,15 @@ function make_project_actions_dropdown($project_id, $expired) {
 </div>
 
 <div class='card' id='status'>
-  <h3>Aggregate Status</h3>
-  <div class='tablecontainer'>
-    <?php print agg_status_table(); ?>
-  </div>
   <section>
     <h3>Legend</h3>
     <?php print agg_status_legend(); ?>
+  </section>
+  <section>
+    <h3>Aggregate Status</h3>
+    <div class='tablecontainer'>
+      <?php print agg_status_table(); ?>
+    </div>
   </section>
 </div>
 
