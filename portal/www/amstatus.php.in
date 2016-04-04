@@ -26,117 +26,7 @@ require_once("user.php");
 require_once("header.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
-
-$AM_STATUS_FILE = "@pkgsysconfdir@/am-status.json";
-
-/**
- * Load a mapping from URN to status. This is a JSON file,
- * so load it and parse it as JSON.
- *
- * Return an array whose keys are aggregate URNs and whose
- * values are states like "up" or "down".
- */
-function load_am_status($fname)
-{
-  $str_data = file_get_contents($fname);
-  if ($str_data === FALSE) {
-    # Unable to read am status data file. The error has already been
-    # logged by PHP. Return an empty array.
-    $data = array();
-  } else {
-    $data = json_decode($str_data, true);
-    if (is_null($data)) {
-      # json_decode has failed, return empty array
-      error_log("Unable to JSON decode data in $fname");
-      $data = array();
-    }
-  }
-  return $data;
-}
-
-/**
- * Convert a status string into a string for display on the UI.
- */
-function status_to_display($status)
-{
-  switch($status) {
-    case "up":
-      $result = "Up";
-      break;
-    case "down":
-      $result = "Down";
-      break;
-    default:
-      $result = "Uknown";
-  }
-  return $result;
-}
-
-/**
- * Convert a status string into an icon.
- */
-function status_to_icon($status)
-{
-  switch($status) {
-    case "up":
-      $color = "#339933";
-      $icon = "check_circle";
-      break;
-    case "down":
-      $color = "#EE583A";
-      $icon = "report";
-      break;
-    default:
-      $color =  "#FBC02D";
-      $icon = "warning";
-  }
-  $result = "<i class='material-icons' style='color:$color;'>$icon</i>";
-  return $result;
-}
-
-function status_display($status)
-{
-  $icon = status_to_icon($status);
-  $pretty_status = status_to_display($status);
-  return "$icon $pretty_status";
-}
-
-function make_agg_row($agg, $status_data)
-{
-  $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
-  $urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
-  $status = "up";
-  if (array_key_exists($urn, $status_data)) {
-    $status = $status_data[$urn];
-  }
-  $status_cell = status_display($status);
-
-  $row = '<tr>';
-  $row .= "<td>$name</td>";
-  $row .= "<td>$status_cell</td>";
-  $row .= '</tr>';
-  return $row;
-}
-
-/**
- * Compare two aggregates by their names.
- * Comparison function for use with usort()
- */
-function cmp_aggs($a, $b) {
-  $aname = strtolower($a[SR_TABLE_FIELDNAME::SERVICE_NAME]);
-  $bname = strtolower($b[SR_TABLE_FIELDNAME::SERVICE_NAME]);
-  return strcmp($aname, $bname);
-}
-
-$aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-usort($aggs, "cmp_aggs");
-
-$status_data = load_am_status($AM_STATUS_FILE);
-
-$table_rows = array();
-foreach ($aggs as $am) {
-  $table_rows[] = make_agg_row($am, $status_data);
-}
+require_once("aggstatus.php");
 
 show_html_head('GENI Aggregate Status');
 ?>
@@ -144,30 +34,17 @@ show_html_head('GENI Aggregate Status');
 <div id="content-outer" class="one-card">
 <div id="content">
 <h1>GENI Aggregate Status</h1>
-<p>Current aggregate responsiveness to GENI AM API calls</p>
-<div class='tablecontainer'>
-<table id='aggtable'>
-<thead>
-<tr><th>Name &#x2191;&#x2193;</th><th>Status &#x2191;&#x2193;</th></tr>
-</thead>
-<tbody>
-<?php
-foreach ($table_rows as $row) {
-  print($row);
-  print("\n");
-}
-?>
-</tbody></table></div>
 
-<section>
-<h3>Legend</h3>
-<dl>
-  <dt><?php print status_display("up"); ?></dt>
-  <dd>Responding to GENI AM API calls</dd>
-  <dt><?php print status_display("down"); ?></dt>
-  <dd>Failed to respond to GENI AM API calls when last checked</dd>
-</dl>
-</section>
+  <section>
+    <h3>Legend</h3>
+    <?php print agg_status_legend(); ?>
+  </section>
+  <section>
+    <h3>Aggregate Status</h3>
+    <div class='tablecontainer'>
+      <?php print agg_status_table(); ?>
+    </div>
+  </section>
 
 <script type="text/javascript">
 $(document).ready(function () {
