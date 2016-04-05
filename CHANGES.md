@@ -4,11 +4,12 @@
 
 ## Installation Notes
 
-* Add a cron job to fetch aggregate status from GENI Monitoring
+* Add a cron job to fetch aggregate status from GENI Monitoring (adjust
+ path to `geni-fetch-aggmon` as necessary):
 
     ```
     # Fetch aggregate data hourly from GENI Monitoring
-    0 */1 * * * /usr/local/sbin/geni-fetch-aggmon
+    0 */1 * * * /usr/sbin/geni-fetch-aggmon
     ```
 
 ## Changes
