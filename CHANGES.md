@@ -2,10 +2,14 @@
 
 # [Release 3.11](https://github.com/GENI-NSF/geni-portal/milestones/3.11)
 
-* Remove Flack
-  ([#1676](https://github.com/GENI-NSF/geni-portal/issues/1676))
+* Add aggregate status tab to dashboard
+  ([#1629](https://github.com/GENI-NSF/geni-portal/issues/1629))
 * Support Adding an RSPEC from a File to an existing Jacks topology
   ([#1660](https://github.com/GENI-NSF/geni-portal/issues/1660))
+* Remove Flack
+  ([#1676](https://github.com/GENI-NSF/geni-portal/issues/1676))
+* Add aggregate status from GENI Monitoring
+  ([#1681](https://github.com/GENI-NSF/geni-portal/issues/1681))
 
 
 # [Release 3.10](https://github.com/GENI-NSF/geni-portal/milestones/3.10)

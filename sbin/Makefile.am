@@ -9,6 +9,7 @@ edit = sed \
 	-e 's|@templatesdir[@]|$(templatesdir)|g'
 
 TEMPLATES = \
+	geni-fetch-aggmon \
 	geni-fetch-amdown \
 	geni-portal-install-templates
 
@@ -30,6 +31,7 @@ EXTRA_DIST = $(TEMPLATES.IN)
 CLEANFILES = $(TEMPLATES)
 
 dist_sbin_SCRIPTS = \
+	geni-fetch-aggmon \
 	geni-fetch-amdown \
 	geni-portal-install-templates \
 	import_database.py \

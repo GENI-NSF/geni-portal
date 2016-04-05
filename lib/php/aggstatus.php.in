@@ -1,0 +1,194 @@
+<?php
+//----------------------------------------------------------------------
+// Copyright (c) 2016 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
+
+$AM_STATUS_FILE = "@pkgsysconfdir@/am-status.json";
+$AM_STATUS_MON_FILE = "@pkgsysconfdir@/am-status-mon.json";
+
+/**
+ * Load a mapping from URN to status. This is a JSON file,
+ * so load it and parse it as JSON.
+ *
+ * Return an array whose keys are aggregate URNs and whose
+ * values are states like "up" or "down".
+ */
+function load_am_status($fname)
+{
+  $str_data = file_get_contents($fname);
+  if ($str_data === FALSE) {
+    # Unable to read am status data file. The error has already been
+    # logged by PHP. Return an empty array.
+    $data = array();
+  } else {
+    $data = json_decode($str_data, true);
+    if (is_null($data)) {
+      # json_decode has failed, return empty array
+      error_log("Unable to JSON decode data in $fname");
+      $data = array();
+    }
+  }
+  return $data;
+}
+
+/**
+ * Convert a status string into a string for display on the UI.
+ */
+function status_to_display($status)
+{
+  switch($status) {
+    case "up":
+      $result = "Up";
+      break;
+    case "down":
+      $result = "Down";
+      break;
+    default:
+      $result = "N/A";
+  }
+  return $result;
+}
+
+/**
+ * Convert a status string into an icon.
+ */
+function status_to_icon($status)
+{
+  switch($status) {
+    case "up":
+      $color = "#339933";
+      $icon = "check_circle";
+      break;
+    case "down":
+      $color = "#EE583A";
+      $icon = "report";
+      break;
+    default:
+      // Use no icon by default, so return an empty string
+      return '';
+  }
+  $result = "<i class='material-icons' style='color:$color;'>$icon</i>";
+  return $result;
+}
+
+function status_display($status)
+{
+  $icon = status_to_icon($status);
+  $pretty_status = status_to_display($status);
+  return "$icon $pretty_status";
+}
+
+function is_foam_agg($agg)
+{
+  $service_attrs = $agg[SR_ARGUMENT::SERVICE_ATTRIBUTES];
+  $ui_type = $service_attrs[SERVICE_ATTRIBUTE_AM_TYPE];
+  return $ui_type == SERVICE_ATTRIBUTE_FOAM_AM;
+}
+
+function make_agg_row($agg, $status_data, $status2_data)
+{
+  // Skip FOAM aggregates
+  if (is_foam_agg($agg)) {
+    return '';
+  }
+
+  $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
+  $urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
+  $status = "up";
+  if (array_key_exists($urn, $status_data)) {
+    $status = $status_data[$urn];
+  }
+  $status_cell = status_display($status);
+  $status2 = "?";
+  if (array_key_exists($urn, $status2_data)) {
+    $status2 = $status2_data[$urn];
+  }
+  $status2_cell = status_display($status2);
+
+  $row = '<tr>';
+  $row .= "<td>$name</td>";
+  $row .= "<td>$status_cell</td>";
+  $row .= "<td>$status2_cell</td>";
+  $row .= '</tr>';
+  return $row;
+}
+
+/**
+ * Compare two aggregates by their names.
+ * Comparison function for use with usort()
+ */
+function cmp_aggs($a, $b) {
+  $aname = strtolower($a[SR_TABLE_FIELDNAME::SERVICE_NAME]);
+  $bname = strtolower($b[SR_TABLE_FIELDNAME::SERVICE_NAME]);
+  return strcmp($aname, $bname);
+}
+
+function agg_status_table() {
+  global $AM_STATUS_FILE;
+  global $AM_STATUS_MON_FILE;
+
+  $aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  usort($aggs, "cmp_aggs");
+
+  $status_data = load_am_status($AM_STATUS_FILE);
+  $status_mon_data = load_am_status($AM_STATUS_MON_FILE);
+
+  $table_rows = array();
+  foreach ($aggs as $am) {
+    $table_rows[] = make_agg_row($am, $status_data, $status_mon_data);
+  }
+
+  $result = "<table id='aggtable'>";
+  $result .= "<thead>";
+  $result .= "<tr>";
+  $result .= "<th>Name &#x2191;&#x2193;</th>";
+  $result .= "<th>AM API Status &#x2191;&#x2193;</th>";
+  $result .= "<th>Monitoring Status &#x2191;&#x2193;</th>";
+  $result .= "</tr>";
+  $result .= "</thead>";
+  $result .= "<tbody>";
+  foreach ($table_rows as $row) {
+    $result .= $row;
+  }
+  $result .= "</tbody>";
+  $result .= "</table>";
+  return $result;
+}
+
+function agg_status_legend() {
+  $result = '';
+  $result .= '<dl>';
+  $result .= '<dt>AM API Status</dt>';'</dt>';
+  $result .= '<dd>';
+  $result .=    status_display("up") . ': Responding to GENI AM API calls <br/>';
+  $result .=    status_display("down") . ': Failed to respond to GENI AM API calls when last checked';
+  $result .= '</dd>';
+  $result .= '<dt>Monitoring Status</dt>';
+  $result .= '<dd>';
+  $result .=    status_display("up") . ': Reported as up to GENI monitoring <br/>';
+  $result .=    status_display("down") . ': Reported as down to GENI monitoring <br/>';
+  $result .=    status_display("unknown") . ': Status not available to GENI monitoring';
+  $result .= '</dd>';
+  $result .= '</dl>';
+  return $result;
+}
+?>
