@@ -2,6 +2,17 @@
 
 # [Release 3.11](https://github.com/GENI-NSF/geni-portal/milestones/3.11)
 
+## Installation Notes
+
+* Add a cron job to fetch aggregate status from GENI Monitoring
+
+    ```
+    # Fetch aggregate data hourly from GENI Monitoring
+    0 */1 * * * /usr/local/sbin/geni-fetch-aggmon
+    ```
+
+## Changes
+
 * Add aggregate status tab to dashboard
   ([#1629](https://github.com/GENI-NSF/geni-portal/issues/1629))
 * Support Adding an RSPEC from a File to an existing Jacks topology
