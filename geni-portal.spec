@@ -40,6 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc %{_infodir}/geni-portal.info.gz
+%doc %{_mandir}/man1/geni-fetch-aggmon.1.gz
 %doc %{_mandir}/man1/geni-fetch-amdown.1.gz
 %doc %{_mandir}/man1/geni-get-ad-rspecs.1.gz
 %doc %{_mandir}/man1/geni-parse-map-data.1.gz
@@ -59,6 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/km/db/postgresql/schema.sql
 %{_datadir}/%{legacy_name}/km/db/postgresql/update-1.sql
 %{_datadir}/%{legacy_name}/lib/php/abac.php
+%{_datadir}/%{legacy_name}/lib/php/aggstatus.php
 %{_datadir}/%{legacy_name}/lib/php/am_client.php
 %{_datadir}/%{legacy_name}/lib/php/am_map.php
 %{_datadir}/%{legacy_name}/lib/php/cert_utils.php
@@ -240,6 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/templates/templates.json
 %{_sbindir}/gen-add-constraints.sql
 %{_sbindir}/gen-drop-constraints.sql
+%{_sbindir}/geni-fetch-aggmon
 %{_sbindir}/geni-fetch-amdown
 %{_sbindir}/geni-portal-install-templates
 %{_sbindir}/import_database.py
@@ -481,8 +484,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/edit-slice.php
 %{webdir}/secure/env.php
 %{webdir}/secure/error-text.php
-%{webdir}/secure/flack.css
-%{webdir}/secure/flack.php
 %{webdir}/secure/future.json
 %{webdir}/secure/gemini.php
 %{webdir}/secure/gemini_add_global_node.php
