@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2015-2016 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,38 +21,16 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-
-require_once("user.php");
-require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("aggstatus.php");
-
-show_html_head('GENI Aggregate Status');
 ?>
-
-<div id="content-outer" class="one-card">
-<div id="content">
-<h1>GENI Aggregate Status</h1>
-
-  <section>
-    <h3>Legend</h3>
-    <?php print agg_status_legend(); ?>
-  </section>
-  <section>
-    <h3>Aggregate Status</h3>
-    <div class='tablecontainer'>
-      <?php print agg_status_table(); ?>
-    </div>
-  </section>
-
-<script type="text/javascript">
-$(document).ready(function () {
-    $('#aggtable').DataTable({paging: false});
-  });
-</script>
-</div> <!-- content -->
-</div> <!-- content-outer -->
+<br/><br/>
+<center>
+Welcome!
+</center>
+<br/>
+<h2 align = "center"> You have successfully logged in via Shibboleth</h2>
 <?php
-include("footer.php");
+$array = $_SERVER;
+foreach ($array as $var => $value) {
+    print "$var = $value<br/>";
+    }
 ?>

@@ -56,7 +56,7 @@ IN THE WORK.
 
 @menu
 * Introduction::    Introduction.
-* Installation::     Installation guide for CentOS 6.5.
+* Installation::     Installation.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
 * Updating geni-soil::  Updating geni-soil.
@@ -78,151 +78,15 @@ of software. The portal is a web site written in PHP. The
 clearinghouse is an XML-RPC server written in Python.
 
 
-
 @node Installation
 @chapter Installation
 
 @cindex installation
 
-This chapter describes installing the GENI Portal and Clearinghouse on
-CentOS 6.5.
-
-@section Prepare the host
-
-@subsection Disable SELinux
-The GENI Portal and Clearinghouse are not compatible with SELinux, so
-it must be disabled. To test for SELinux, use the @command{sestatus}
-command.
-
-@example
-$ sestatus
-SELinux status:                 disabled
-@end example
-
-@noindent
-If SELinux is enabled, google ``CentOS disable SELinux'' for
-instructions. Do not proceed until SELinux has been disabled.
-
-@subsection Disable Firewall
-
-@c FIXME
-@emph{N.B. This should not be necessary and this step should be fixed.}
-
-Disable iptables during installation. Check for the minimum ports
-later in the document.
-
-@example
-sudo service iptables stop
-@end example
-
-@section Install Shibboleth
-
-@emph{This section will be filled in later.}
-
-@section Install GENI Portal
-
-@emph{This section will be filled in later.}
-
-@emph{Include dependency on python-psutil for geni-watch-omni.}
-
-@section Install GENI Clearinghouse
-
-@subsection Install ABAC
-
-@example
-cd /usr/share/geni-ch
-sudo bash
-wget abac.deterlab.net/src/abac-0.1.7.tar.gz
-ln -s /usr/lib64/libltdl.so.7.2.1 /usr/lib64/libltdl.so
-tar xvzf abac-0.1.7.tar.gz
-ln -s abac-0.1.7 abac
-cd abac
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-        --sbindir=/usr/local/sbin PYTHON_VERSION='2.7' \
-        --with-site-perl=/usr/local/share/perl5
-make
-make install
-ln -s /usr/lib/python2.7/site-packages/_ABAC.* \
-        /usr/local/lib/python2.7/site-packages/
-exit
-@end example
-
-@subsection Install chapi
-
-@example
-cd chapi/tools
-touch ../etc/geni-chapi-githash
-install-chapi-centos.sh
-@end example
-
-@subsection Configure @code{xinetd}
-@code{xinetd} is required to serve the Flash security policy which
-enabled Flack to connect to the clearinghouse. First ensure that
-@code{xinetd} is installed:
-
-@example
-yum install xinetd
-@end example
-
-@noindent
-Next, add the Flash security policy service to @code{/etc/services} as
-follows:
-
-@example
-flashpolicy	843/tcp			# Flash Policy service
-@end example
-
-@noindent
-Finally, configure @code{xinetd} to server the flash policy by adding
-a file named ``flashpolicy'' to the directory
-@code{/etc/xinetd.d}.
-
-@example
-cp chapi/etc/xinetd.d/flashpolicy /etc/xinetd.d/flashpolicy
-@end example
-
-@section Installing Updates
-
-From time to time new versions of the GENI portal and clearinghouse
-software are released. Updating your system to the new versions of
-software is generally an easy process.
-
-Releases may be accompanied by special instructions that must be
-performed before and/or after installing the new version of the
-software. These special instructions are not covered by this manual.
-
-@subsection Updating @code{chapi}
-@cindex installing updates
-@cindex update
-@cindex chapi
-
-Updating the clearinghouse software (``chapi'') from git involves
-first updating to the latest revision of the software. Once the latest
-version of software is obtained, execute the following commands:
-@example
-autoreconf --install
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-        --sbindir=/usr/local/sbin --mandir=/usr/local/man
-make
-sudo make install
-sudo service apache2 restart
-@end example
-
-@subsection Updating @code{proto-ch}
-@cindex installing updates
-@cindex update
-@cindex proto-ch
-Updating the portal software (``proto-ch'') from git is very similar
-to the updating the clearinghouse software above.  First update to the
-latest revision of the software. Once the latest version of software
-is obtained, execute the following commands:
-@example
-autoreconf --install
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
-        --sbindir=/usr/local/sbin --mandir=/usr/local/man
-make
-sudo make install
-@end example
+Installation is only supported on CentOS 7.  Installation instructions
+are found in the file @code{INSTALL-centos.md}. This file can be found
+online at
+@code{https://github.com/GENI-NSF/geni-portal/blob/develop/INSTALL-centos.md}
 
 
 @node Operations
@@ -412,24 +276,6 @@ telling them they should renew their certificate.
 5 1 * * * /usr/local/sbin/geni-expiring-certs --days 30,14,7,2
 @end example
 
-@subsection Detect long-running omni processes
-Occasionally an operation involving one or more aggregates will take a
-long time to complete. For example, an attempt to create a stitched
-topology across several aggregates can take many minutes. The
-@code{crontab} entry below detects long-running @code{omni} or
-@code{stitcher} jobs and reports them to administrators. The jobs are
-not killed. This is only a reporting mechanism.
-
-If a long-running @code{omni} or @code{stitcher} job is reported it is
-generally best to leave it alone. If a job goes on for longer than 45
-- 60 minutes for some reason, the adminitrator can kill the job using
-the @code{kill} command with the default signal (@code{TERM}).
-
-@example
-# Check for long-running omni processes every 5 minutes
-*/5 * * * * /usr/local/bin/geni-watch-omni
-@end example
-
 @subsection Sync wireless groups and accounts
 @cindex wireless
 @pindex geni-sync-wireless
@@ -444,6 +290,28 @@ once a day) to synchronize all groups and accounts.
 00 2 * * * /usr/local/bin/geni-sync-wireless --cleanup
 @end example
 
+@subsection Fetch aggregate status information
+@cindex monitoring
+@pindex geni-fetch-amdown
+@pindex geni-fetch-aggmon
+Aggregate status information is displayed on the GENI portal. This
+information is retrieved from other GENI servers and cached locally
+for display. These crontab entries fetch the information and write it
+to the configured @code{sysconfdir}, probably @code{/etc/geni-ch}.
+
+@emph{N.B. The entry below must appear on a single line, without the
+backslash. The use of backslash and multiple lines is for readability
+in this document}
+
+@example
+# Fetch aggregate data hourly from GPO Nagios
+0 */1 * * * /usr/local/sbin/geni-fetch-amdown \
+        /usr/share/geni-ch/portal/portal-cert.pem \
+        /usr/share/geni-ch/portal/portal-key.pem
+#
+# Fetch aggregate data hourly from GENI Monitoring
+0 */1 * * * /usr/local/sbin/geni-fetch-aggmon
+@end example
 
 @section Log files
 

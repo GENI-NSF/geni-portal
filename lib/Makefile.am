@@ -1,9 +1,12 @@
 svcdatadir = $(pkgdatadir)/lib
+pkgsysconfdir = $(sysconfdir)/geni-ch
 
 edit = sed \
-	-e 's|@VERSION[@]|$(VERSION)|g'
+	-e 's|@VERSION[@]|$(VERSION)|g' \
+	-e 's|@pkgsysconfdir[@]|$(pkgsysconfdir)|g'
 
 TEMPLATES = \
+	php/aggstatus.php \
 	php/settings.php
 
 TEMPLATES.IN = $(TEMPLATES:%=%.in)
@@ -25,6 +28,7 @@ CLEANFILES = $(TEMPLATES)
 
 nobase_dist_svcdata_DATA = \
 	php/abac.php \
+	php/aggstatus.php \
 	php/am_client.php \
 	php/am_map.php \
 	php/cert_utils.php \
@@ -94,5 +98,3 @@ nobase_dist_svcdata_DATA = \
 	php/user.php \
 	php/user-preferences.php \
 	php/util.php
-
-cleandb:

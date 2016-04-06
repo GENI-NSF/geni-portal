@@ -11,6 +11,8 @@ RSYNC_EXCLUDE = --exclude .git --exclude '*~' \
 RSYNC_DELETE = --delete --delete-excluded
 RSYNC_ARGS = -aztv $(RSYNC_EXCLUDE)
 
+# This will probably be "../geni-portal"
+SRC_DIR = ../$(notdir $(CURDIR))
 
 .PHONY: syncb syncd syncm synci syncs synct syncp syncc
 
@@ -20,41 +22,20 @@ default:
 bin/geni-ch-githash: .git
 	git rev-parse HEAD > bin/geni-ch-githash
 
-synca: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch algonquin.gpolab.bbn.com:
-
 syncb: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch bigslide.gpolab.bbn.com:
+	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) bigslide.gpolab.bbn.com:
 
 syncd: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch dagoola.gpolab.bbn.com:
-
-synce: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch emmons.gpolab.bbn.com:
-
-synch: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch haystack.gpolab.bbn.com:
+	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) dagoola.gpolab.bbn.com:
 
 syncm: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch marilac.gpolab.bbn.com:
+	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) marilac.gpolab.bbn.com:
 
 synci: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch illyrica.gpolab.bbn.com:
-
-syncs: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch sergyar.gpolab.bbn.com:
-
-synct: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch tau-ceti.gpolab.bbn.com:
-
-synctop: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch tabletop.gpolab.bbn.com:
-
-syncp: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch panther.gpolab.bbn.com:
+	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) illyrica.gpolab.bbn.com:
 
 syncc: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch cascade.gpolab.bbn.com:
+	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) cascade.gpolab.bbn.com:
 
 syncn: bin/geni-ch-githash
-	$(RSYNC) $(RSYNC_ARGS) ../proto-ch nye.gpolab.bbn.com:
+	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) nye.gpolab.bbn.com:

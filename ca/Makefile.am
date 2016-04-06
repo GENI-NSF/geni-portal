@@ -25,6 +25,3 @@ $(SERIAL_FILE):
 
 $(INDEX_FILE):
 	$(INSTALL_WWW) -m 644 /dev/null $(INDEX_FILE)
-
-# empty target for compatibility
-cleandb:
