@@ -8,8 +8,8 @@
 
 ## Changes
 
-* None
-
+* Update project name constraints to match clearinghouse
+  ([#1689](https://github.com/GENI-NSF/geni-portal/issues/1689))
 
 # [Release 3.11](https://github.com/GENI-NSF/geni-portal/milestones/3.11)
 
