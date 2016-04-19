@@ -99,7 +99,7 @@ if ($isnew) {
     relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' is too long - use at most 32 characters."));
   } else if (! is_valid_project_name($name)) {
     error_log("do-edit-project: project name '$name' invalid");
-    relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' is invalid: Use at most 32 alphanumeric characters or hyphen or underscore. No leading hyphen or underscore. "));
+    relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' is invalid: Use at least 2 and most 32 alphanumeric characters or hyphen or underscore. No leading number or hyphen or underscore. "));
   }
   // Re-check authorization?
   // Auto?

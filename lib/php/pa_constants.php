@@ -112,24 +112,13 @@ class PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME {
 // How long to project invitaations have before they expire?
 $project_default_invitation_expiration_hours = 72;
 
-// Per the AM API V3:
-// We want the project name to go without change into the authority part of the URN
-// so do not use characters that get translated between URN and publicid. So:
-// not empty
-// no whitespace
-// no / : + ; ' ? # %
-// no leading/trailing whitespace
-// collapse consecutive whitespace
-// Additionally, ProtoGENI has a 32character sub-authority limit. So
-// limit project names to 32 characters.
-// We should also be excluding control characters.
-// Technically we could then allow all kinds of unicode
-// characters. But is that really necessary? For now, restrict project
-// names pretty heavily
+// The regex in this function matches the clearinghouse. Do not
+// change it on its own. Its purpose is to prevent an invalid name
+// from going to the clearinghouse and to give
+// users a better UI experience when they choose a bad name.
 function is_valid_project_name($project_name)
 {
-  //  $pattern = '/^[^\/\:\+\;\'\?\#\% ]+$/';
-  $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-_]{0,31}$/';
+  $pattern = '/^[a-zA-Z][a-zA-Z0-9-_]{1,31}$/';
   return preg_match($pattern, $project_name);
 }
 
