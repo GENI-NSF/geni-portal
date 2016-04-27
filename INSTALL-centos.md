@@ -1,6 +1,9 @@
+# Installation on CentOS 7
+
 # Introduction
 
 For installing the GENI Portal Software, shell windows on three servers are required:
+
  * The Portal host 
  * The IdP host
  * The development host (from which the user can scp from/to the other hosts)
@@ -8,6 +11,7 @@ For installing the GENI Portal Software, shell windows on three servers are requ
 Unless specified otherwise, all commands are to be done on the Portal host.
 
 In addition, these environment variables must be defined on the appropriate windows referring to the addresses of the given hosts:
+
  * $PORTAL_HOST : the address of the host on which we're installing the GENI Portal
  * $CH_HOST : the address of the GENI Clearinghouse to which the Portal is being associated
  * $IDP_HOST : The address of the IdP (Identity Provider) to which the Portal is being associated
@@ -18,6 +22,34 @@ Ensure OS is up to date
 
 ```bash
 sudo yum update -y
+```
+
+Check the status of SELinux:
+
+```Shell
+$ sestatus
+SELinux status:                 disabled
+```
+
+If SELinux is enabled, do this:
+```Shell
+sudo sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
+sudo reboot
+```
+Install NTP:
+
+```bash
+sudo yum install ntp -y
+```
+Enable and start NTP
+
+```bash
+sudo systemctl enable ntpd
+sudo systemctl start ntpd
+```
+Test it out
+```bash
+ntpq -p
 ```
 
 Add Shibboleth repository:
@@ -36,8 +68,7 @@ sudo cp geni.repo /etc/yum.repos.d/
 
 Install GENI portal software
 
-These must be done separately in order to fullfill the geni-portal
-dependencies that are in the EPEL repository.
+These must be done separately in order to fullfill the geni-portal dependencies that are in the EPEL repository.
 
 ```bash
 sudo yum install -y epel-release
@@ -46,7 +77,7 @@ sudo yum install -y --nogpgcheck geni-portal
 ```
 
 ```bash
-# IF there are updates on a development machine not in the RPM, do this:
+# If there are updates on a development machine not in the RPM, do this:
 
 # On development machine:
 rsync --delete --delete-excluded -aztv --exclude .git --exclude '*~' --exclude '#*#' \
@@ -79,14 +110,14 @@ sudo cp /tmp/hosts /etc/hosts
 
 # 3. Install Shibboleth Software 
 
+3a. Edit shibboleth attribute-map.xml
 ```
-# 3a. Edit shibboleth attribute-map.xml
 Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
 below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
 ```
 
+3b. Install Embedded Discovery Service
 ```bash
-# 3b. Install Embedded Discovery Service
 cd /tmp
 wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
 tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz

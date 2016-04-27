@@ -1,5 +1,16 @@
 # GENI Portal Release Notes
 
+# [Release 3.12](https://github.com/GENI-NSF/geni-portal/milestones/3.12)
+
+## Installation Notes
+
+* None
+
+## Changes
+
+* Update project name constraints to match clearinghouse
+  ([#1689](https://github.com/GENI-NSF/geni-portal/issues/1689))
+
 # [Release 3.11](https://github.com/GENI-NSF/geni-portal/milestones/3.11)
 
 ## Installation Notes
