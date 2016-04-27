@@ -1,5 +1,15 @@
 # GENI Portal Release Notes
 
+# [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)
+
+## Changes
+
+* None
+
+## Installation Notes
+
+* None
+
 # [Release 3.12](https://github.com/GENI-NSF/geni-portal/milestones/3.12)
 
 ## Installation Notes
@@ -43,7 +53,7 @@
   ([#1431](https://github.com/GENI-NSF/geni-portal/issues/1431))
 * Fix PHP warning on admin page
   ([#1430](https://github.com/GENI-NSF/geni-portal/issues/1430))
-* Fix bug where log and map tabs wouldn't show up if table view 
+* Fix bug where log and map tabs wouldn't show up if table view
   was preffered view on the dashboard.
   ([#1653](https://github.com/GENI-NSF/geni-portal/issues/1653))
 * Confine jFed launch to a single page
@@ -61,7 +71,7 @@
 # [Release 3.8](https://github.com/GENI-NSF/geni-portal/milestones/3.8)
 
 * Join this project must correctly check return indicating
-  an existing request to join this project. 
+  an existing request to join this project.
   ([#1637](https://github.com/GENI-NSF/geni-portal/issues/1637))
 * `get_project` uses wrong variable name for result. `lookup_project_details`
   should bail when given empty list of projet UIDs.
