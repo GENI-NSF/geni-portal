@@ -27,7 +27,7 @@
 GENI_LS_VERSION = 1;
 
 $(document).ready(function(){
-  if($(".nav2").length > 0) { // they are brand new user
+  if($(".nav2").length > 0) {
     if ($("#slicefilterswitch").length > 0) { // they are using card view
       resume_dashboard();
     } else {
@@ -39,8 +39,10 @@ $(document).ready(function(){
       }
     }
   } else {
+    // New user, hide other tabs to show only the welcome messages.
     $("#logs").hide();
     $("#map").hide();
+    $("#status").hide();
   }
 
   var old_callback = get_callback;
