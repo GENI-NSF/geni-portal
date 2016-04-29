@@ -24,7 +24,7 @@
 // dashboard.js: enable interactivity and animations on the dashboard page
 
 // increment if your changes to localStorage stuff require clearing localStorage.
-GENI_LS_VERSION = 1; 
+GENI_LS_VERSION = 1;
 
 $(document).ready(function(){
   if($(".nav2").length > 0) { // they are brand new user
@@ -53,7 +53,7 @@ $(document).ready(function(){
       return old_callback(tab_name);
     }
   }
-  
+
   // Make header links and new selectors show dropdown when you hover on them
   $(".has-sub").hover(function(){ $(this).find('ul').first().show(); },
                       function(){ $(this).find('ul').hide(); });
@@ -156,7 +156,7 @@ function get_selector_value(selector) {
 }
 
 // update a selector to display the dropdown item with newval
-function update_selector(selector, newval) { 
+function update_selector(selector, newval) {
   newtext = selector.find(".submenu li[data-value='" + newval + "']:not(.selectorlabel)").html();
   selector.find(".selectorshown").attr("data-value", newval);
   selector.find(".selectorshown").html(newtext);
@@ -179,18 +179,18 @@ function renew_slice(slice_id, days, count, sliceexphours, resourceexphours) {
   var d = newexp.getDate();
   var m = newexp.getMonth() + 1;
   var y = newexp.getFullYear();
-  var newexpstring = y + '-' + m + '-'+ d; 
+  var newexpstring = y + '-' + m + '-'+ d;
   renewalhours = 24 * days;
 
   if (count > 0 && resourceexphours < renewalhours) {
     if (sliceexphours < renewalhours) {
-      renew_resources("do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring, slice_id);   
+      renew_resources("do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring, slice_id);
     } else {
-      renew_resources("do-renew.php?renew=sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring, slice_id);   
+      renew_resources("do-renew.php?renew=sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring, slice_id);
     }
   } else {
     if (sliceexphours < renewalhours) {
-      window.location = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
+      window.location = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;
     }
   }
 }
@@ -237,7 +237,7 @@ function info_set_location(slice_id, url, stop_if_none) {
 }
 
 
-// Shows all the projects matching selection, sorting by the sorting type given by sortby. 
+// Shows all the projects matching selection, sorting by the sorting type given by sortby.
 function show_projects(selection, sortby) {
   $("#projectarea .slicebox").addClass("gone");
   $("#projectarea .slicebox").hide();
@@ -282,7 +282,7 @@ function show_slices(selection, sortby) {
 
 // Shows the slices for project projectname
 
-function show_slices_for_project(projectname) { 
+function show_slices_for_project(projectname) {
   update_selector($("#slicefilterswitch"), projectname);
   switch_to_card("#slices");
   update_slices();
@@ -294,7 +294,7 @@ function is_category(class_name) {
 }
 
 // Makes the slices/project boxes zoom in from the right
-function animate_boxes(container, selection) { 
+function animate_boxes(container, selection) {
   num_columns = Math.floor(parseInt($(container).css("width").split("px")[0]) / 315);
    // fancy slice animations
   $("." + selection).addClass("loading");
@@ -320,7 +320,7 @@ function sort_boxes(attr, secondattr, ascending, container) {
       vB = parseInt($(b).attr("data-" + attr));
     } else {
       vA = $(a).attr("data-" + attr).toLowerCase();
-      vB = $(b).attr("data-" + attr).toLowerCase(); 
+      vB = $(b).attr("data-" + attr).toLowerCase();
     }
     if(ascending) {
       order = (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
@@ -330,7 +330,7 @@ function sort_boxes(attr, secondattr, ascending, container) {
           vB = parseInt($(b).attr("data-" + secondattr));
         } else {
           vA = $(a).attr("data-" + secondattr).toLowerCase();
-          vB = $(b).attr("data-" + secondattr).toLowerCase(); 
+          vB = $(b).attr("data-" + secondattr).toLowerCase();
         }
         order = (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
       }
@@ -338,12 +338,12 @@ function sort_boxes(attr, secondattr, ascending, container) {
     } else {
       order = (vA < vB) ? 1 : (vA > vB) ? -1 : 0;
       if (order == 0) { // tie on first attribute, use secondary sorting attribute
-        if ($.inArray(secondattr, numberical_attrs) != -1) { 
+        if ($.inArray(secondattr, numberical_attrs) != -1) {
           vA = parseInt($(a).attr("data-" + secondattr));
           vB = parseInt($(b).attr("data-" + secondattr));
         } else {
           vA = $(a).attr("data-" + secondattr).toLowerCase();
-          vB = $(b).attr("data-" + secondattr).toLowerCase(); 
+          vB = $(b).attr("data-" + secondattr).toLowerCase();
         }
         order = (vA < vB) ? 1 : (vA > vB) ? -1 : 0;
       }
