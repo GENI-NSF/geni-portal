@@ -54,6 +54,13 @@ if (! isset($all_ams)) {
 
 <script type="text/javascript">
   var allAms = <?php echo json_encode($all_ams); ?>;
+
+  function maybeDeleteRSpec(id, name) {
+          if (window.confirm("Delete RSpec " + name + "?")) {
+                  var url = 'rspecdelete.php?id=' + id;
+                  window.location=url;
+          }
+  }
 </script>
 
 <?php
@@ -255,8 +262,7 @@ function display_rspec($rspec, $owners, $public=False) {
     $jacks_btn = ("<button onClick=\"showEditorContainer($id, '$name')\" title='jacks_view'>Edit RSpec</button>");
     $edit_url = "rspecupload.php?" . http_build_query($edit_query);
     $edit_btn = "<button onClick=\"window.location='$edit_url'\" title='Edit'>Edit Info</button>";
-    $delete_url = "rspecdelete.php?id=$id";
-    $delete_btn = "<button onClick=\"window.location='$delete_url'\" title='Delete'>Delete</button>";
+    $delete_btn = "<button onClick=\"maybeDeleteRSpec($id, '$name');\" title='Delete'>Delete</button>";
     $columns = array($rspec['name'],
           $rspec['description'],
           $edit_btn,
