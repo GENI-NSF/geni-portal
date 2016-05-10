@@ -37,7 +37,7 @@ if (array_key_exists('id', $_GET)) {
 
 if (is_null($rspec_id)) {
   $_SESSION['lasterror'] = "Resource Specification (RSpec) delete failed: no id specified.";
-  redirect_referer('profile.php');
+  relative_redirect('profile.php#rspecs');
 }
 
 
@@ -48,5 +48,5 @@ if ($result) {
   $_SESSION['lasterror'] = "Resource Specification (RSpec) delete failed.";
 }
 
-redirect_referer('profile.php#rspecs');
+relative_redirect('profile.php#rspecs');
 ?>
