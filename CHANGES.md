@@ -6,6 +6,8 @@
 
 * Confirm before deleting RSpecs
   ([#1691](https://github.com/GENI-NSF/geni-portal/issues/1691))
+* Handle logout when viewing RSpecs
+  ([#1696](https://github.com/GENI-NSF/geni-portal/issues/1696))
 
 ## Installation Notes
 
