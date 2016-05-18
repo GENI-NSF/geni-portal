@@ -37,7 +37,7 @@ $me = $user->account_id;
 if (! isset($all_ams)) {
   $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $all_ams = array();
-  foreach ($am_list as $am) 
+  foreach ($am_list as $am)
   {
     $single_am = array();
     $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
@@ -45,7 +45,7 @@ if (! isset($all_ams)) {
     $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
     $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
     $all_ams[$service_id] = $single_am;
-  }   
+  }
 }
 
 // error_log("ALL_AMS = " . print_r($all_ams, true));
@@ -54,6 +54,13 @@ if (! isset($all_ams)) {
 
 <script type="text/javascript">
   var allAms = <?php echo json_encode($all_ams); ?>;
+
+  function maybeDeleteRSpec(id, name) {
+          if (window.confirm("Delete RSpec " + name + "?")) {
+                  var url = 'rspecdelete.php?id=' + id;
+                  window.location=url;
+          }
+  }
 </script>
 
 <?php
@@ -169,7 +176,7 @@ function rspec_table_header($table_id, $searchable=False, $public=False) {
      $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;",
                     "Owner &#x2191;&#x2193;", "&nbsp;", "&nbsp;");
   } else {
-     $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;", 
+     $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;",
                     "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;");
   }
   print "<tr>";
@@ -220,7 +227,7 @@ function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
   $name = $rspec['name'];
-  
+
   $view_url = "rspecview.php?id=$id";
   $view_btn = ("<button onClick=\"showViewerContainer($id, '$name')\" title='view'>View</button>");
   $download_url = "rspecdownload.php?id=$id";
@@ -255,8 +262,7 @@ function display_rspec($rspec, $owners, $public=False) {
     $jacks_btn = ("<button onClick=\"showEditorContainer($id, '$name')\" title='jacks_view'>Edit RSpec</button>");
     $edit_url = "rspecupload.php?" . http_build_query($edit_query);
     $edit_btn = "<button onClick=\"window.location='$edit_url'\" title='Edit'>Edit Info</button>";
-    $delete_url = "rspecdelete.php?id=$id";
-    $delete_btn = "<button onClick=\"window.location='$delete_url'\" title='Delete'>Delete</button>";
+    $delete_btn = "<button onClick=\"maybeDeleteRSpec($id, '$name');\" title='Delete'>Delete</button>";
     $columns = array($rspec['name'],
           $rspec['description'],
           $edit_btn,
