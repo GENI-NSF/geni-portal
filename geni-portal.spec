@@ -523,7 +523,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/loadcert.js
 %{webdir}/secure/loadcert.php
 %{webdir}/secure/maintenance_redirect_page.php
-%{webdir}/secure/map.php
 %{webdir}/secure/modify.php
 %{webdir}/secure/omni-bundle.php
 %{webdir}/secure/permission_manager_test.php

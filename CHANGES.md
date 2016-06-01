@@ -9,7 +9,11 @@
 
 ## Installation Notes
 
-* None
+* Delete unused files from installation:
+
+    ```
+    sudo rm /var/www/secure/map.php
+    ```
 
 # [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)
 

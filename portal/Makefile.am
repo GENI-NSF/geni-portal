@@ -82,7 +82,7 @@ dist_gcfsrc_DATA = \
 dist_gcfsrc_SCRIPTS = \
 	gcf.d/src/omni_php.py \
 	gcf.d/src/stitcher_php.py
-dist_gcfsrcgeni_DATA = 
+dist_gcfsrcgeni_DATA =
 
 dist_svcweb_DATA = \
 	www/portal/SocketPool.swf \
@@ -171,7 +171,6 @@ dist_svcweb_DATA = \
 	www/portal/listresources.php \
 	www/portal/listresources_plain.php \
 	www/portal/maintenance_redirect_page.php \
-	www/portal/map.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/permission_manager_test.php \
@@ -230,7 +229,7 @@ dist_svcweb_DATA = \
 	www/portal/uploadsshkey.php \
 	www/portal/wimax-enable.php \
 	www/portal/wireless_operations.php \
-	www/portal/wireless_redirect.php 
+	www/portal/wireless_redirect.php
 
 dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \
@@ -264,7 +263,7 @@ dist_svcwebimages_DATA = \
 	www/images/UseGENI.png \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
-	www/images/Xen-VM.svg 
+	www/images/Xen-VM.svg
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
@@ -273,12 +272,12 @@ dist_svcwebcommon_DATA = \
 	www/common/nsf1.gif \
 	www/common/logos.html \
 	www/common/topbar_gradient.png \
-	www/common/topbar_gradient2.png 
+	www/common/topbar_gradient2.png
 
 dist_svcwebcss_DATA =  \
 	www/common/css/mobile-portal.css \
 	www/common/css/newportal.css \
-	www/common/css/portal.css 
+	www/common/css/portal.css
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
@@ -338,7 +337,7 @@ dist_svcwebmap_DATA =  \
 dist_svcwebmapdisplay_DATA =  \
   www/common/map/1080display/index.php \
   www/common/map/1080display/map-big.html
-  
+
 dist_svcwebmapol_DATA =  \
   www/common/map/OpenLayers-2.13/OpenLayers.js \
   www/common/map/OpenLayers-2.13/readme.md
@@ -367,7 +366,7 @@ dist_svcwebmapolimg_DATA =  \
   www/common/map/OpenLayers-2.13/img/zoom-minus-mini.png \
   www/common/map/OpenLayers-2.13/img/zoom-plus-mini.png \
   www/common/map/OpenLayers-2.13/img/zoom-world-mini.png
-  
+
 dist_svcwebmapoltheme_DATA =  \
   www/common/map/OpenLayers-2.13/theme/default/google.css \
   www/common/map/OpenLayers-2.13/theme/default/google.tidy.css \
@@ -377,7 +376,7 @@ dist_svcwebmapoltheme_DATA =  \
   www/common/map/OpenLayers-2.13/theme/default/style.mobile.css \
   www/common/map/OpenLayers-2.13/theme/default/style.mobile.tidy.css \
   www/common/map/OpenLayers-2.13/theme/default/style.tidy.css
-  
+
 dist_svcwebmapolthemeimg_DATA =  \
   www/common/map/OpenLayers-2.13/theme/default/img/add_point_off.png \
   www/common/map/OpenLayers-2.13/theme/default/img/add_point_on.png \
