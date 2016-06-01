@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Standardize python shebang declaration
+  ([#1367](https://github.com/GENI-NSF/geni-portal/issues/1367))
 
 ## Installation Notes
 
