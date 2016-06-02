@@ -1,7 +1,4 @@
-# XXX Do we still need SocketPool.swf?
-# XXX Do we still need playerProductInstall.swf?
-# XXX Rename gcf.d/gcf.ini -> gcf.d/example-gcf.ini (see below)
-# XXX Do we still need omni.ini (installed in the old Makefile)?
+# TODO Rename gcf.d/gcf.ini -> gcf.d/example-gcf.ini (see below)
 
 svcdatadir = $(pkgdatadir)/portal
 gcfsrcdir = $(svcdatadir)/gcf/src
@@ -85,7 +82,6 @@ dist_gcfsrc_SCRIPTS = \
 dist_gcfsrcgeni_DATA =
 
 dist_svcweb_DATA = \
-	www/portal/SocketPool.swf \
 	www/portal/accept-project-invite.php \
 	www/portal/admin.php \
 	www/portal/aggregates.php \

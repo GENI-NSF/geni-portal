@@ -566,7 +566,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/sliceresource.php
 %{webdir}/secure/slices.php
 %{webdir}/secure/sliverdelete.php
-%{webdir}/secure/SocketPool.swf
 %{webdir}/secure/speaks-for-delete.php
 %{webdir}/secure/speaks-for-upload.php
 %{webdir}/secure/speaks-for.css
