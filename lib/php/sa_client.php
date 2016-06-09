@@ -35,7 +35,7 @@
 //   get_slices_for_member(sa_url, member_id, is_member, role=null)
 //   lookup_slice_details(sa_url, slice_uuids)
 //   get_slices_for_projects(sa_url, project_uuids, allow_expired=false)
-//   modify_slice_membership(sa_url, slice_id, 
+//   modify_slice_membership(sa_url, slice_id,
 //        members_to_add, members_to_change_role, members_to_remove)
 //   add_slice_member(sa_url, project_id, member_id, role)
 //   remove_slice_member(sa_url, slice_id, member_id)
@@ -58,7 +58,7 @@ $SACHAPI2PORTAL = array('SLICE_UID' => SA_SLICE_TABLE_FIELDNAME::SLICE_ID,
 			'SLICE_EXPIRED' => SA_SLICE_TABLE_FIELDNAME::EXPIRED,
 			'SLICE_DESCRIPTION' => SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION);
 
-$SAMEMBERCHAPI2PORTAL = array('SLICE_ROLE' => SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE, 
+$SAMEMBERCHAPI2PORTAL = array('SLICE_ROLE' => SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE,
 			      'SLICE_MEMBER_UID' => SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 
 $SADETAILSKEYS = array('SLICE_UID',
@@ -125,12 +125,12 @@ function create_slice($sa_url, $signer, $project_id, $project_name, $slice_name,
                                                         $options);
   $project_urns = array_keys($lookup_project_urn_return);
   $project_urn = $project_urns[0];
-  $options = array('fields' => 
+  $options = array('fields' =>
 		   array('SLICE_NAME' => $slice_name,
 			 'SLICE_DESCRIPTION' => $description,
 			 'SLICE_PROJECT_URN' => $project_urn));
   $options = array_merge($options, $client->options());
-  $slice = $client->create_slice($client->creds(), $options); 
+  $slice = $client->create_slice($client->creds(), $options);
   $converted_slice = slice_details_chapi2portal($slice);
   // CHAPI: TODO reformat return arguments
   return $converted_slice;
@@ -179,7 +179,7 @@ function lookup_slice_ids($sa_url, $signer, $project_id)
 
 /* lookup a set of slices by name, project_id, member_id */
 /* That is, the set of slices for which this member_id is a member */
-function lookup_slices($sa_url, $signer, $project_id, $member_id)  // 
+function lookup_slices($sa_url, $signer, $project_id, $member_id)  //
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
 
@@ -280,7 +280,7 @@ function _conv_mid2urn_map_s($sa_url, $signer, $amap)
 // Make a POA geni_update_users call on all aggregates at which this slice
 // has resources, updating keys for existing members, removing keys
 // for removed members
-function update_user_keys_on_slivers($sa_url, $signer, $slice_id, 
+function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
 				     $slice_urn,
 				     $members_to_add,
 				     $members_to_change,
@@ -339,7 +339,7 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
   // invoke omni to call the geni_update_users POA
   $slice_users_json = json_encode($slice_users);
   $slice_users_filename = writeDataToTempFile($slice_users_json);
-  $args = array("--optionsfile", $slice_users_filename, 
+  $args = array("--optionsfile", $slice_users_filename,
 		"poa", $slice_urn, 'geni_update_users');
   $res = invoke_omni_function($am_urls, $signer, $args,
 			      array(), 0, 0, false, NULL, 3);
@@ -349,16 +349,16 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
   unlink($slice_users_filename);
 
   return $res;
-  
+
 }
 
 // Modify slice membership according to given lists to add/change_role/remove
 // $members_to_add and $members_to_change role are both
 //     dictionaries of {member_id => role, ....}
 // $members_to_delete is a list of member_ids
-function modify_slice_membership($sa_url, $signer, $slice_id, 
-				 $members_to_add, 
-				 $members_to_change, 
+function modify_slice_membership($sa_url, $signer, $slice_id,
+				 $members_to_add,
+				 $members_to_change,
 				 $members_to_remove)
 {
   $slice_urn = get_slice_urn($sa_url, $signer, $slice_id);
@@ -367,7 +367,7 @@ function modify_slice_membership($sa_url, $signer, $slice_id,
   $members_to_add = _conv_mid2urn_map_s($sa_url, $signer, $members_to_add);
   $members_to_change = _conv_mid2urn_map_s($sa_url, $signer, $members_to_change);
   $members_to_remove = _conv_mid2urn_s($sa_url, $signer, $members_to_remove);
-  
+
   $options = array();
   if (sizeof($members_to_add)>0)    { $options['members_to_add']    = $members_to_add; }
   if (sizeof($members_to_change)>0) { $options['members_to_change'] = $members_to_change; }
@@ -385,16 +385,16 @@ function modify_slice_membership($sa_url, $signer, $slice_id,
 function add_slice_member($sa_url, $signer, $slice_id, $member_id, $role)
 {
   $member_roles = array($member_id => $role);
-  $result = modify_slice_membership($sa_url, $signer, $slice_id, 
+  $result = modify_slice_membership($sa_url, $signer, $slice_id,
 				    $member_roles, array(), array());
   return $result;
 }
 
-// Remove a member from given slice 
+// Remove a member from given slice
 function remove_slice_member($sa_url, $signer, $slice_id, $member_id)
 {
   $member_to_remove = array($member_id);
-  $result = modify_slice_membership($sa_url, $signer, $slice_id, 
+  $result = modify_slice_membership($sa_url, $signer, $slice_id,
 				    array(), array(), $member_to_remove);
   return $result;
 }
@@ -403,7 +403,7 @@ function remove_slice_member($sa_url, $signer, $slice_id, $member_id)
 function change_slice_member_role($sa_url, $signer, $slice_id, $member_id, $role)
 {
   $member_roles = array($member_id => $role);
-  $result = modify_slice_membership($sa_url, $signer, $slice_id, 
+  $result = modify_slice_membership($sa_url, $signer, $slice_id,
 				    array(), $member_roles, array());
   return $result;
 }
@@ -423,20 +423,20 @@ function get_slice_members($sa_url, $signer, $slice_id, $role=null)
   $options = array_merge($options, $client->options());
   $result = $client->lookup_slice_members($slice_urn, $client->creds(), $options);
   $converted_result = array();
-  foreach($result as $row) { 
+  foreach($result as $row) {
     $converted_row = convert_role(slice_member_chapi2portal($row));
     $converted_result[] = $converted_row;
   }
-  return $converted_result;  
+  return $converted_result;
 }
 
 // Return list of slice_id's, member ID's and roles associated with slice of a given project
 // If role is provided, filter to members of given role
 // CHAPI: This should be [{'slice_id' => slice1, 'role' => role1, 'member_id' => mem1}*]
-// 
+//
 
 // slice-> PROJECT_URN
-// 
+//
 function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null)
 {
   // this probably wont work unless you are an operator
@@ -477,12 +477,12 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
     // Exclude slices of which I'm not a member
     if (!array_key_exists($surn, $my_slice_urns))
       continue;
-    
+
     $options = array_merge($moptions, $client->options());
     $mems = $client->lookup_slice_members($surn, $client->creds(), $options);
     foreach ($mems as $mtup) {
-      $slice_member = array(SA_SLICE_TABLE_FIELDNAME::SLICE_ID => $sid, 
-			    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID => $mtup['SLICE_MEMBER_UID'], 
+      $slice_member = array(SA_SLICE_TABLE_FIELDNAME::SLICE_ID => $sid,
+			    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID => $mtup['SLICE_MEMBER_UID'],
 			    SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE => $mtup['SLICE_ROLE']);
       $slice_member = convert_role($slice_member);
       $results[] = $slice_member;
@@ -494,7 +494,7 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
 // Return list of slice ID's and Roles for given member_id for slices to which member belongs
 // If is_member is true, return slices for which member is a member
 // If is_member is false, return slices for which member is NOT a member
-// If role is provided, filter on slices 
+// If role is provided, filter on slices
 //    for which member has given role (is_member = true)
 //    for which member does NOT have given role (is_member = false)
 // FIXME: optional project_id to constrain to a given project?
@@ -520,7 +520,7 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
   // Convert columns from 'external' to 'internal' format
   $converted_results = array();
   foreach($results as $row) {
-    $converted_row = array(SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID => $row['SLICE_UID'], 
+    $converted_row = array(SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID => $row['SLICE_UID'],
 			   SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE => $row['SLICE_ROLE'],
 			   SA_SLICE_TABLE_FIELDNAME::EXPIRED => $row['EXPIRED']);
     $converted_row = convert_role($converted_row);
@@ -558,7 +558,7 @@ function get_slices_in_projects($sa_url, $signer, $slice_uuids, $project_uuids, 
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $projects = array();
-  foreach($project_uuids as $project_uuid) { 
+  foreach($project_uuids as $project_uuid) {
     $projects[$project_uuid] = array();
   }
   //  error_log("GSFP.PROJECT_UUIDS = " . print_r($project_uuids, true));
@@ -581,9 +581,9 @@ function get_slices_in_projects($sa_url, $signer, $slice_uuids, $project_uuids, 
 
   // Convert from external to internal field names
   //  error_log("GSFP.PROJECTS = " . print_r($projects, true));
-// return map of (project_uid_1 => (slice_data_1, ...), 
+// return map of (project_uid_1 => (slice_data_1, ...),
 //                project_uid_2 => (slice_data_2, ..), ..)
-  return $projects;  
+  return $projects;
 }
 
 
