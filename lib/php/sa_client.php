@@ -280,11 +280,9 @@ function _conv_mid2urn_map_s($sa_url, $signer, $amap)
 // Make a POA geni_update_users call on all aggregates at which this slice
 // has resources, updating keys for existing members, removing keys
 // for removed members
-function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
-				     $slice_urn,
-				     $members_to_add,
-				     $members_to_change,
-				     $members_to_remove)
+function update_user_keys_on_slivers($sa_url, $signer, $slice_id, $slice_urn,
+                                     $members_to_add, $members_to_change,
+                                     $members_to_remove)
 {
   $username = $signer->username;
   $ma_url = sa_to_ma_url($sa_url);
