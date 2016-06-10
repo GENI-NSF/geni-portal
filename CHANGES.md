@@ -6,6 +6,8 @@
 
 * Standardize python shebang declaration
   ([#1367](https://github.com/GENI-NSF/geni-portal/issues/1367))
+* Provide a way to update SSH keys on existing resources
+  ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
 
 ## Installation Notes
 
