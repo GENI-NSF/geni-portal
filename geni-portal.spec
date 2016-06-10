@@ -265,12 +265,9 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/common/css/newportal.css
 %{webdir}/common/css/portal.css
 %{webdir}/common/dots.gif
-%{webdir}/common/InC_Participant.png
-%{webdir}/common/logos.html
 %{webdir}/common/map/current.json
 %{webdir}/common/map/gmap3.js
 %{webdir}/common/nsf1.gif
-%{webdir}/common/README-incommon-logo.txt
 %{webdir}/common/topbar_gradient.png
 %{webdir}/common/topbar_gradient2.png
 %{webdir}/favicon.ico

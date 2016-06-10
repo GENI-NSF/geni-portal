@@ -257,11 +257,8 @@ dist_svcwebimages_DATA = \
 	www/images/Xen-VM.svg
 
 dist_svcwebcommon_DATA = \
-	www/common/InC_Participant.png \
-	www/common/README-incommon-logo.txt \
 	www/common/dots.gif \
 	www/common/nsf1.gif \
-	www/common/logos.html \
 	www/common/topbar_gradient.png \
 	www/common/topbar_gradient2.png
 
