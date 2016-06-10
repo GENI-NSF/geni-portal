@@ -2,7 +2,7 @@
   CSS Style Sheet for GENI Portal
 
   Color scheme:
-    #F57F21 - official GENI orange (by color of orange in brand book: 
+    #F57F21 - official GENI orange (by color of orange in brand book:
               http://www.geni.net/wp-content/uploads/2009/04/geni_usage.pdf)
                   table headers
                   header colors
@@ -14,7 +14,7 @@
                   page background
     #E5E5E5 - tan
                   accents
-                  
+
   Fonts:
     Open Sans - header/footer text, headers
     PT Serif - body text
@@ -58,7 +58,7 @@ hr {
   border-left: 14px solid #E5E5E5;
   background-color: #111111;
   background-image: url('../../images/geni-header-right.png');
-  background-position: right; 
+  background-position: right;
   background-repeat: no-repeat;
 }
 
@@ -73,7 +73,7 @@ hr {
   color: #5F584E;
 }
 
-#metanav li { 
+#metanav li {
   border-right: 2px solid #5F584E;
 }
 
@@ -105,7 +105,7 @@ hr {
   clear: both;
 }
 
-#mainnav li { 
+#mainnav li {
   border-left: 2px solid #ffffff;
   padding: 0.25em;
 }
@@ -134,19 +134,19 @@ hr {
 /* Navigation */
 
 .nav h2, .nav hr { display: none }
-.nav ul { 
-  font-size: 0.8em; 
-  list-style: none; 
-  margin: 0; 
+.nav ul {
+  font-size: 0.8em;
+  list-style: none;
+  margin: 0;
   text-align: right;
 }
-  
+
 .nav li {
   display: inline;
   padding: 0 .75em;
   white-space: nowrap;
 }
-.nav li.last { 
+.nav li.last {
   border-right: none;
 }
 
@@ -177,7 +177,7 @@ hr {
   padding-bottom: 30px;
   padding-top: 20px;
   margin-top: 0px;
-  /* by default, let everything be serif 
+  /* by default, let everything be serif
      unless otherwise specified */
   font-family: 'PT Serif', serif;
   font-weight: normal;
@@ -349,7 +349,7 @@ hr {
   font-weight: normal;
   font-size: 0.9em;
 	padding: 6px;
-	background: #E5E5E5; 
+	background: #E5E5E5;
 	border-bottom: 1px solid #fff;
 	color: #5F584E;
 	border-top: 1px solid transparent;
@@ -511,31 +511,6 @@ hr {
     padding: 0px;
 }
 
-#OpenLayers_Control_Zoom_5 a {
-  color: #ffffff !important;
-  border-bottom: none !important;
-}
-
-#OpenLayers_Control_Zoom_5 a:hover {
-  color: #F57F21 !important;
-  background: transparent !important;
-  border-bottom: none !important;
-}
-
-#OpenLayers_Control_Attribution_7 {
-  padding: 5px;
-  z-index: 1000;
-  bottom: 0.2em !important;
-  overflow: hidden;
-  color: #5F584E;
-  font-size: 0.8em !important;
-  text-align: right;
-}
-
-#OpenLayers_Control_Attribution_7 a {
-      color: #5F584E;
-}
-
 /*
   FOOTER CONTAINER
 */
@@ -588,7 +563,7 @@ hr {
 */
 
 #welcome {
-  background-color: #FFFFFF;  
+  background-color: #FFFFFF;
   border-bottom: 5px solid #F57F21;
   margin-left: auto;
   margin-right: auto;
@@ -599,7 +574,7 @@ hr {
   max-width: 1250px;
   min-width: 800px;
   overflow: auto;
-  box-shadow: 0px 0px 10px #5F584E;  
+  box-shadow: 0px 0px 10px #5F584E;
 }
 
 #welcome-left {
@@ -1038,5 +1013,5 @@ img {
   border-radius: 0px;
   margin: 0px !important;
   margin-bottom: -20px !important;
-  border-right: 1px solid #E5E5E5; 
+  border-right: 1px solid #E5E5E5;
 }
