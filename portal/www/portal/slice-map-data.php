@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Generate and return JSON structure representing the nodes/links of 
+// Generate and return JSON structure representing the nodes/links of
 // resources allocated to a given slice
 //
 // Format: slice-map-data.php?slice_id=...
@@ -41,11 +41,11 @@ require_once("sa_client.php");
 require_once("am_client.php");
 require_once('json_util.php');
 
-function lookup_component_info($agg_urn, $component_name, 
+function lookup_component_info($agg_urn, $component_name,
 			       $component_id,
 			       $current_resource_map_data)
 {
-  // error_log("AGG_URN = " . $agg_urn . " CN = " . $component_name . 
+  // error_log("AGG_URN = " . $agg_urn . " CN = " . $component_name .
   //    " CID = " . $component_id);
   $componnent_info = NULL;
   foreach($current_resource_map_data['features'] as $feature) {
@@ -71,7 +71,7 @@ function lookup_component_info($agg_urn, $component_name,
     // Match on PC by constructing component_id from am_id and comp_id
     // E.g. if am_id => urn:publicid:IDN+utahddc.geniracks.net+authority+cm
     //      and comp_id => pc16
-    //  then match  component_id against 
+    //  then match  component_id against
     //         urn:publicid:IDN+utahddc.geniracks.net+node+pc16
     if(!$match) {
       $authority_suffix = implode("+", array_slice(explode("+", $am_id), 0, 2));
@@ -123,10 +123,10 @@ $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 session_write_close();
 
 // Need to get the sliver info for the slice
-// For each sliver of the slice, all we really need is 
+// For each sliver of the slice, all we really need is
 // 1. The LAT/LONG of the AM
 //    Take the sliver URN => authority URN => LAT/LONG in common.json
-// 2. The name of the AM 
+// 2. The name of the AM
 //    Take from service_registry (service_urn => service_name)
 // 3. The name of the sliver
 //    Need to ask for manifest at each AM
@@ -222,18 +222,18 @@ foreach($manifests as $slice_agg_urn => $manifest) {
     // exclusive
     // sliver_id
 
-      //    error_log("AGG_URN " . $slice_agg_urn . " CLIENT_ID " . $client_id . 
+      //    error_log("AGG_URN " . $slice_agg_urn . " CLIENT_ID " . $client_id .
       //	      " COMPONENT_NAME " . $component_name .
       //	      " COMPONENT_ID " . $component_id .
       //	      " CMID " . $component_manager_id);
-    if ($component_manager_id != $slice_agg_urn)  continue; 
+    if ($component_manager_id != $slice_agg_urn)  continue;
 
-    $component_info = lookup_component_info($slice_agg_urn, 
+    $component_info = lookup_component_info($slice_agg_urn,
 					    $component_name,
-					    $component_id, 
+					    $component_id,
 					    $current_resource_map_data);
     //    error_log("COMP_INFO = " . print_r($component_info, true));
-  
+
     if($component_info != NULL) {
 
       $interfaces = $node->getElementsByTagName("interface");
@@ -296,17 +296,16 @@ foreach($manifests as $slice_agg_urn => $manifest) {
     //    error_log("C(LF) = " . count($link_points) . " " . print_r($link_feature, true));
 
     $link_features[] = $link_feature;
-    
+
   }
 }
 
 // Above we need to keep a mapping of interfaces to coordinates
-// Then we go through the links and get the interface refs, lookup 
+// Then we go through the links and get the interface refs, lookup
 // the interfaces and corresponding coordinates
-// and add a line segment (OpenLayers.Geometry.LineString) between these
-// points
+// and add a line segment between these points
 //
-// Eventually, try to avoid drawing the same line twice(A -> B, B -> A) 
+// Eventually, try to avoid drawing the same line twice(A -> B, B -> A)
 
   //error_log("NODE_FEATURES = " . print_r($node_features, true));
   //error_log("LINK_FEATURES = " . print_r($link_features, true));
