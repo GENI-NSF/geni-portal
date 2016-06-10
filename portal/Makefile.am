@@ -19,7 +19,6 @@ svcwebimagesdir = $(svcwebtopdir)/images
 svcwebcommondir = $(svcwebtopdir)/common
 svcwebcssdir = $(svcwebtopdir)/common/css
 svcwebmapdir = $(svcwebtopdir)/common/map
-svcwebmapdisplaydir = $(svcwebtopdir)/common/map/1080display
 svcwebmapoldir = $(svcwebtopdir)/common/map/OpenLayers-2.13
 svcwebmapolimgdir = $(svcwebtopdir)/common/map/OpenLayers-2.13/img
 svcwebmapolthemedir = $(svcwebtopdir)/common/map/OpenLayers-2.13/theme/default
@@ -278,10 +277,6 @@ dist_svcwebcss_DATA =  \
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
 	www/common/map/gmap3.js
-
-dist_svcwebmapdisplay_DATA =  \
-  www/common/map/1080display/index.php \
-  www/common/map/1080display/map-big.html
 
 dist_svcwebmapol_DATA =  \
   www/common/map/OpenLayers-2.13/OpenLayers.js \

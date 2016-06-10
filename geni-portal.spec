@@ -267,8 +267,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/common/dots.gif
 %{webdir}/common/InC_Participant.png
 %{webdir}/common/logos.html
-%{webdir}/common/map/1080display/index.php
-%{webdir}/common/map/1080display/map-big.html
 %{webdir}/common/map/current.json
 %{webdir}/common/map/gmap3.js
 %{webdir}/common/map/OpenLayers-2.13/img/blank.gif

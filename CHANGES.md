@@ -16,6 +16,7 @@
     sudo rm /var/www/secure/SocketPool.swf
     sudo rm /var/www/common/map/*.rspec
     sudo rm /var/www/common/map/rspec-*.xml
+    sudo rm -r /var/www/common/map/1080display
     ```
 
 # [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)
