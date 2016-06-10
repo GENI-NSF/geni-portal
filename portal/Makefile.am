@@ -1,7 +1,4 @@
-# XXX Do we still need SocketPool.swf?
-# XXX Do we still need playerProductInstall.swf?
-# XXX Rename gcf.d/gcf.ini -> gcf.d/example-gcf.ini (see below)
-# XXX Do we still need omni.ini (installed in the old Makefile)?
+# TODO Rename gcf.d/gcf.ini -> gcf.d/example-gcf.ini (see below)
 
 svcdatadir = $(pkgdatadir)/portal
 gcfsrcdir = $(svcdatadir)/gcf/src
@@ -22,11 +19,6 @@ svcwebimagesdir = $(svcwebtopdir)/images
 svcwebcommondir = $(svcwebtopdir)/common
 svcwebcssdir = $(svcwebtopdir)/common/css
 svcwebmapdir = $(svcwebtopdir)/common/map
-svcwebmapdisplaydir = $(svcwebtopdir)/common/map/1080display
-svcwebmapoldir = $(svcwebtopdir)/common/map/OpenLayers-2.13
-svcwebmapolimgdir = $(svcwebtopdir)/common/map/OpenLayers-2.13/img
-svcwebmapolthemedir = $(svcwebtopdir)/common/map/OpenLayers-2.13/theme/default
-svcwebmapolthemeimgdir = $(svcwebtopdir)/common/map/OpenLayers-2.13/theme/default/img
 svcwebpolicydir = $(svcwebtopdir)/policy
 
 edit = sed \
@@ -85,7 +77,6 @@ dist_gcfsrc_SCRIPTS = \
 dist_gcfsrcgeni_DATA =
 
 dist_svcweb_DATA = \
-	www/portal/SocketPool.swf \
 	www/portal/accept-project-invite.php \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
@@ -172,7 +163,6 @@ dist_svcweb_DATA = \
 	www/portal/listresources.php \
 	www/portal/listresources_plain.php \
 	www/portal/maintenance_redirect_page.php \
-	www/portal/map.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/permission_manager_test.php \
@@ -271,11 +261,8 @@ dist_svcwebimages_DATA = \
 	www/images/Xen-VM.svg
 
 dist_svcwebcommon_DATA = \
-	www/common/InC_Participant.png \
-	www/common/README-incommon-logo.txt \
 	www/common/dots.gif \
 	www/common/nsf1.gif \
-	www/common/logos.html \
 	www/common/topbar_gradient.png \
 	www/common/topbar_gradient2.png
 
@@ -286,137 +273,7 @@ dist_svcwebcss_DATA =  \
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
-	www/common/map/gmap3.js \
-	www/common/map/rspec-dragon-maxgigapop-net.xml \
-	www/common/map/rspec-emulab-net.xml \
-	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
-	www/common/map/rspec-exogeni-net-fiuvmsite.xml \
-	www/common/map/rspec-exogeni-net-rcivmsite.xml \
-	www/common/map/rspec-exogeni-net-uhvmsite.xml \
-	www/common/map/rspec-exogeni-net.xml \
-	www/common/map/rspec-geni-it-cornell-edu.xml \
-	www/common/map/rspec-geni-kettering-edu.xml \
-	www/common/map/rspec-genirack-nyu-edu.xml \
-	www/common/map/rspec-instageni-clemson-edu.xml \
-	www/common/map/rspec-instageni-gpolab-bbn-com.xml \
-	www/common/map/rspec-instageni-illinois-edu.xml \
-	www/common/map/rspec-instageni-ku-gpeni-net.xml \
-	www/common/map/rspec-instageni-maxgigapop-net.xml \
-	www/common/map/rspec-instageni-northwestern-edu.xml \
-	www/common/map/rspec-instageni-nysernet-org.xml \
-	www/common/map/rspec-instageni-rnet-missouri-edu.xml \
-	www/common/map/rspec-instageni-rnoc-gatech-edu.xml \
-	www/common/map/rspec-instageni-sox-net.xml \
-	www/common/map/rspec-instageni-stanford-edu.xml \
-	www/common/map/rspec-instageni-wisc-edu.xml \
-	www/common/map/rspec-ion-internet2-edu.xml \
-	www/common/map/rspec-lan-sdn-uky-edu.xml \
-	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
-	www/common/map/rspec-openflow-foam-foam-cenic-net.xml \
-	www/common/map/rspec-openflow-foam-foam-geni-it-cornell-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-geni-kettering-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-genirack-nyu-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-clemson-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-illinois-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-ku-gpeni-net.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-maxgigapop-net.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-northwestern-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-nysernet-org.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-sox-net.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-stanford-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-wisc-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-lan-sdn-uky-edu.xml \
-	www/common/map/rspec-openflow-foam-foam-nysernet-org.xml \
-	www/common/map/rspec-openflow-foam-foam-sox-net.xml \
-	www/common/map/rspec-openflow-foam-foam-utahddc-geniracks-net.xml \
-	www/common/map/rspec-openflow-foam-ig-utah.xml \
-	www/common/map/rspec-openflow-foam-rci-hn-exogeni-gpolab-bbn-com.xml \
-	www/common/map/rspec-openflow-foam-sl-geni-northwestern-edu.xml \
-	www/common/map/rspec-uky-emulab-net.xml \
-	www/common/map/rspec-utah-geniracks-net.xml \
-	www/common/map/rspec-utahddc-geniracks-net.xml
-
-dist_svcwebmapdisplay_DATA =  \
-  www/common/map/1080display/index.php \
-  www/common/map/1080display/map-big.html
-
-dist_svcwebmapol_DATA =  \
-  www/common/map/OpenLayers-2.13/OpenLayers.js \
-  www/common/map/OpenLayers-2.13/readme.md
-
-dist_svcwebmapolimg_DATA =  \
-  www/common/map/OpenLayers-2.13/img/blank.gif \
-  www/common/map/OpenLayers-2.13/img/cloud-popup-relative.png \
-  www/common/map/OpenLayers-2.13/img/drag-rectangle-off.png \
-  www/common/map/OpenLayers-2.13/img/drag-rectangle-on.png \
-  www/common/map/OpenLayers-2.13/img/east-mini.png \
-  www/common/map/OpenLayers-2.13/img/layer-switcher-maximize.png \
-  www/common/map/OpenLayers-2.13/img/layer-switcher-minimize.png \
-  www/common/map/OpenLayers-2.13/img/marker-blue.png \
-  www/common/map/OpenLayers-2.13/img/marker-gold.png \
-  www/common/map/OpenLayers-2.13/img/marker-green.png \
-  www/common/map/OpenLayers-2.13/img/marker.png \
-  www/common/map/OpenLayers-2.13/img/measuring-stick-off.png \
-  www/common/map/OpenLayers-2.13/img/measuring-stick-on.png \
-  www/common/map/OpenLayers-2.13/img/north-mini.png \
-  www/common/map/OpenLayers-2.13/img/panning-hand-off.png \
-  www/common/map/OpenLayers-2.13/img/panning-hand-on.png \
-  www/common/map/OpenLayers-2.13/img/slider.png \
-  www/common/map/OpenLayers-2.13/img/south-mini.png \
-  www/common/map/OpenLayers-2.13/img/west-mini.png \
-  www/common/map/OpenLayers-2.13/img/zoombar.png \
-  www/common/map/OpenLayers-2.13/img/zoom-minus-mini.png \
-  www/common/map/OpenLayers-2.13/img/zoom-plus-mini.png \
-  www/common/map/OpenLayers-2.13/img/zoom-world-mini.png
-
-dist_svcwebmapoltheme_DATA =  \
-  www/common/map/OpenLayers-2.13/theme/default/google.css \
-  www/common/map/OpenLayers-2.13/theme/default/google.tidy.css \
-  www/common/map/OpenLayers-2.13/theme/default/ie6-style.css \
-  www/common/map/OpenLayers-2.13/theme/default/ie6-style.tidy.css \
-  www/common/map/OpenLayers-2.13/theme/default/style.css \
-  www/common/map/OpenLayers-2.13/theme/default/style.mobile.css \
-  www/common/map/OpenLayers-2.13/theme/default/style.mobile.tidy.css \
-  www/common/map/OpenLayers-2.13/theme/default/style.tidy.css
-
-dist_svcwebmapolthemeimg_DATA =  \
-  www/common/map/OpenLayers-2.13/theme/default/img/add_point_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/add_point_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/blank.gif \
-  www/common/map/OpenLayers-2.13/theme/default/img/close.gif \
-  www/common/map/OpenLayers-2.13/theme/default/img/drag-rectangle-off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/drag-rectangle-on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/draw_line_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/draw_line_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/draw_point_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/draw_point_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/draw_polygon_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/draw_polygon_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/editing_tool_bar.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/move_feature_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/move_feature_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/navigation_history.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/overview_replacement.gif \
-  www/common/map/OpenLayers-2.13/theme/default/img/panning-hand-off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/panning-hand-on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/pan_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/pan_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/pan-panel-NOALPHA.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/pan-panel.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/remove_point_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/remove_point_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/ruler.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/save_features_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/save_features_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/view_next_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/view_next_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/view_previous_off.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/view_previous_on.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel-NOALPHA.png \
-  www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel.png
+	www/common/map/gmap3.js
 
 dist_svcwebtop_DATA = \
     www/amstatus.php \

@@ -11,7 +11,19 @@
 
 ## Installation Notes
 
-* None
+* Delete unused files from installation:
+
+    ```
+    sudo rm /var/www/secure/map.php
+    sudo rm /var/www/secure/SocketPool.swf
+    sudo rm /var/www/common/map/*.rspec
+    sudo rm /var/www/common/map/rspec-*.xml
+    sudo rm -r /var/www/common/map/1080display
+    sudo rm -r /var/www/common/map/OpenLayers-2.13
+    sudo rm -r /var/www/common/InC_Participant.png
+    sudo rm -r /var/www/common/README-incommon-logo.txt
+    sudo rm -r /var/www/common/logos.html
+    ```
 
 # [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)
 
