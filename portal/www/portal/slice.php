@@ -328,6 +328,7 @@ include("tool-showmessage.php");
 ?>
 <script src='cards.js'></script>
 <script src='dashboard.js'></script>
+<script src='slice.js'></script>
 <script type="text/javascript">
   $(document).ready(function(){
     $("#showrenewbox").click(function(){
@@ -383,7 +384,7 @@ print "</div>";
 print "<div style='display: table-cell; vertical-align: middle;'>";
 print "<a class='button' href='$add_url' style='margin-right: 5px;' $add_slivers_disabled $disable_buttons_str>Add Resources</a>";
 print "<a class='button' id='showrenewbox'>Renew</a>";
-print "<a class='button' href='$update_keys_url' id='updatekeys'>Update SSH Keys</a>";
+print "<a class='button' href='$update_keys_url' id='updatekeys' disabled='disabled'>Update SSH Keys</a>";
 
 print "<ul class='has-sub selector' id='slicetools' style='vertical-align: middle; float: none; margin: 5px !important;'>";
 print "<span class='selectorshown'>Tools</span><ul class='submenu' style='width: 100px;'>";

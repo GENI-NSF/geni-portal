@@ -208,6 +208,7 @@ dist_svcweb_DATA = \
 	www/portal/slice-map-view.php \
 	www/portal/slice-map-data.php \
 	www/portal/slice-member.php \
+	www/portal/slice.js \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
 	www/portal/slice-table.css \
