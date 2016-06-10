@@ -14,6 +14,8 @@
     ```
     sudo rm /var/www/secure/map.php
     sudo rm /var/www/secure/SocketPool.swf
+    sudo rm /var/www/common/map/*.rspec
+    sudo rm /var/www/common/map/rspec-*.xml
     ```
 
 # [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)
