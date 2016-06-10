@@ -226,6 +226,8 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-slices.js \
 	www/portal/tools-user.js \
+	www/portal/updatekeys.js \
+	www/portal/updatekeys.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
