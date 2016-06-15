@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #----------------------------------------------------------------------
 # Copyright (c) 2012-2016 Raytheon BBN Technologies
@@ -48,7 +48,7 @@ def main(argv=None):
         start_file_handle.close()
     except (ValueError, IOError) as e:
         pass
-    
+
     # catch exceptions that stitcher.call may pass back
     try:
         text, obj = stitcher.call( sys.argv[1:] )
@@ -73,6 +73,6 @@ def main(argv=None):
             stop_file_handle.close()
         except (ValueError, IOError) as e:
             pass
-    
+
 if __name__ == "__main__":
     sys.exit(main())

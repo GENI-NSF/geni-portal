@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #----------------------------------------------------------------------
 # Copyright (c) 2012-2016 Raytheon BBN Technologies
@@ -34,7 +34,7 @@ def main(argv=None):
     parser = omni.getParser()
     # Parse Options
     (options, args) = parser.parse_args()
-    
+
     text, obj = omni.call( args, options )
 
     if type(obj) == type({}):
@@ -46,6 +46,6 @@ def main(argv=None):
     # serialize using json
     jsonObj = json.dumps( (text, obj2), indent=4 )
     print jsonObj
-        
+
 if __name__ == "__main__":
     sys.exit(main())
