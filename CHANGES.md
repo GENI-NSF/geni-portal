@@ -1,13 +1,24 @@
 # GENI Portal Release Notes
 
+# [Release 3.15](https://github.com/GENI-NSF/geni-portal/milestones/3.15)
+
+## Changes
+
+* Provide a way to update SSH keys on existing resources
+  ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
+
+## Installation Notes
+
+* None
+
 # [Release 3.14](https://github.com/GENI-NSF/geni-portal/milestones/3.14)
 
 ## Changes
 
 * Standardize python shebang declaration
   ([#1367](https://github.com/GENI-NSF/geni-portal/issues/1367))
-* Provide a way to update SSH keys on existing resources
-  ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
+* Delete obsolete files
+  ([#1701](https://github.com/GENI-NSF/geni-portal/issues/1701))
 
 ## Installation Notes
 
@@ -20,9 +31,9 @@
     sudo rm /var/www/common/map/rspec-*.xml
     sudo rm -r /var/www/common/map/1080display
     sudo rm -r /var/www/common/map/OpenLayers-2.13
-    sudo rm -r /var/www/common/InC_Participant.png
-    sudo rm -r /var/www/common/README-incommon-logo.txt
-    sudo rm -r /var/www/common/logos.html
+    sudo rm /var/www/common/InC_Participant.png
+    sudo rm /var/www/common/README-incommon-logo.txt
+    sudo rm /var/www/common/logos.html
     ```
 
 # [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)
