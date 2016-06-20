@@ -4,7 +4,7 @@
 
 ## Changes
 
-* None
+* Add some notes to geni-fetch-aggmon for testing
 
 ## Installation Notes
 
