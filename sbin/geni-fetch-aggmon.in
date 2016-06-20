@@ -2,6 +2,14 @@
 
 # Monitoring API: http://groups.geni.net/geni/wiki/GENIMonitoring/API
 
+# ----------------------------------------------------------------------
+# TO DO:
+#  * Add a command option to override the BASE_URL so that the
+#    development server, for instance, could be used without changes
+#  * Add a command line option to allow verbose output to enable
+#    debugging
+# ----------------------------------------------------------------------
+
 import urllib
 import urllib2
 import json
@@ -10,6 +18,11 @@ import time
 import pprint
 import sys
 import argparse
+
+# --------------------------------------------------
+# For testing use the development server BASE_URL:
+#   http://genimondev.uky.edu/API'
+# --------------------------------------------------
 
 BASE_URL = 'http://genimon.uky.edu/API'
 INFO_URL = '%s/info/' % (BASE_URL)
