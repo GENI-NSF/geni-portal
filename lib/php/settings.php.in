@@ -51,7 +51,7 @@ $portal_version = "@VERSION@";
 
 // URL to the Jacks root
 // Stable
-$jacks_stable_url = "https://www.emulab.net/protogeni/jacks-stable/js/jacks";
+$jacks_stable_url = "https://www.emulab.net/protogeni/jacks-stable/js/jacks.js";
 //$jacks_stable_url = "https://portal.geni.net/jacks-stable/js/jacks";
 
 // Sources for external libraries the portal uses

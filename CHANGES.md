@@ -5,6 +5,7 @@
 ## Changes
 
 * Add some notes to geni-fetch-aggmon for testing
+* Update the Jacks URL per Emulab's request
 
 ## Installation Notes
 
