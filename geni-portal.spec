@@ -346,6 +346,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/do-renew.php
 %{webdir}/secure/do-slice-search.php
 %{webdir}/secure/do-update-user-preferences.php
+%{webdir}/secure/do-update-keys.php
 %{webdir}/secure/do-upload-project-members.php
 %{webdir}/secure/do-user-admin.php
 %{webdir}/secure/do-user-search.php
@@ -438,6 +439,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/slice-map-view.php
 %{webdir}/secure/slice-member.php
 %{webdir}/secure/slice-table.css
+%{webdir}/secure/slice.js
 %{webdir}/secure/slice.php
 %{webdir}/secure/slicecred.php
 %{webdir}/secure/sliceresource.php
@@ -454,6 +456,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/tool-omniconfig.php
 %{webdir}/secure/tool-slices.js
 %{webdir}/secure/tools-user.js
+%{webdir}/secure/updatekeys.js
+%{webdir}/secure/updatekeys.php
 %{webdir}/secure/upload-file.php
 %{webdir}/secure/upload-project-members.php
 %{webdir}/secure/uploadsshkey.php

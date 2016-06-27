@@ -84,10 +84,10 @@ function compare_members_by_role($mem1, $mem2)
   $role2 = $mem2[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   if ($role1 < $role2)
     return -1;
-  else if ($role1 > $role2) 
+  else if ($role1 > $role2)
     return 1;
   else return 0;
-  
+
 }
 
 function compare_last_names($mem1,$mem2)
@@ -99,7 +99,7 @@ function compare_last_names($mem1,$mem2)
   return strcmp($name1,$name2);
 }
 
-function build_agg_table_on_slicepg() 
+function build_agg_table_on_slicepg()
 {
      global $am_list;
      global $slice;
@@ -151,7 +151,7 @@ function build_agg_table_on_slicepg()
       $size = strlen($slice_date_expiration) + 3;
       $output .= "size=\"$size\"/>\n";
       $output .= "<button id='renew_button_check' title='Renew resource reservation at selected aggregates until the specified date' ";
-      $output .= "onClick=\"confirmQuerySelected('".$slice_id."');\""; 
+      $output .= "onClick=\"confirmQuerySelected('".$slice_id."');\"";
       $output .= "$disable_buttons_str><b>Renew Resources</b></button>\n";
     }
      $output .= "</td></tr>\n";
@@ -163,12 +163,12 @@ function build_agg_table_on_slicepg()
         $output .= "<li id='g_other' class='am_group'><div class='collapsable'></div><input type='checkbox' id='otherbox' class='outer' checked='checked'><span class='checkSib'>Other<span class='countSelected'> (0)</span></span><ul style='display:none;'></ul></li>";
        $output .= "</ul>";
      $output .= "</td>";
-     
+
      // (2) create an HTML table with one row for each aggregate
      $output .= "<td colspan='2'><div id='status_table_cont'>";
      $output .= "<div id='none-selected'>You do not have any aggregates selected.<br /> Please select aggregates on the left.</div>";
      $output .= "<table id='status_table' cols='3'>";
-     
+
      foreach ($am_list as $am) {
 	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
             $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
@@ -185,7 +185,7 @@ function build_agg_table_on_slicepg()
             }
             $output .= "' tabindex='-1'>";
             $output .= "<tr id='".$am_id."'>";
-	    $output .= "<td colspan='1' class='am_name_field'><b>";  
+	    $output .= "<td colspan='1' class='am_name_field'><b>";
       $output .= $name;
       $output .= "</b></td>"; // sliver expiration
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
@@ -193,9 +193,9 @@ function build_agg_table_on_slicepg()
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' title='Delete resources at this aggregate.' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
       $output .= "</div></td></tr>";
-      
 
-      $output .= "<tr class='notqueried'><td colspan='1' id='status_".$am_id."' class='notqueried'>";  
+
+      $output .= "<tr class='notqueried'><td colspan='1' id='status_".$am_id."' class='notqueried'>";
       $output .= $initial_text;
       $output .= "</td>";
       $output .= "<td class='hide' colspan='2'><div>";
@@ -211,13 +211,13 @@ function build_agg_table_on_slicepg()
         $output .= "size=\"$size\"/>\n";
         $output .= "<button id='renew_button_".$am_id."' onclick='confirmQueryTable(".$am_id.")' type='button' $disable_buttons_str title='Renew resource reservation at this aggregate until the specified date'>Renew</button>\n";
         $output .= "</form></div>";
-      }   
+      }
 
       $output .= "</div></td></tr>";
 
             // (3) Get the status for this slice at this aggregate
 //	    update_agg_row( am_id );
-     }	
+     }
      $output .= "</table></div></td>";
      $output .= "</tr></table>";
      return $output;
@@ -237,6 +237,7 @@ setup_jacks_slice_context();
 
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
 $add_url = 'slice-add-resources-jacks.php?slice_id=' . $slice_id;
+$update_keys_url = 'updatekeys.php?slice_id=' . $slice_id;
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = "mailto:$owner_email";
@@ -250,20 +251,20 @@ $listres_url = 'listresources.php?slice_id='.$slice_id;
 $edit_slice_members_url = 'edit-slice-member.php?slice_id='.$slice_id."&project_id=".$slice_project_id;
 
 // String to disable button or other active element
-$disabled = "disabled = " . '"' . "disabled" . '"'; 
+$disabled = "disabled = " . '"' . "disabled" . '"';
 
 $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 $add_slivers_disabled = "";
 if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
 
-$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL,
 						   CS_CONTEXT_TYPE::SLICE, $slice_id);
 $get_slice_credential_disable_buttons = "";
 if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
 
 // String to disable button or other active element
-$disabled = "disabled"; 
+$disabled = "disabled";
 
 $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
@@ -275,7 +276,7 @@ $renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
 $renew_disabled = "";
 if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 
-$lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
+$lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
 if(!$lookup_slice_privilege) {
@@ -312,7 +313,7 @@ include("tool-showmessage.php");
       }
     }
   });
-  
+
 </script>
 
 <?php
@@ -327,6 +328,7 @@ include("tool-showmessage.php");
 ?>
 <script src='cards.js'></script>
 <script src='dashboard.js'></script>
+<script src='slice.js'></script>
 <script type="text/javascript">
   $(document).ready(function(){
     $("#showrenewbox").click(function(){
@@ -382,8 +384,7 @@ print "</div>";
 print "<div style='display: table-cell; vertical-align: middle;'>";
 print "<a class='button' href='$add_url' style='margin-right: 5px;' $add_slivers_disabled $disable_buttons_str>Add Resources</a>";
 print "<a class='button' id='showrenewbox'>Renew</a>";
-
-$hostname = $_SERVER['SERVER_NAME'];
+print "<a class='button' href='$update_keys_url' id='updatekeys' disabled='disabled'>Update SSH Keys</a>";
 
 print "<ul class='has-sub selector' id='slicetools' style='vertical-align: middle; float: none; margin: 5px !important;'>";
 print "<span class='selectorshown'>Tools</span><ul class='submenu' style='width: 100px;'>";
@@ -517,7 +518,7 @@ $(document).ready(function() {
 </script>
 
 
-<?php 
+<?php
 print "<div class='card' id='manageslice'>";
 if (isset($slice_expired) && convert_boolean($slice_expired) ) {
    print "<p class='warn'>This slice is expired!</p>\n";
@@ -562,7 +563,7 @@ print "</table>\n";
 </script>
 <?php
 
-// Grab all rspecs 
+// Grab all rspecs
 $all_rspecs = fetchRSpecMetaData($user);
 usort($all_rspecs, "cmp");
 
@@ -593,9 +594,9 @@ print "</div></td></tr></tbody></table>";
   var jacks_slice_urn= <?php echo json_encode($slice_urn) ?>;
   var jacks_slice_expiration = <?php echo json_encode($slice_expiration) ?>;
 
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
+  var jacks_slice_info = {slice_id : jacks_slice_id,
 			  slice_name : jacks_slice_name,
-			  slice_urn : jacks_slice_urn, 
+			  slice_urn : jacks_slice_urn,
 			  slice_expiration : jacks_slice_expiration};
 
   var jacks_user_name = <?php echo json_encode($user->username) ?>;
@@ -619,12 +620,12 @@ print "</div></td></tr></tbody></table>";
   // and set up all of the button clicks.
   function jacks_init() {
     if (!jacks_inited) {
-      var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-  			  '#jacks-status-history', '#jacks-buttons',
-  			  jacks_slice_ams, jacks_all_ams, 
-  			  jacks_slice_info,
-  			  jacks_user_info,
-  			  portal_jacks_app_ready);
+      var jacksApp = new JacksApp('#jacks-pane', '#jacks-status',
+                                  '#jacks-status-history', '#jacks-buttons',
+                                  jacks_slice_ams, jacks_all_ams,
+                                  jacks_slice_info,
+                                  jacks_user_info,
+                                  portal_jacks_app_ready);
 
       jacksApp.hideStatusHistory();
       jacks_inited = true;
@@ -662,11 +663,11 @@ print "</div></td></tr></tbody></table>";
 
 <script>
 // Make sure the height is not 100% but an actual size
-// Make sure width is set to 100% at load time 
+// Make sure width is set to 100% at load time
  //   (don't know, some times it isn't)
 $(document).ready(function() {
-    $("#map1").height(400); 
-    $("#map1").width('100%'); 
+    $("#map1").height(400);
+    $("#map1").width('100%');
   });
 </script>
 
@@ -740,8 +741,8 @@ foreach ($member_lists as $member_role_index => $member_names) {
     print "<tr><td><a href=$member_url>$member_name</a></td><td>$member_role</td></tr>\n";
 
     /*
-    print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
-      "&member_id=$member_id\">$member_name</a></td>" . 
+    print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id .
+      "&member_id=$member_id\">$member_name</a></td>" .
       "<td>$member_role</td></tr>\n";
     */
   }
@@ -761,7 +762,7 @@ echo "</div>";
 
 <div class='card' id='logs'>
   <h2 id="recent_actions">Recent Slice Actions</h2>
-  <p>Showing logs for the last 
+  <p>Showing logs for the last
   <select onchange="getLogs(this.value);">
     <option value="24">day</option>
     <option value="48">2 days</option>

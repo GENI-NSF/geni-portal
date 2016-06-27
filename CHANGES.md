@@ -4,8 +4,12 @@
 
 ## Changes
 
+* Provide a way to update SSH keys on existing resources
+  ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
 * Add some notes to geni-fetch-aggmon for testing
+  ([#1703](https://github.com/GENI-NSF/geni-portal/issues/1703))
 * Update the Jacks URL per Emulab's request
+  ([#1704](https://github.com/GENI-NSF/geni-portal/issues/1704))
 
 ## Installation Notes
 
