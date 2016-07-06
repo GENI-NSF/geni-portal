@@ -228,7 +228,10 @@ function validateBugReportSubmit()
 <li>The report will not include security-sensitive information such as slice credentials, certificates, private keys and SpeaksFor credentials.</li>
 </ul>
 
-<p>If you are not comfortable sharing your problem report outside the GENI Project Office, email it to <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.</p>
+<p>If you are not comfortable sharing your problem report publicly, email it to
+  <a href="mailto:<?php echo $portal_help_email;?>">
+          <?php echo $portal_help_email;?></a>.
+</p>
 
 <form id="f1" action="send_bug_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateBugReportSubmit()">
 <input type="hidden" name="invocation_id" id="invocation_id" value="<?php echo $invocation_id;?>"/>
