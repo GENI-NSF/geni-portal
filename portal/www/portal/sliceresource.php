@@ -58,7 +58,7 @@ if (! count($_REQUEST)) {
 }
 
 // set user ID and invocation
-if(array_key_exists("invocation_id", $_REQUEST) && 
+if(array_key_exists("invocation_id", $_REQUEST) &&
         array_key_exists("invocation_user", $_REQUEST)) {
     $invocation_user = $_REQUEST['invocation_user'];
     $invocation_id = $_REQUEST['invocation_id'];
@@ -98,9 +98,13 @@ include("tool-showmessage.php");
 $dir_to_check = get_invocation_dir_name($invocation_user, $invocation_id);
 if(!is_dir($dir_to_check)) {
     echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
-    echo "<p class='error'>Files and process data related to omni request <b>$invocation_user-$invocation_id</b> not found. Note that older files are periodically removed from the Portal, so it is possible that the files and process-related data have been deleted as part of routine maintenance.<br><br>For further help, please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.</p>";
-    
-    
+    echo "<p class='error'>Files and process data related to omni request";
+    echo " <b>$invocation_user-$invocation_id</b> not found.";
+    echo " Older files are periodically removed from the Portal, so it is possible that the files";
+    echo " and process-related data have been deleted as part of routine maintenance.";
+    echo "<br><br>";
+    echo "Please <a href='contact-us.php'>contact us</a> if you require further assistance.</p>";
+
     echo '<form method="GET" action="back">';
     echo '<input type="button" value="Back" onClick="history.back(-1)"/>';
     echo '</form>';
@@ -120,7 +124,7 @@ $bug_report_subject = "GENI Portal Reservation Problem Report";
     set if tool-lookupids.php hasn't already set it - there's no else clause
     in tool-lookupids.php because the assumption is that the page would have
     already shown an error earlier if $REQUEST['am_id'] hadn't been specified
-*/ 
+*/
 if(!isset($am_id)) {
     $am_id = NULL;
 }
@@ -195,7 +199,7 @@ function validateBugReportSubmit()
   f1 = document.getElementById("f1");
   to = document.getElementById("to");
   message = document.getElementById("message");
-  
+
   if (to.value && message.value) {
     f1.submit();
     return true;
