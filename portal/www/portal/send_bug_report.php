@@ -37,9 +37,9 @@ require_once("omni_invocation_constants.php");
 
 /*
     send_bug_report.php
-    
+
     Purpose: Sends bug report of omni invocation files to e-mail(s) specified
-    
+
     Accepts:
         Required:
             invocation_id: unique ID for an omni invocation (e.g. qlj7KS)
@@ -74,7 +74,7 @@ if (! count($_REQUEST)) {
 }
 
 // set user ID and invocation
-if(array_key_exists("invocation_id", $_REQUEST) && 
+if(array_key_exists("invocation_id", $_REQUEST) &&
         array_key_exists("invocation_user", $_REQUEST)) {
     $invocation_user = $_REQUEST['invocation_user'];
     $invocation_id = $_REQUEST['invocation_id'];
@@ -180,7 +180,7 @@ function send_bug_report_success($msg) {
     Handle zipping and mailing the bug report
 */
 function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $custom_message) {
-    
+
     $omni_invocation_dir = get_invocation_dir_name($invocation_user, $invocation_id);
 
     // make sure directory actually exists
@@ -191,7 +191,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     // don't include the user's cert, credentials, private key, and (maybe) SF cred
     $excluded_files_list = array(
         "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::SLICE_CREDENTIAL_FILE,
-        "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::CERTIFICATE_FILE, 
+        "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::CERTIFICATE_FILE,
         "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::PRIVATE_KEY_FILE,
         "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::SPEAKSFOR_CREDENTIAL_FILE
     );
@@ -206,7 +206,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     // if .zip file exists, grab its contents for attachment and delete file
     $attachment = "";
     if($retVal) {
-        $attachment = chunk_split(base64_encode(file_get_contents($retVal)), 76, "\n"); 
+        $attachment = chunk_split(base64_encode(file_get_contents($retVal)), 76, "\n");
         if(file_exists($retVal)) {
             unlink($retVal);
         }
@@ -214,7 +214,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     else {
         send_bug_report_error("Problem report files could not be zipped in an archive. Problem report not sent.");
     }
-    
+
     // prepare metadata
     $metadata = "";
     $metadata_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::METADATA_BUG_REPORT_EMAIL_FILE;
@@ -229,12 +229,12 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
 	  }
         }
     }
-    
+
     // set up e-mail
     $boundary_string = md5(date('r', time()));
     $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
     $subject = "GENI Portal Reservation Problem Report";
-    
+
     $headers   = array();
     $headers[] = "MIME-Version: 1.0";
     $headers[] = "Content-type: multipart/mixed; boundary=\"PHP-mixed-" . $boundary_string . "\"";
@@ -278,8 +278,8 @@ Content-Disposition: attachment
 
 <?php echo $attachment; ?>
 
-<?php 
-    $message = ob_get_clean(); 
+<?php
+    $message = ob_get_clean();
     $message .= "\r\n";
     $message .= "--PHP-mixed-$boundary_string--\r\n";
 
@@ -297,7 +297,7 @@ Content-Disposition: attachment
     else {
         error_log("Error sending problem report $invocation_user-$invocation_id: $retVal");
         send_bug_report_error("Could not send problem report. Try again later or " .
-            "please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.");
+            "please <a href='contact-us.php'>contact us</a> for assistance.");
     }
 
 }
