@@ -5,7 +5,11 @@
 ## Changes
 
 * Add some notes to geni-fetch-aggmon for testing
+  ([#1703](https://github.com/GENI-NSF/geni-portal/issues/1703))
 * Update the Jacks URL per Emulab's request
+  ([#1704](https://github.com/GENI-NSF/geni-portal/issues/1704))
+* Remove hardcoded help email from code
+  ([#1709](https://github.com/GENI-NSF/geni-portal/issues/1709))
 
 ## Installation Notes
 
