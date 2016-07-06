@@ -24,6 +24,8 @@
 
 include("kmheader.php");
 include("util.php");
+include_once('/etc/geni-ch/settings.php');
+
 $eppn = strtolower($_SERVER['eppn']);
 ?>
 
@@ -35,16 +37,16 @@ resources.
 <br/>
 <br/>
 If you would like to register for a GENI account, please self-assert
-your <em>institutional email address</em> by
-<a href="mailto:portal-help@geni.net?subject=Self-asserted email address for EPPN
+your <em>school or company email address</em> by
+<a href="mailto:<?php echo $portal_help_email;?>?subject=Self-asserted email address for EPPN
 <?php
 print " $eppn";
 ?>
-&body=I would like to register for a GENI account. This email was sent from my institutional email address.">
+&body=I would like to register for a GENI account. This email was sent from my school or company email address.">
 sending an email
 </a>
-to portal-help@geni.net from your institutional email address. Make sure the
-email you send includes your
+to <?php echo $portal_help_email;?> from your school or company email address.
+Make sure the email you send includes your
 <a href="http://www.incommon.org/federation/attributesummary.html#eduPersonPrincipal">EPPN</a>, which is:
 <br/><br/>
 
