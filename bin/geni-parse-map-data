@@ -95,7 +95,7 @@ def parse_args(argv):
                       help="database host (default is `localhost`)")
     parser.add_option("-u", "--user", default='portal',
                       help="database user (default is `portal`)")
-    parser.add_option("-p", "--password", 
+    parser.add_option("-p", "--password",
                       help="database user password")
     options,args = parser.parse_args()
     return options,args
@@ -112,7 +112,7 @@ def connect_to_database(database, user, host, password):
         conn = psycopg2.connect(**args)
     except:
         raise Exception("Could not connect to database.")
-    logger.info("Established connection to database '%s' on %s." 
+    logger.info("Established connection to database '%s' on %s."
             % (database, host))
     return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
 
@@ -182,7 +182,7 @@ def determine_resource_location(element):
     else:
         locations = element.getElementsByTagName('location')
     if len(locations) == 0:
-        logger.info("No location information found for %s" % 
+        logger.info("No location information found for %s" %
                 element.getAttribute('component_id'))
     for location in locations:
         latitude = location.getAttribute('latitude')
@@ -197,7 +197,7 @@ def populate_geni_resource(element, ams_dictionary):
     resource.id = element.getAttribute('component_id')
     resource.name = determine_resource_name(element)
     (resource.longitude, resource.latitude) = determine_resource_location(element)
-    resource.type = determine_resource_type(resource.name)      
+    resource.type = determine_resource_type(resource.name)
     if resource.am_id:
         resource.am = determine_am_name(resource.am_id, ams_dictionary)
     return resource
@@ -234,7 +234,7 @@ def search_rspecs_for_resources(rspecs_directory, cur):
 
     resources = []
     ams_dictionary = get_am_names(cur)
-    
+
     for filepath in glob.glob(os.path.join(rspecs_directory, "*.xml")):
         try:
             xmlfile = minidom.parse(filepath)
@@ -242,18 +242,18 @@ def search_rspecs_for_resources(rspecs_directory, cur):
         except Exception as e:
             logger.error("Could not parse %s" % filepath)
             continue
-            
+
         logger.info("Starting parse of %s" % filepath)
-        
+
         # should only be one <rspec...> in most files
         for rspec in rspecs:
             children = rspec.childNodes
-            
+
             # potential <node...> or <openflow:datapath...> elemenets
             for child in children:
-                if (child.nodeType == minidom.Node.ELEMENT_NODE and 
+                if (child.nodeType == minidom.Node.ELEMENT_NODE and
                     (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
-                    
+
                     resource = populate_geni_resource(child, ams_dictionary)
 
                     # Remove nodes with no lat/long info
@@ -276,8 +276,8 @@ def main(argv=None):
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    
-    (conn, cur) = connect_to_database(options.database, 
+
+    (conn, cur) = connect_to_database(options.database,
             options.user, options.host, options.password)
     resources = search_rspecs_for_resources(options.save, cur)
     disconnect_from_database(conn, cur)
