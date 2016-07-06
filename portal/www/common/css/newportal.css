@@ -1,9 +1,9 @@
 /*
  *  CSS Style Sheet for GENI Portal
- * 
+ *
  *  Color scheme:
  *    #FB8C00 - "official" GENI orange
- * 
+ *
  *    #616161 - dark gray
  *                  code background
  *                  navigation bar background
@@ -13,7 +13,7 @@
  *                  buttons and accents
  *  Fonts:
  *    Open Sans - Everywhere except monospace
- *    Droid Sans Mono - monospaced text 
+ *    Droid Sans Mono - monospaced text
  */
 
 body {
@@ -31,7 +31,7 @@ body {
   float: left;
 }
 
-/* Reference classes for depth effect */ 
+/* Reference classes for depth effect */
 .shadow1 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
@@ -68,7 +68,7 @@ body {
 .headerlink {
   font-size: 15px;
   font-weight: normal;
-  text-align: center;    
+  text-align: center;
   display: block;
   min-width: 150px;
   float: right;
@@ -355,7 +355,7 @@ body {
   animation: raise;
   animation-duration: .2s;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  font-weight: normal;  
+  font-weight: normal;
 }
 
 #content td button, #content td input[type=submit], #content td input[type=button], #content td .button {
@@ -368,15 +368,19 @@ body {
   color: #303030;
 }
 
-#content button[disabled=disabled], #content button:disabled, #content input[type=submit]:disabled {
-  color: #E0E0E0; 
+#content button[disabled=disabled], #content button:disabled, #content input[type=submit]:disabled, #content .button[disabled=disabled] {
+  color: #E0E0E0;
   background-color: #F9F9F9;
 }
 
-#content button[disabled=disabled]:hover, #content button:disabled:hover {
+#content button[disabled=disabled]:hover, #content button:disabled:hover, #content .button[disabled=disabled] {
   animation: none;
   box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.24);
   cursor: default;
+}
+
+#content a.button[disabled=disabled] {
+  pointer-events: none;
 }
 
 #content button:focus {
@@ -444,7 +448,7 @@ ul.instructions {
   font-weight: normal;
   font-size: 0.9em;
 	padding: 5px 10px;
-	background: #FFFFFF; 
+	background: #FFFFFF;
 	border-bottom: 1px solid #C2C2C2;
 	color: #616161;
 	vertical-align: middle;
@@ -591,7 +595,7 @@ ul.instructions {
 /* WELCOME PAGE */
 
 #welcome {
-  background-color: #FFFFFF;  
+  background-color: #FFFFFF;
   border-bottom: 5px solid #F57F21;
   margin-left: auto;
   margin-right: auto;
@@ -870,7 +874,7 @@ table .notapply {
 #maintenance_alert {
   border-radius: 0px;
   margin: 20px auto 0px auto !important;
-  width: calc(95% - 50px); 
+  width: calc(95% - 50px);
   max-width: 1350px;
   min-width: 750px;
 }
@@ -1104,7 +1108,7 @@ td .material-icons {
 
 .slicename:hover, .projectname:hover {
   background-color: #FB8C00 !important;
-} 
+}
 
 /* Header submenus and new selects */
 
@@ -1209,7 +1213,7 @@ td .material-icons {
   background-color: #FFFFFF;
   font-size: 13px;
   font-weight: normal;
-  text-align: center;    
+  text-align: center;
   display: inline-block;
   width: 150px;
   overflow: hidden;
@@ -1226,7 +1230,7 @@ td .material-icons {
   background-color: #EEEEEE;
   animation: raise;
   animation-duration: .2s;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .selector .submenu {

@@ -101,9 +101,9 @@ $parents = array("profile.php" => "home.php",
 		 "sshkeyedit.php" => "profile.php",
 		"generatesshkey.php" => "profile.php",
 		"tool-omniconfig.php" => "profile.php",
-		 "edit-slice-member.php" => "slice.php", 
-		 "edit-project-member.php" => "project.php", 
-		 "upload-project-members.php" => "project.php", 
+		 "edit-slice-member.php" => "slice.php",
+		 "edit-project-member.php" => "project.php",
+		 "upload-project-members.php" => "project.php",
 		 "accept-project-invite.php" => "project.php",
 		 "rspecupload.php" => "profile.php",
 		 "tool-rspecs.php" => "profile.php",
@@ -113,7 +113,8 @@ $parents = array("profile.php" => "home.php",
                  "gemini.php" => "slice.php",
 		 "tool-aggwarning.php" => "slice.php",
 		 "send_bug_report.php" => "slice.php",
-		 "contact-us.php" => "home.php");
+		 "contact-us.php" => "home.php",
+                 "updatekeys.php" => "slice.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -168,8 +169,8 @@ $names = array("home.php" => "Home",
 		 "sshkeyedit.php" => "Edit SSH Public Key Attributes",
 		"generatesshkey.php" => "Generate SSH Keypair",
 		"tool-omniconfig.php" => "Omni command line tool",
-	       "edit-slice-member.php" => "Edit Slice Membership: %slice_name", 
-	       "edit-project-member.php" => "Edit Project Membership: %project_name", 
+	       "edit-slice-member.php" => "Edit Slice Membership: %slice_name",
+	       "edit-project-member.php" => "Edit Project Membership: %project_name",
 	       "upload-project-members.php" => "Upload Project Members : %project_name",
 	       "accept-project-invite.php" => "Accept Project Invite : %project_name",
 	       "rspecupload.php" => "Edit Resource Specification",
@@ -180,7 +181,8 @@ $names = array("home.php" => "Home",
 	       "gemini.php" => "GENI Desktop",
 	       "tool-aggwarning.php" => "Query All Aggregates",
 	       "send_bug_report.php" => "Send Problem Report",
-	       "contact-us.php" => "Contact Us");
+	       "contact-us.php" => "Contact Us",
+               "updatekeys.php" => "Update SSH Keys");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
@@ -268,4 +270,3 @@ if ($parent != '') {
 }
 
 print "<div id='breadcrumb'>" . $crumb . "</div>\n";
-
