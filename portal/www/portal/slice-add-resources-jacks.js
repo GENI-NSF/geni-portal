@@ -97,7 +97,7 @@ function handle_rspec_validation_results(jsonResponse)
 	if(jsonResponse.partially_bound) {
 	    set_attributes_for_partially_bound();
 	    disable_reserve_resources();
-	} 
+	}
 	else if(jsonResponse.stitch) {
 	    set_attributes_for_stitching();
 	    enable_reserve_resources();
@@ -117,7 +117,7 @@ function handle_rspec_validation_results(jsonResponse)
 	set_attributes_for_unbound();
 	disable_reserve_resources();
     }
-        
+
 }
 
 function handle_rspec_update(jsonResponse, rspec, updateJacks)
@@ -337,13 +337,11 @@ function jacks_fetch_topology_callback(rspecs) {
       jacksEditorApp.downloadingRspec = false;
       $.post("saverspectoserver.php", {rspec : rspec},
 	    function(rt, st, xhr) {
-		//		console.log("SUCCESS");
 		var replace_url = "rspecdownload.php?tempfile=" + rt + "&slice_name=" + jacksEditorApp.sliceName;
 		window.location.replace(replace_url);
 	    })
 	  .fail(function(xhr, ts, et) {
-		  //		  console.log("FAILURE");
-              alert("An error occurred. Please notify portal-help@geni.net.");
+              $( "#downloadErrorDialog" ).dialog("open");
 	      });
   } else if (jacksEditorApp.submittingRspec) {
       jacksEditorApp.submittingRspec = false;
@@ -383,7 +381,7 @@ function jacks_modified_topology_callback(data)
     rspec = data.rspec;
     current_rspec = $('#current_rspec_text').val();
     // Are we in the middle of loading an RSpec from editor?
-    loading_rspec = $('#loading_rspec').val(); 
+    loading_rspec = $('#loading_rspec').val();
 
     // Strip all newlines from rspec. Jacks may transform original rspec newlines.
     rspec = rspec.replace(/\r?\n|\r/g, '');
@@ -393,7 +391,7 @@ function jacks_modified_topology_callback(data)
     //    console.log("JMTC NODES = " + data.nodes.length + " LINKS = " + data.links.length + " SITES = " + data.sites.length + " RSPEC = " + rspec.length + " CR = " + current_rspec.length + " LOADING = " + loading_rspec + " RST = " + rspec.trim().length + " CST = " + current_rspec.trim().length + " SAME = " + (rspec == current_rspec));
 
 
-    // Clear out slice-add-resources menus when 
+    // Clear out slice-add-resources menus when
     // action on jacks (delete all, adding/removing node or link)
     // makes displayed file/RSpec/URL/text inconsistent with Jacks topology
     if (loading_rspec != "1" && (rspec != current_rspec)) {
@@ -411,12 +409,12 @@ function jacks_modified_topology_callback(data)
     // id, client_id
     links = data.links;
 
-    // id, name, urn 
+    // id, name, urn
     // Note: site.name = node.site_name, node.aggregate_id = site.urn
     sites = data.sites;
 
     // RSpec is bound IFF every node has an aggregate_id, or every site has a urn
-    // call validate_rspec_file if we've changed from bound 
+    // call validate_rspec_file if we've changed from bound
     // to either partially bound or bound
     validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
 }
@@ -507,8 +505,8 @@ function urlupload_onchange()
     // console.log("URLUPLOAD");
     $('#loading_rspec').val("1");
     var url = $('#url_select').val().trim();
-    $.get("upload-file.php", 
-	  {url : url}, 
+    $.get("upload-file.php",
+	  {url : url},
               function(rt, st, xhr) {
 		  var rspec = xhr.responseText;
 		  validate_rspec_file(rspec, false, handle_validation_results);
@@ -555,11 +553,11 @@ function do_rspec_download()
 // with current topology
 function do_editor_expand(restore)
 {
-    var editor_url = "jacks-editor-app-expanded.php?slice_id=" + 
+    var editor_url = "jacks-editor-app-expanded.php?slice_id=" +
 	jacks_slice_id;
 
     if (restore == true)
-	editor_url = "slice-add-resources-jacks.php?slice_id=" + 
+	editor_url = "slice-add-resources-jacks.php?slice_id=" +
 	    jacks_slice_id;
 
     jacksEditorApp.passingContextToURL = editor_url;
@@ -637,7 +635,7 @@ function do_selection_duplicate_internal(include_links)
 	    }
 	}
 
-	// New name is from old name plus "-$UNIQUE_COUNTER", 
+	// New name is from old name plus "-$UNIQUE_COUNTER",
 	// skipping over any existing nodes with that manufactured name
 	var new_node_name = construct_new_node_name(selected_node_name, all_node_names);
 	all_node_names.push(new_node_name);
@@ -700,7 +698,7 @@ function do_selection_duplicate_internal(include_links)
 
 		if (link_for_interface != null) {
 		    // Make a new name for the interface
-		    var new_interface_name = new_node_name + ":if" + 
+		    var new_interface_name = new_node_name + ":if" +
 			iface_index;
 
 		    // Add a new interface ref to the link
@@ -712,7 +710,7 @@ function do_selection_duplicate_internal(include_links)
 		    $(interface).attr('client_id', new_interface_name);
 		}
 	    }
-	    
+
 	} else {
 	    // If we're not including links, we need to eliminate the interfaces from the cloned node
 	    $(cloned_rspec_node).find('interface').remove();
@@ -784,7 +782,7 @@ function do_auto_ip_assignment_internal()
 	var num_iface_ref_elts = iface_ref_elts.length;
 
 	if (num_iface_ref_elts > 255) {
-	    alert("Can't perform AUTO_IP assignment with " + 
+	    alert("Can't perform AUTO_IP assignment with " +
 		  "> 255 interfaces per link ");
 	    return;
 	}
@@ -893,7 +891,7 @@ function validateSubmit()
 
   //  console.log("validateSubmit.rspec = " + current_rspec_text);
   //  console.log("validateSubmit.bound = " + is_bound);
-  
+
   if ((current_rspec_text != '') && is_bound) {
     f1.submit();
     return true;
@@ -905,4 +903,3 @@ function validateSubmit()
     return false;
   }
 }
-

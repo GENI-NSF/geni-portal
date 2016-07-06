@@ -41,7 +41,6 @@ $hostname = $_SERVER['SERVER_NAME'];
 <li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Meta-Operations Center (GMOC)</a> -- Create and search trouble tickets.  Calendar of planned and unplanned outages.</li>
 <li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary</a></li>
 <li><a href="/login-help.php">GENI Accounts and Portal Login Issues</a></li>
-<li><a href="mailto:portal-help@geni.net">Email Portal Help</a> for questions, comments or problems using this website.</li>
 <li><a href="mailto:help@geni.net">Email GENI Help</a> for questions or issues with GENI resources, designing experiments, or other general GENI issues.</li>
 </ul>
 <?php

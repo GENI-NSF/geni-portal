@@ -150,7 +150,7 @@ print "</div></td></tr></table>";
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
   var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
 
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
+  var jacks_slice_info = {slice_id : jacks_slice_id,
 			  slice_name : jacks_slice_name};
 
   var jacks_user_name = <?php echo json_encode($user->username) ?>;
@@ -185,7 +185,7 @@ if ($am_ids == null) {
 enable_rspec_selection_mode_portal();
 var am_id = <?php echo $am_id ?>;
 if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
-  $('#agg_chooser').val(am_id); 
+  $('#agg_chooser').val(am_id);
 }
 </script>
 <script>
@@ -246,5 +246,32 @@ echo "</div>";
 // END the tabContent class
   echo "</div>";
 
+?>
+<?php
+  // This is a jQueryUI dialog box to show when there is an error
+  // downloading the RSpec. The div is not displayed on the page.
+  // The "tabindex" on the <a> tag is to prevent the link from having
+  // focus when the dialog appears, which looks ugly. Instead, the
+  // OK button has the focus.
+?>
+  <div id="downloadErrorDialog" title="Download Error">
+    <p>An error occurred. Please <a href="contact-us.php" tabindex="-1">contact us</a>
+    for assistance.</p>
+  </div>
+  <script>
+  $(function() {
+          $( "#downloadErrorDialog" ).dialog({ autoOpen: false,
+                  buttons: [
+            {
+              text: "OK",
+              click: function() {
+                $( this ).dialog( "close" );
+              }
+            }
+          ] });
+  })
+  </script>
+
+<?php
 include("footer.php");
 ?>
