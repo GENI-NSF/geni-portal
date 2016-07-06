@@ -218,7 +218,10 @@ function validateBugReportSubmit()
 
 <h2>Send a Problem Report</h2>
 
-<p>Ran into a problem or have a question? Search the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">GENI Users</a> archives for answers to similar questions.  If you cannot find an answer, join the <a target="_blank" href="http://groups.geni.net/geni/wiki/GENIExperimenter/CommunityMailingList"> geni-users mailing list</a> and send your problem report there.</p>
+<p>Ran into a problem or have a question? Search the
+  <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">
+    GENI Users</a> archives for answers to similar questions.
+</p>
 
 <ul>
 <li>The problem report will include your name, e-mail address, slice and project information, request RSpec, manifest RSpec(s), progress log, debug log, error log and process metadata.</li>
