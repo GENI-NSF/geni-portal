@@ -34,15 +34,22 @@ import sys
 import os
 import logging
 import optparse
-import psycopg2
-import psycopg2.extras
 import json
 import re
 from xml.dom import minidom
 import glob
+import xmlrpclib
 
-AM_SERVICE_TYPE = "0"
+DEFAULT_SR_URL = 'https://ch.geni.net:8444/SR'
+AM_SERVICE_TYPE = 0
 logger = logging.getLogger()
+
+
+class GeniResponse(object):
+    CODE = 'code'
+    VALUE = 'value'
+    OUTPUT = 'output'
+
 
 # class for a GENI resource
 class GENIResource:
@@ -89,14 +96,9 @@ def parse_args(argv):
                       help="Directory of saved ad RSpecs (default is `./`)")
     parser.add_option("-o", "--output", default='current.json',
                       help="Filename for JSON output (default is `current.json`)")
-    parser.add_option("-d", "--database", default='portal',
-                      help="database name (default is `portal`)")
-    parser.add_option("--host", default='localhost',
-                      help="database host (default is `localhost`)")
-    parser.add_option("-u", "--user", default='portal',
-                      help="database user (default is `portal`)")
-    parser.add_option("-p", "--password",
-                      help="database user password")
+    help_txt = "service registry URL (default is %r)" % DEFAULT_SR_URL
+    parser.add_option("-u", "--url", default=DEFAULT_SR_URL,
+                      help=help_txt)
     options,args = parser.parse_args()
     return options,args
 
@@ -215,19 +217,16 @@ def add_to_geni_resources(resource, resources):
         logger.error("  resource.am_id: %s" % resource.am_id)
 
 # open connection to DB once to get all AM URN/name data as key/value pairs
-def get_am_names(cur):
-    dictionary = {}
-    select_sql = 'SELECT service_urn, service_name FROM service_registry WHERE service_type = %s'
-    logger.debug("Querying from SR: %s", cur.mogrify(select_sql, (AM_SERVICE_TYPE)))
-    logger.info("Starting database search for AM URNs and names.")
-    cur.execute(select_sql, (AM_SERVICE_TYPE))
-    records = cur.fetchall()
-    if not records:
-        logger.error("Found no AMs in the service registry.")
+def get_am_names(sr_url):
+    sr_proxy = xmlrpclib.ServerProxy(sr_url)
+    response = sr_proxy.get_services_of_type(AM_SERVICE_TYPE)
+
+    # Work around https://github.com/GENI-NSF/geni-ch/issues/516
+    if GeniResponse.CODE in response:
+        aggs = response[GeniResponse.VALUE]
     else:
-        for record in records:
-            dictionary[record['service_urn']] = record['service_name']
-    return dictionary
+        aggs = response
+    return {a['SERVICE_URN']: a['SERVICE_NAME'] for a in aggs}
 
 # look through all RSpecs in a directory for GENI resources
 def search_rspecs_for_resources(rspecs_directory, cur):
@@ -277,10 +276,7 @@ def main(argv=None):
         sys.stderr.write(str(e) + "\n")
         return 1
 
-    (conn, cur) = connect_to_database(options.database,
-            options.user, options.host, options.password)
-    resources = search_rspecs_for_resources(options.save, cur)
-    disconnect_from_database(conn, cur)
+    resources = search_rspecs_for_resources(options.save, options.url)
     write_to_geojson_file(resources, options.output)
 
 if __name__ == "__main__":
