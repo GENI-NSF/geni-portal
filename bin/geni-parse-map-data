@@ -36,7 +36,7 @@ import logging
 import optparse
 import json
 import re
-from xml.dom import minidom
+import xml.sax
 import glob
 import xmlrpclib
 
@@ -75,6 +75,101 @@ class GENIResource:
                 type='Point',
                 coordinates=[self.longitude, self.latitude]),
         )
+
+
+class NodeHandler(xml.sax.handler.ContentHandler):
+
+    MANAGER_ID = u'component_manager_id'
+    COMPONENT_ID = u'component_id'
+    COMPONENT_NAME = u'component_name'
+    LATITUDE = u'latitude'
+    LONGITUDE = u'longitude'
+
+    ELEM_LOCATION = u'location'
+
+    def safe_get_attr(self, attrs, name, default):
+        if name in attrs.getNames():
+            return attrs.getValue(name)
+        else:
+            return default
+
+    def __init__(self, name, attrs):
+        self.resource = GENIResource()
+        # print attrs.getNames()
+        if NodeHandler.MANAGER_ID in attrs.getNames():
+            self.resource.am_id = attrs.getValue(NodeHandler.MANAGER_ID)
+        if NodeHandler.COMPONENT_ID in attrs.getNames():
+            self.resource.id = attrs.getValue(NodeHandler.COMPONENT_ID)
+        if NodeHandler.COMPONENT_NAME in attrs.getNames():
+            self.resource.name = attrs.getValue(NodeHandler.COMPONENT_NAME)
+
+    def startElement(self, name, attrs):
+        if name == NodeHandler.ELEM_LOCATION:
+            self.resource.longitude = self.safe_get_attr(attrs,
+                                                         NodeHandler.LONGITUDE,
+                                                         None)
+            self.resource.latitude = self.safe_get_attr(attrs,
+                                                        NodeHandler.LATITUDE,
+                                                        None)
+
+    def endElement(self, name):
+        pass
+
+
+class RspecHandler(xml.sax.handler.ContentHandler):
+
+    def __init__(self):
+        self.delegate = None
+        self.resources = []
+
+    def startElement(self, name, attrs):
+        if self.delegate:
+            self.delegate.startElement(name, attrs)
+        elif name == u'node':
+            logger.debug("Found node tag")
+            self.delegate = NodeHandler(name, attrs)
+        else:
+            logger.debug("Unknown rspec startElement: %r" % (name))
+
+    def endElement(self, name):
+        logger.debug("rspec endElement(%r)" % (name))
+        if name == u'node':
+            if (self.delegate):
+                self.resources.append(self.delegate.resource)
+                logger.debug("node resources: %r" % (self.delegate.resource))
+                logger.debug("my rspec resources: %r" % (self.resources))
+                self.delegate = None
+            else:
+                logger.info("Why no delegate in RspecHandler.endElement?")
+
+
+class AdvertisementHandler(xml.sax.handler.ContentHandler):
+    """Parse an advertisement RSpec via SAX API.
+    """
+
+    def __init__(self):
+        self.delegate = None
+        self.resources = []
+
+    def startElement(self, name, attrs):
+        if self.delegate:
+            self.delegate.startElement(name, attrs)
+        elif name == u'rspec':
+            logger.info("Found rspec tag")
+            self.delegate = RspecHandler()
+        else:
+            logger.debug("Unknown ad startElement: %r" % (name))
+
+    def endElement(self, name):
+        if self.delegate:
+            self.delegate.endElement(name)
+        if name == u'rspec':
+            if (self.delegate):
+                self.resources.append(self.delegate.resources)
+                self.delegate = None
+            else:
+                logger.info("Why no delegate in AdvertisementHandler.endElement?")
+
 
 def init_logging(options):
     if options.silent:
@@ -213,14 +308,16 @@ def search_rspecs_for_resources(rspecs_directory, cur):
     ams_dictionary = get_am_names(cur)
 
     for filepath in glob.glob(os.path.join(rspecs_directory, "*.xml")):
+        logger.info("Starting parse of %s" % filepath)
         try:
-            xmlfile = minidom.parse(filepath)
-            rspecs = xmlfile.getElementsByTagName('rspec')
+            adHandler = AdvertisementHandler()
+            xml.sax.parse(filepath, adHandler)
         except Exception as e:
             logger.error("Could not parse %s" % filepath)
+            raise
             continue
-
-        logger.info("Starting parse of %s" % filepath)
+        resources.append(adHandler.resources)
+        continue
 
         # should only be one <rspec...> in most files
         for rspec in rspecs:
@@ -241,7 +338,6 @@ def search_rspecs_for_resources(rspecs_directory, cur):
 
     if not resources:
         raise Exception("No resources found in %s. Quitting." % rspecs_directory)
-
     return resources
 
 def main(argv=None):
