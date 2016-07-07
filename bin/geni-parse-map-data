@@ -102,28 +102,6 @@ def parse_args(argv):
     options,args = parser.parse_args()
     return options,args
 
-# attempt to connect to database
-# returns connection and cursor variables
-def connect_to_database(database, user, host, password):
-    args=dict(database=database,
-              user=user,
-              host=host)
-    if password:
-        args['password'] = password
-    try:
-        conn = psycopg2.connect(**args)
-    except:
-        raise Exception("Could not connect to database.")
-    logger.info("Established connection to database '%s' on %s."
-            % (database, host))
-    return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
-
-# close database connection
-def disconnect_from_database(conn, cur):
-    cur.close()
-    conn.close()
-    logger.info("Closed connection to database.")
-
 # (Geo)JSON stuff
 def write_to_geojson_file(resources, output_file):
     JSONarray = {'type':'FeatureCollection', 'features':[]}
