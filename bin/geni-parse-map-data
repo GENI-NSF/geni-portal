@@ -162,7 +162,9 @@ class RspecHandler(xml.sax.handler.ContentHandler):
         logger.debug("rspec endElement(%r)" % (name))
         if name == u'node':
             if (self.delegate):
-                self.resources.append(self.delegate.resource)
+                rsrc = self.delegate.resource
+                if rsrc.id:
+                    self.resources.append(rsrc)
                 logger.debug("node resources: %r" % (self.delegate.resource))
                 logger.debug("my rspec resources: %r" % (self.resources))
                 self.delegate = None
@@ -182,7 +184,7 @@ class AdvertisementHandler(xml.sax.handler.ContentHandler):
         if self.delegate:
             self.delegate.startElement(name, attrs)
         elif name == u'rspec':
-            logger.info("Found rspec tag")
+            logger.debug("Found rspec tag")
             self.delegate = RspecHandler()
         else:
             logger.debug("Unknown ad startElement: %r" % (name))
@@ -192,7 +194,7 @@ class AdvertisementHandler(xml.sax.handler.ContentHandler):
             self.delegate.endElement(name)
         if name == u'rspec':
             if (self.delegate):
-                self.resources.append(self.delegate.resources)
+                self.resources.extend(self.delegate.resources)
                 self.delegate = None
             else:
                 logger.info("Why no delegate in AdvertisementHandler.endElement?")
@@ -343,7 +345,7 @@ def search_rspecs_for_resources(rspecs_directory, cur):
             logger.error("Could not parse %s" % filepath)
             raise
             continue
-        resources.append(adHandler.resources)
+        resources.extend(adHandler.resources)
         continue
 
         # should only be one <rspec...> in most files
