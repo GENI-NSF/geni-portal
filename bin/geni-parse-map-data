@@ -76,6 +76,33 @@ class GENIResource:
                 coordinates=[self.longitude, self.latitude]),
         )
 
+    def set_agg_name(self, aggNameMap):
+        if self.am_id in aggNameMap:
+            self.am = aggNameMap[self.am_id]
+        else:
+            logger.warning("Component %r agg id %r not in aggregate names",
+                           self.id, self.am_id)
+
+    def set_type(self):
+        """Make a best guess about the resource type.
+
+        Does this even matter any more? We're not matching anything
+        here, everything is labeled as 'unknown'.
+        """
+        if 'pc' in self.name:
+            return 'pc'
+        elif 'pg' in self.name:
+            return 'pc'
+        elif 'compute' in self.name:
+            return 'pc'
+        elif 'procurve' in self.name:
+            return 'switch'
+        elif 'cisco' in self.name:
+            return 'switch'
+        else:
+            print self.name
+            return 'unknown'
+
 
 class NodeHandler(xml.sax.handler.ContentHandler):
 
@@ -338,6 +365,13 @@ def search_rspecs_for_resources(rspecs_directory, cur):
 
     if not resources:
         raise Exception("No resources found in %s. Quitting." % rspecs_directory)
+
+    # Resource post-processing. Look up aggregate pretty name and
+    # set the type. Setting the type appears to be a dubious operation,
+    # see GENIResource.set_type for more.
+    for resource in resources:
+        resource.set_agg_name(ams_dictionary)
+        resource.set_type()
     return resources
 
 def main(argv=None):
