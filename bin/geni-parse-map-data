@@ -84,8 +84,8 @@ class GENIResource:
         if self.am_id in aggNameMap:
             self.am = aggNameMap[self.am_id]
         else:
-            logger.warning("Component %r agg id %r not in aggregate names",
-                           self.id, self.am_id)
+            logger.debug("Component %r agg id %r not in aggregate names",
+                         self.id, self.am_id)
 
     def set_type(self):
         """Make a best guess about the resource type.
