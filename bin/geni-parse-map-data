@@ -311,11 +311,9 @@ def get_am_names(sr_url):
 
 
 # look through all RSpecs in a directory for GENI resources
-def search_rspecs_for_resources(rspecs_directory, cur):
+def search_rspecs_for_resources(rspecs_directory, sr_url):
 
     resources = []
-    ams_dictionary = get_am_names(cur)
-
     for filepath in glob.glob(os.path.join(rspecs_directory, "*.xml")):
         logger.info("Starting parse of %s" % filepath)
         try:
@@ -339,6 +337,7 @@ def search_rspecs_for_resources(rspecs_directory, cur):
     # Resource post-processing. Look up aggregate pretty name and
     # set the type. Setting the type appears to be a dubious operation,
     # see GENIResource.set_type for more.
+    ams_dictionary = get_am_names(sr_url)
     for resource in resources:
         resource.set_agg_name(ams_dictionary)
         resource.set_type()
