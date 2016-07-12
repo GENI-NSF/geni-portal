@@ -44,6 +44,7 @@ DEFAULT_SR_URL = 'https://ch.geni.net:8444/SR'
 AM_SERVICE_TYPE = 0
 logger = logging.getLogger()
 
+NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
 
 class GeniResponse(object):
     CODE = 'code'
@@ -114,33 +115,37 @@ class NodeHandler(xml.sax.handler.ContentHandler):
 
     ELEM_LOCATION = u'location'
 
-    def safe_get_attr(self, attrs, name, default):
-        if name in attrs.getNames():
-            return attrs.getValue(name)
+    def safe_get_attr(self, attrs, qname, default):
+        logger.debug('names = %r', attrs.getNames())
+        logger.debug('qnames = %r', attrs.getQNames())
+        if qname in attrs.getQNames():
+            return attrs.getValueByQName(qname)
         else:
             return default
 
-    def __init__(self, name, attrs):
+    def __init__(self, name, qname, attrs):
         self.resource = GENIResource()
         # print attrs.getNames()
-        if NodeHandler.MANAGER_ID in attrs.getNames():
-            self.resource.am_id = attrs.getValue(NodeHandler.MANAGER_ID)
-        if NodeHandler.COMPONENT_ID in attrs.getNames():
-            self.resource.id = attrs.getValue(NodeHandler.COMPONENT_ID)
-        if NodeHandler.COMPONENT_NAME in attrs.getNames():
-            self.resource.name = attrs.getValue(NodeHandler.COMPONENT_NAME)
+        self.resource.am_id = self.safe_get_attr(attrs,
+                                                 NodeHandler.MANAGER_ID,
+                                                 None)
+        self.resource.id = self.safe_get_attr(attrs,
+                                              NodeHandler.COMPONENT_ID,
+                                              None)
+        self.resource.name = self.safe_get_attr(attrs,
+                                                NodeHandler.COMPONENT_NAME,
+                                                None)
 
-    def startElement(self, name, attrs):
-        if name == NodeHandler.ELEM_LOCATION:
+    def startElementNS(self, name, qname, attrs):
+        if name == (NS_RSPEC, NodeHandler.ELEM_LOCATION):
             self.resource.longitude = self.safe_get_attr(attrs,
                                                          NodeHandler.LONGITUDE,
                                                          None)
             self.resource.latitude = self.safe_get_attr(attrs,
                                                         NodeHandler.LATITUDE,
                                                         None)
-
-    def endElement(self, name):
-        pass
+        else:
+            logger.debug("NodeHandler.startElementNS(%r)", name)
 
 
 class RspecHandler(xml.sax.handler.ContentHandler):
@@ -149,18 +154,19 @@ class RspecHandler(xml.sax.handler.ContentHandler):
         self.delegate = None
         self.resources = []
 
-    def startElement(self, name, attrs):
+    def startElementNS(self, name, qname, attrs):
+        # logger.debug("rspec startElementNS(%r)", name)
         if self.delegate:
-            self.delegate.startElement(name, attrs)
-        elif name == u'node':
+            self.delegate.startElementNS(name, qname, attrs)
+        elif name == (NS_RSPEC, u'node'):
             logger.debug("Found node tag")
-            self.delegate = NodeHandler(name, attrs)
+            self.delegate = NodeHandler(name, qname, attrs)
         else:
-            logger.debug("Unknown rspec startElement: %r" % (name))
+            logger.debug("Unknown rspec startElement: %r", name)
 
-    def endElement(self, name):
-        logger.debug("rspec endElement(%r)" % (name))
-        if name == u'node':
+    def endElementNS(self, name, qname):
+        # logger.debug("rspec endElement(%r)", name)
+        if name == (NS_RSPEC, u'node'):
             if (self.delegate):
                 rsrc = self.delegate.resource
                 if rsrc.id:
@@ -180,19 +186,21 @@ class AdvertisementHandler(xml.sax.handler.ContentHandler):
         self.delegate = None
         self.resources = []
 
-    def startElement(self, name, attrs):
+    def startElementNS(self, name, qname, attrs):
+        # logger.debug("name = %r", name)
+        # logger.debug("qname = %r", qname)
         if self.delegate:
-            self.delegate.startElement(name, attrs)
-        elif name == u'rspec':
+            self.delegate.startElementNS(name, qname, attrs)
+        elif name == (NS_RSPEC, u'rspec'):
             logger.debug("Found rspec tag")
             self.delegate = RspecHandler()
         else:
-            logger.debug("Unknown ad startElement: %r" % (name))
+            logger.debug("Unknown ad startElement: %r", name)
 
-    def endElement(self, name):
+    def endElementNS(self, name, qname):
         if self.delegate:
-            self.delegate.endElement(name)
-        if name == u'rspec':
+            self.delegate.endElementNS(name, qname)
+        if name == (NS_RSPEC, u'rspec'):
             if (self.delegate):
                 self.resources.extend(self.delegate.resources)
                 self.delegate = None
@@ -340,7 +348,10 @@ def search_rspecs_for_resources(rspecs_directory, cur):
         logger.info("Starting parse of %s" % filepath)
         try:
             adHandler = AdvertisementHandler()
-            xml.sax.parse(filepath, adHandler)
+            xml_parser = xml.sax.make_parser()
+            xml_parser.setContentHandler(adHandler)
+            xml_parser.setFeature(xml.sax.handler.feature_namespaces, True)
+            xml_parser.parse(filepath)
         except Exception as e:
             logger.error("Could not parse %s" % filepath)
             raise
