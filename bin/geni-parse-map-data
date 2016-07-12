@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- Mode: python -*-
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Copyright (c) 2014-2016 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,13 +22,13 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 # IN THE WORK.
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
 # Generate GeoJSON map data from parsing advertisement RSpecs
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 import sys
 import os
@@ -212,7 +212,7 @@ class RspecHandler(xml.sax.handler.ContentHandler):
     def endElementNS(self, name, qname):
         # logger.debug("rspec endElement(%r)", name)
         if (name == (NS_RSPEC, RspecHandler.NODE) or
-            name == (NS_OPENFLOW, RspecHandler.DATAPATH)):
+                name == (NS_OPENFLOW, RspecHandler.DATAPATH)):
             if (self.delegate):
                 rsrc = self.delegate.resource
                 if rsrc.id:
@@ -250,7 +250,8 @@ class AdvertisementHandler(xml.sax.handler.ContentHandler):
                 self.resources.extend(self.delegate.resources)
                 self.delegate = None
             else:
-                logger.info("Why no delegate in AdvertisementHandler.endElement?")
+                msg = 'Why no delegate in AdvertisementHandler.endElement?'
+                logger.info(msg)
 
 
 def init_logging(options):
@@ -262,30 +263,33 @@ def init_logging(options):
         level = logging.INFO
     logging.basicConfig(level=level)
 
+
 def parse_args(argv):
-    parser = optparse.OptionParser(
-        usage="Generate GeoJSON map data from parsing advertisement RSpecs")
+    usage = 'Generate GeoJSON map data from parsing advertisement RSpecs'
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("--debug", action="store_true", default=False,
-                       help="enable debugging output")
+                      help="enable debugging output")
     parser.add_option("--silent", action="store_true", default=False,
-                       help="enable silent mode (only show errors)")
+                      help="enable silent mode (only show errors)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
                       help="Directory of saved ad RSpecs (default is `./`)")
-    parser.add_option("-o", "--output", default='current.json',
-                      help="Filename for JSON output (default is `current.json`)")
+    default = 'current.json'
+    help_txt = 'Filename for JSON output (default is %r)' % (default)
+    parser.add_option("-o", "--output", default=default, help=help_txt)
     help_txt = "service registry URL (default is %r)" % DEFAULT_SR_URL
     parser.add_option("-u", "--url", default=DEFAULT_SR_URL,
                       help=help_txt)
-    options,args = parser.parse_args()
-    return options,args
+    return parser.parse_args()
+
 
 # (Geo)JSON stuff
 def write_to_geojson_file(resources, output_file):
-    JSONarray = {'type':'FeatureCollection', 'features':[]}
+    JSONarray = {'type': 'FeatureCollection', 'features': []}
     JSONarray['features'].extend(resources)
     try:
         f = open(output_file, "w")
-        f.write(json.dumps(JSONarray, default=lambda o: o.toGeoJSON(), indent=4))
+        f.write(json.dumps(JSONarray, default=lambda o: o.toGeoJSON(),
+                           indent=4))
         f.close()
     except IOError as e:
         logger.error("Could not write output to %s: %s" % (output_file, e))
@@ -304,6 +308,7 @@ def get_am_names(sr_url):
     else:
         aggs = response
     return {a['SERVICE_URN']: a['SERVICE_NAME'] for a in aggs}
+
 
 # look through all RSpecs in a directory for GENI resources
 def search_rspecs_for_resources(rspecs_directory, cur):
@@ -328,7 +333,8 @@ def search_rspecs_for_resources(rspecs_directory, cur):
     # Is an exception really the best way to handle a failure to
     # parse any resources?
     if not resources:
-        raise Exception("No resources found in %s. Quitting." % rspecs_directory)
+        raise Exception("No resources found in %s. Quitting."
+                        % rspecs_directory)
 
     # Resource post-processing. Look up aggregate pretty name and
     # set the type. Setting the type appears to be a dubious operation,
@@ -338,11 +344,12 @@ def search_rspecs_for_resources(rspecs_directory, cur):
         resource.set_type()
     return resources
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        options,args = parse_args(argv)
+        options, args = parse_args(argv)
         init_logging(options)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
