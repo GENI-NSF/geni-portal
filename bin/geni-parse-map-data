@@ -292,84 +292,6 @@ def write_to_geojson_file(resources, output_file):
     else:
         logger.info("Wrote GeoJSON output to %s." % output_file)
 
-# make a best guess about the resource type
-def determine_resource_type(name):
-    if 'pc' in name:
-        return 'pc'
-    elif 'pg' in name:
-        return 'pc'
-    elif 'compute' in name:
-        return 'pc'
-    elif 'procurve' in name:
-        return 'switch'
-    elif 'cisco' in name:
-        return 'switch'
-    else:
-        return 'unknown'
-
-# do a regex on the AM ID or search in SR to get the AM name
-def determine_am_name(am_id, ams_dictionary):
-    # first attempt to see if AM ID is in dictionary
-    if am_id in ams_dictionary:
-        return ams_dictionary[am_id]
-    # if not, parse from component_manager_id attribute
-    result = re.search(r'IDN\+(.*)\+authority', am_id)
-    if result is None:
-        logger.info("Could not parse AM name from AM URN %s. "
-                "Defaulting to None." % am_id)
-        return None
-    else:
-        # cache result in dictionary
-        ams_dictionary[am_id] = result.group(1)
-        return result.group(1)
-
-# get the resource short name
-def determine_resource_name(element):
-    if element.tagName == 'openflow:datapath':
-        return element.getAttribute('dpid')
-    else:
-        return element.getAttribute('component_name')
-
-# get lat/lon information: default to None, None if unknown
-def determine_resource_location(element):
-    latitude = None
-    longitude = None
-    if element.tagName == 'openflow:datapath':
-        locations = element.getElementsByTagName('openflow:location')
-    else:
-        locations = element.getElementsByTagName('location')
-    if len(locations) == 0:
-        logger.info("No location information found for %s" %
-                element.getAttribute('component_id'))
-    for location in locations:
-        latitude = location.getAttribute('latitude')
-        longitude = location.getAttribute('longitude')
-    return (longitude, latitude)
-
-# instantiate and add attributes to a GENIResource()
-def populate_geni_resource(element, ams_dictionary):
-    logger.debug("Instantiating new GENIResource.")
-    resource = GENIResource()
-    resource.am_id = element.getAttribute('component_manager_id')
-    resource.id = element.getAttribute('component_id')
-    resource.name = determine_resource_name(element)
-    (resource.longitude, resource.latitude) = determine_resource_location(element)
-    resource.type = determine_resource_type(resource.name)
-    if resource.am_id:
-        resource.am = determine_am_name(resource.am_id, ams_dictionary)
-    return resource
-
-# do some checking before adding the resource to list of resources
-# check if minimum parameters exist before adding them
-def add_to_geni_resources(resource, resources):
-    if(resource.id and resource.am_id):
-        logger.debug("Added new GENIResource %s to list of existing resources." %
-                (resource.id))
-        resources.append(resource)
-    else:
-        logger.error("Could not add GENIResource; missing minimum information.")
-        logger.error("  resource.id: %s" % resource.id)
-        logger.error("  resource.am_id: %s" % resource.am_id)
 
 # open connection to DB once to get all AM URN/name data as key/value pairs
 def get_am_names(sr_url):
@@ -402,25 +324,9 @@ def search_rspecs_for_resources(rspecs_directory, cur):
             raise
             continue
         resources.extend(adHandler.resources)
-        continue
 
-        # should only be one <rspec...> in most files
-        for rspec in rspecs:
-            children = rspec.childNodes
-
-            # potential <node...> or <openflow:datapath...> elemenets
-            for child in children:
-                if (child.nodeType == minidom.Node.ELEMENT_NODE and
-                    (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
-
-                    resource = populate_geni_resource(child, ams_dictionary)
-
-                    # Remove nodes with no lat/long info
-                    if resource.latitude == None or resource.longitude == None:
-                        continue
-
-                    add_to_geni_resources(resource, resources)
-
+    # Is an exception really the best way to handle a failure to
+    # parse any resources?
     if not resources:
         raise Exception("No resources found in %s. Quitting." % rspecs_directory)
 
