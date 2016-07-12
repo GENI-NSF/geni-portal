@@ -45,6 +45,8 @@ AM_SERVICE_TYPE = 0
 logger = logging.getLogger()
 
 NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
+NS_OPENFLOW = u'http://www.geni.net/resources/rspec/ext/openflow/3'
+
 
 class GeniResponse(object):
     CODE = 'code'
@@ -62,6 +64,7 @@ class GENIResource:
         self.id = ""
         self.latitude = None
         self.longitude = None
+
     def toGeoJSON(self):
         return dict(
             type='Feature',
@@ -101,8 +104,44 @@ class GENIResource:
         elif 'cisco' in self.name:
             return 'switch'
         else:
-            print self.name
+            # print self.name
             return 'unknown'
+
+
+class DatapathHandler(xml.sax.handler.ContentHandler):
+
+    MANAGER_ID = u'component_manager_id'
+    COMPONENT_ID = u'component_id'
+    DPID = u'dpid'
+    LATITUDE = u'latitude'
+    LONGITUDE = u'longitude'
+    LOCATION = u'location'
+
+    def safe_get_attr(self, attrs, qname, default):
+        logger.debug('names = %r', attrs.getNames())
+        logger.debug('qnames = %r', attrs.getQNames())
+        if qname in attrs.getQNames():
+            return attrs.getValueByQName(qname)
+        else:
+            return default
+
+    def __init__(self, name, qname, attrs):
+        self.resource = GENIResource()
+        self.resource.am_id = \
+            self.safe_get_attr(attrs, DatapathHandler.MANAGER_ID, None)
+        self.resource.id = \
+            self.safe_get_attr(attrs, DatapathHandler.COMPONENT_ID, None)
+        self.resource.name = \
+            self.safe_get_attr(attrs, DatapathHandler.DPID, None)
+
+    def startElementNS(self, name, qname, attrs):
+        if name == (NS_OPENFLOW, DatapathHandler.LOCATION):
+            self.resource.longitude = \
+                self.safe_get_attr(attrs, DatapathHandler.LONGITUDE, None)
+            self.resource.latitude = \
+                self.safe_get_attr(attrs, DatapathHandler.LATITUDE, None)
+        else:
+            logger.debug("DatapathHandler.startElementNS(%r)", name)
 
 
 class NodeHandler(xml.sax.handler.ContentHandler):
@@ -161,12 +200,16 @@ class RspecHandler(xml.sax.handler.ContentHandler):
         elif name == (NS_RSPEC, u'node'):
             logger.debug("Found node tag")
             self.delegate = NodeHandler(name, qname, attrs)
+        elif name == (NS_OPENFLOW, u'datapath'):
+            logger.debug("Found datapath tag")
+            self.delegate = DatapathHandler(name, qname, attrs)
         else:
             logger.debug("Unknown rspec startElement: %r", name)
 
     def endElementNS(self, name, qname):
         # logger.debug("rspec endElement(%r)", name)
-        if name == (NS_RSPEC, u'node'):
+        if (name == (NS_RSPEC, u'node') or
+            name == (NS_OPENFLOW, u'datapath')):
             if (self.delegate):
                 rsrc = self.delegate.resource
                 if rsrc.id:
