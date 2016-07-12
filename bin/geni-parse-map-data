@@ -189,6 +189,9 @@ class NodeHandler(xml.sax.handler.ContentHandler):
 
 class RspecHandler(xml.sax.handler.ContentHandler):
 
+    NODE = u'node'
+    DATAPATH = u'datapath'
+
     def __init__(self):
         self.delegate = None
         self.resources = []
@@ -197,10 +200,10 @@ class RspecHandler(xml.sax.handler.ContentHandler):
         # logger.debug("rspec startElementNS(%r)", name)
         if self.delegate:
             self.delegate.startElementNS(name, qname, attrs)
-        elif name == (NS_RSPEC, u'node'):
+        elif name == (NS_RSPEC, RspecHandler.NODE):
             logger.debug("Found node tag")
             self.delegate = NodeHandler(name, qname, attrs)
-        elif name == (NS_OPENFLOW, u'datapath'):
+        elif name == (NS_OPENFLOW, RspecHandler.DATAPATH):
             logger.debug("Found datapath tag")
             self.delegate = DatapathHandler(name, qname, attrs)
         else:
@@ -208,14 +211,13 @@ class RspecHandler(xml.sax.handler.ContentHandler):
 
     def endElementNS(self, name, qname):
         # logger.debug("rspec endElement(%r)", name)
-        if (name == (NS_RSPEC, u'node') or
-            name == (NS_OPENFLOW, u'datapath')):
+        if (name == (NS_RSPEC, RspecHandler.NODE) or
+            name == (NS_OPENFLOW, RspecHandler.DATAPATH)):
             if (self.delegate):
                 rsrc = self.delegate.resource
                 if rsrc.id:
                     self.resources.append(rsrc)
                 logger.debug("node resources: %r" % (self.delegate.resource))
-                logger.debug("my rspec resources: %r" % (self.resources))
                 self.delegate = None
             else:
                 logger.info("Why no delegate in RspecHandler.endElement?")
