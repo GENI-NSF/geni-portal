@@ -39,11 +39,10 @@ import sys
 import os
 import logging
 import optparse
-import psycopg2
-import psycopg2.extras
 from xml.dom import minidom
 import glob
 import tempfile
+import xmlrpclib
 
 # In olden times, geni-tools ("gcf") was installed in
 # the geni-portal area. So manually include that path
@@ -57,11 +56,22 @@ try:
 except:
     raise
 
+
+DEFAULT_SR_URL = 'https://ch.geni.net:8444/SR'
 TEMP_DIR = os.path.join(tempfile.gettempdir(), "rspecs")
-AM_SERVICE_TYPE = "0"
+AM_SERVICE_TYPE = 0
+SR_SERVICE_URL = 'SERVICE_URL'
+SR_SERVICE_URN = 'SERVICE_URN'
 logger = logging.getLogger()
 
 NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
+
+
+class GeniResponse(object):
+    CODE = 'code'
+    VALUE = 'value'
+    OUTPUT = 'output'
+
 
 def init_logging(options):
     if options.silent:
@@ -89,15 +99,10 @@ def parse_args(argv):
                       help="Filename for `omni_config` (required)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
                       help="Directory to save ad RSpecs (default is `./`)")
-    parser.add_option("-d", "--database", default='portal',
-                      help="database name (default is `portal`)")
-    parser.add_option("--host", default='localhost',
-                      help="database host (default is `localhost`)")
-    parser.add_option("-u", "--user", default='portal',
-                      help="database user (default is `portal`)")
-    parser.add_option("-p", "--password",
-                      help="database user password")
-    options,args = parser.parse_args()
+    help_txt = "service registry URL (default is %r)" % DEFAULT_SR_URL
+    parser.add_option("-u", "--url", default=DEFAULT_SR_URL,
+                      help=help_txt)
+    options, args = parser.parse_args()
     if not (options.configfile):
         parser.print_usage()
         raise Exception("Missing some required arguments")
@@ -145,47 +150,31 @@ def clean_directory(directory):
             os.remove(xmlfile)
             logger.debug("Deleted %s" % xmlfile)
 
-# attempt to connect to database
-# returns connection and cursor variables
-def connect_to_database(database, user, host, password):
-    args=dict(database=database,
-              user=user,
-              host=host)
-    if password:
-        args['password'] = password
-    try:
-        conn = psycopg2.connect(**args)
-    except:
-        raise Exception("Could not connect to database.")
-    logger.info("Established connection to database '%s' on %s."
-            % (database, host))
-    return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
 
-# close database connection
-def disconnect_from_database(conn, cur):
-    cur.close()
-    conn.close()
-    logger.info("Closed connection to database.")
+def query_sr_for_ams(sr_url):
+    logger.debug("Contacting service registry at %r", sr_url)
+    sr_proxy = xmlrpclib.ServerProxy(sr_url)
+    response = sr_proxy.get_services_of_type(AM_SERVICE_TYPE)
 
-# query the service registry for list of URLs of AMs
-def query_sr_for_ams(cur):
-    select_sql = 'SELECT * FROM service_registry WHERE service_type = %s'
-    cur.execute(select_sql, (AM_SERVICE_TYPE))
-    records = cur.fetchall()
-    if not records:
-        raise Exception("Found no AMs in the service registry.")
-    return records
+    # Work around https://github.com/GENI-NSF/geni-ch/issues/516
+    if GeniResponse.CODE in response:
+        aggs = response[GeniResponse.VALUE]
+    else:
+        aggs = response
+    return aggs
+
 
 # download each AM's ad RSpec to TEMP_DIR
 def download_rspecs(records, omni_config_file, save_directory):
     logger.info("Starting downloading of RSpecs.")
     for record in records:
-        service_url = record['service_url']
-        service_urn = record['service_urn']
+        service_url = record[SR_SERVICE_URL]
+        service_urn = record[SR_SERVICE_URN]
         prefix = os.path.join(save_directory, "ad")
         omniargs = ['-c', omni_config_file, '-a', service_url, '-o',
                     '-V2', 'listresources', '-p', prefix]
         logger.debug("Calling omni using the arguments: %s" % (omniargs))
+        logger.info('Downloading advertisement from %r', service_urn)
         try:
             text, retItem = omni.call(omniargs, None)
             # if item exists, if it's of type dictionary, and
@@ -227,14 +216,10 @@ def main(argv=None):
         sys.stderr.write(str(e) + "\n")
         return 1
 
-    (conn, cur) = connect_to_database(options.database,
-                                      options.user,
-                                      options.host,
-                                      options.password)
     clean_directory(TEMP_DIR)
-    download_rspecs(query_sr_for_ams(cur), options.configfile, TEMP_DIR)
+    download_rspecs(query_sr_for_ams(options.url), options.configfile,
+                    TEMP_DIR)
     verify_downloaded_rspecs(TEMP_DIR, options.save)
-    disconnect_from_database(conn, cur)
     if options.cleanup:
         clean_directory(TEMP_DIR)
 
