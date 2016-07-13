@@ -10,6 +10,10 @@
   ([#1703](https://github.com/GENI-NSF/geni-portal/issues/1703))
 * Update the Jacks URL per Emulab's request
   ([#1704](https://github.com/GENI-NSF/geni-portal/issues/1704))
+* Remove InstaGENI FOAM aggregates
+  ([#1705](https://github.com/GENI-NSF/geni-portal/issues/1705))
+* Handle large advertisements in geni-parse-map-data
+  ([#1707](https://github.com/GENI-NSF/geni-portal/issues/1707))
 * Remove hardcoded help email from code
   ([#1709](https://github.com/GENI-NSF/geni-portal/issues/1709))
 

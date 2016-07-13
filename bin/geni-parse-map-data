@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- Mode: python -*-
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Copyright (c) 2014-2016 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,27 +22,37 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 # IN THE WORK.
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
 # Generate GeoJSON map data from parsing advertisement RSpecs
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 import sys
 import os
 import logging
 import optparse
-import psycopg2
-import psycopg2.extras
 import json
 import re
-from xml.dom import minidom
+import xml.sax
 import glob
+import xmlrpclib
 
-AM_SERVICE_TYPE = "0"
+DEFAULT_SR_URL = 'https://ch.geni.net:8444/SR'
+AM_SERVICE_TYPE = 0
 logger = logging.getLogger()
+
+NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
+NS_OPENFLOW = u'http://www.geni.net/resources/rspec/ext/openflow/3'
+
+
+class GeniResponse(object):
+    CODE = 'code'
+    VALUE = 'value'
+    OUTPUT = 'output'
+
 
 # class for a GENI resource
 class GENIResource:
@@ -54,6 +64,7 @@ class GENIResource:
         self.id = ""
         self.latitude = None
         self.longitude = None
+
     def toGeoJSON(self):
         return dict(
             type='Feature',
@@ -69,6 +80,180 @@ class GENIResource:
                 coordinates=[self.longitude, self.latitude]),
         )
 
+    def set_agg_name(self, aggNameMap):
+        if self.am_id in aggNameMap:
+            self.am = aggNameMap[self.am_id]
+        else:
+            logger.debug("Component %r agg id %r not in aggregate names",
+                         self.id, self.am_id)
+
+    def set_type(self):
+        """Make a best guess about the resource type.
+
+        Does this even matter any more? We're not matching anything
+        here, everything is labeled as 'unknown'.
+        """
+        if 'pc' in self.name:
+            return 'pc'
+        elif 'pg' in self.name:
+            return 'pc'
+        elif 'compute' in self.name:
+            return 'pc'
+        elif 'procurve' in self.name:
+            return 'switch'
+        elif 'cisco' in self.name:
+            return 'switch'
+        else:
+            # print self.name
+            return 'unknown'
+
+
+class DatapathHandler(xml.sax.handler.ContentHandler):
+
+    MANAGER_ID = u'component_manager_id'
+    COMPONENT_ID = u'component_id'
+    DPID = u'dpid'
+    LATITUDE = u'latitude'
+    LONGITUDE = u'longitude'
+    LOCATION = u'location'
+
+    def safe_get_attr(self, attrs, qname, default):
+        logger.debug('names = %r', attrs.getNames())
+        logger.debug('qnames = %r', attrs.getQNames())
+        if qname in attrs.getQNames():
+            return attrs.getValueByQName(qname)
+        else:
+            return default
+
+    def __init__(self, name, qname, attrs):
+        self.resource = GENIResource()
+        self.resource.am_id = \
+            self.safe_get_attr(attrs, DatapathHandler.MANAGER_ID, None)
+        self.resource.id = \
+            self.safe_get_attr(attrs, DatapathHandler.COMPONENT_ID, None)
+        self.resource.name = \
+            self.safe_get_attr(attrs, DatapathHandler.DPID, None)
+
+    def startElementNS(self, name, qname, attrs):
+        if name == (NS_OPENFLOW, DatapathHandler.LOCATION):
+            self.resource.longitude = \
+                self.safe_get_attr(attrs, DatapathHandler.LONGITUDE, None)
+            self.resource.latitude = \
+                self.safe_get_attr(attrs, DatapathHandler.LATITUDE, None)
+        else:
+            logger.debug("DatapathHandler.startElementNS(%r)", name)
+
+
+class NodeHandler(xml.sax.handler.ContentHandler):
+
+    MANAGER_ID = u'component_manager_id'
+    COMPONENT_ID = u'component_id'
+    COMPONENT_NAME = u'component_name'
+    LATITUDE = u'latitude'
+    LONGITUDE = u'longitude'
+
+    ELEM_LOCATION = u'location'
+
+    def safe_get_attr(self, attrs, qname, default):
+        logger.debug('names = %r', attrs.getNames())
+        logger.debug('qnames = %r', attrs.getQNames())
+        if qname in attrs.getQNames():
+            return attrs.getValueByQName(qname)
+        else:
+            return default
+
+    def __init__(self, name, qname, attrs):
+        self.resource = GENIResource()
+        # print attrs.getNames()
+        self.resource.am_id = self.safe_get_attr(attrs,
+                                                 NodeHandler.MANAGER_ID,
+                                                 None)
+        self.resource.id = self.safe_get_attr(attrs,
+                                              NodeHandler.COMPONENT_ID,
+                                              None)
+        self.resource.name = self.safe_get_attr(attrs,
+                                                NodeHandler.COMPONENT_NAME,
+                                                None)
+
+    def startElementNS(self, name, qname, attrs):
+        if name == (NS_RSPEC, NodeHandler.ELEM_LOCATION):
+            self.resource.longitude = self.safe_get_attr(attrs,
+                                                         NodeHandler.LONGITUDE,
+                                                         None)
+            self.resource.latitude = self.safe_get_attr(attrs,
+                                                        NodeHandler.LATITUDE,
+                                                        None)
+        else:
+            logger.debug("NodeHandler.startElementNS(%r)", name)
+
+
+class RspecHandler(xml.sax.handler.ContentHandler):
+
+    NODE = u'node'
+    DATAPATH = u'datapath'
+
+    def __init__(self):
+        self.delegate = None
+        self.resources = []
+
+    def startElementNS(self, name, qname, attrs):
+        # logger.debug("rspec startElementNS(%r)", name)
+        if self.delegate:
+            self.delegate.startElementNS(name, qname, attrs)
+        elif name == (NS_RSPEC, RspecHandler.NODE):
+            logger.debug("Found node tag")
+            self.delegate = NodeHandler(name, qname, attrs)
+        elif name == (NS_OPENFLOW, RspecHandler.DATAPATH):
+            logger.debug("Found datapath tag")
+            self.delegate = DatapathHandler(name, qname, attrs)
+        else:
+            logger.debug("Unknown rspec startElement: %r", name)
+
+    def endElementNS(self, name, qname):
+        # logger.debug("rspec endElement(%r)", name)
+        if (name == (NS_RSPEC, RspecHandler.NODE) or
+                name == (NS_OPENFLOW, RspecHandler.DATAPATH)):
+            if (self.delegate):
+                rsrc = self.delegate.resource
+                if rsrc.id:
+                    self.resources.append(rsrc)
+                logger.debug("node resources: %r" % (self.delegate.resource))
+                self.delegate = None
+            else:
+                logger.info("Why no delegate in RspecHandler.endElement?")
+
+
+class AdvertisementHandler(xml.sax.handler.ContentHandler):
+    """Parse an advertisement RSpec via SAX API.
+    """
+
+    def __init__(self):
+        self.delegate = None
+        self.resources = []
+
+    def startElementNS(self, name, qname, attrs):
+        # logger.debug("name = %r", name)
+        # logger.debug("qname = %r", qname)
+        if self.delegate:
+            self.delegate.startElementNS(name, qname, attrs)
+        elif name == (NS_RSPEC, u'rspec'):
+            logger.debug("Found rspec tag")
+            self.delegate = RspecHandler()
+        else:
+            logger.debug("Unknown ad startElement: %r", name)
+
+    def endElementNS(self, name, qname):
+        if self.delegate:
+            self.delegate.endElementNS(name, qname)
+        if name == (NS_RSPEC, u'rspec'):
+            if (self.delegate):
+                self.resources.extend(self.delegate.resources)
+                self.delegate = None
+            else:
+                msg = 'Why no delegate in AdvertisementHandler.endElement?'
+                logger.info(msg)
+
+
 def init_logging(options):
     if options.silent:
         level = logging.ERROR
@@ -78,209 +263,98 @@ def init_logging(options):
         level = logging.INFO
     logging.basicConfig(level=level)
 
+
 def parse_args(argv):
-    parser = optparse.OptionParser(
-        usage="Generate GeoJSON map data from parsing advertisement RSpecs")
+    usage = 'Generate GeoJSON map data from parsing advertisement RSpecs'
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("--debug", action="store_true", default=False,
-                       help="enable debugging output")
+                      help="enable debugging output")
     parser.add_option("--silent", action="store_true", default=False,
-                       help="enable silent mode (only show errors)")
+                      help="enable silent mode (only show errors)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
                       help="Directory of saved ad RSpecs (default is `./`)")
-    parser.add_option("-o", "--output", default='current.json',
-                      help="Filename for JSON output (default is `current.json`)")
-    parser.add_option("-d", "--database", default='portal',
-                      help="database name (default is `portal`)")
-    parser.add_option("--host", default='localhost',
-                      help="database host (default is `localhost`)")
-    parser.add_option("-u", "--user", default='portal',
-                      help="database user (default is `portal`)")
-    parser.add_option("-p", "--password", 
-                      help="database user password")
-    options,args = parser.parse_args()
-    return options,args
+    default = 'current.json'
+    help_txt = 'Filename for JSON output (default is %r)' % (default)
+    parser.add_option("-o", "--output", default=default, help=help_txt)
+    help_txt = "service registry URL (default is %r)" % DEFAULT_SR_URL
+    parser.add_option("-u", "--url", default=DEFAULT_SR_URL,
+                      help=help_txt)
+    return parser.parse_args()
 
-# attempt to connect to database
-# returns connection and cursor variables
-def connect_to_database(database, user, host, password):
-    args=dict(database=database,
-              user=user,
-              host=host)
-    if password:
-        args['password'] = password
-    try:
-        conn = psycopg2.connect(**args)
-    except:
-        raise Exception("Could not connect to database.")
-    logger.info("Established connection to database '%s' on %s." 
-            % (database, host))
-    return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
-
-# close database connection
-def disconnect_from_database(conn, cur):
-    cur.close()
-    conn.close()
-    logger.info("Closed connection to database.")
 
 # (Geo)JSON stuff
 def write_to_geojson_file(resources, output_file):
-    JSONarray = {'type':'FeatureCollection', 'features':[]}
+    JSONarray = {'type': 'FeatureCollection', 'features': []}
     JSONarray['features'].extend(resources)
     try:
         f = open(output_file, "w")
-        f.write(json.dumps(JSONarray, default=lambda o: o.toGeoJSON(), indent=4))
+        f.write(json.dumps(JSONarray, default=lambda o: o.toGeoJSON(),
+                           indent=4))
         f.close()
     except IOError as e:
         logger.error("Could not write output to %s: %s" % (output_file, e))
     else:
         logger.info("Wrote GeoJSON output to %s." % output_file)
 
-# make a best guess about the resource type
-def determine_resource_type(name):
-    if 'pc' in name:
-        return 'pc'
-    elif 'pg' in name:
-        return 'pc'
-    elif 'compute' in name:
-        return 'pc'
-    elif 'procurve' in name:
-        return 'switch'
-    elif 'cisco' in name:
-        return 'switch'
-    else:
-        return 'unknown'
-
-# do a regex on the AM ID or search in SR to get the AM name
-def determine_am_name(am_id, ams_dictionary):
-    # first attempt to see if AM ID is in dictionary
-    if am_id in ams_dictionary:
-        return ams_dictionary[am_id]
-    # if not, parse from component_manager_id attribute
-    result = re.search(r'IDN\+(.*)\+authority', am_id)
-    if result is None:
-        logger.info("Could not parse AM name from AM URN %s. "
-                "Defaulting to None." % am_id)
-        return None
-    else:
-        # cache result in dictionary
-        ams_dictionary[am_id] = result.group(1)
-        return result.group(1)
-
-# get the resource short name
-def determine_resource_name(element):
-    if element.tagName == 'openflow:datapath':
-        return element.getAttribute('dpid')
-    else:
-        return element.getAttribute('component_name')
-
-# get lat/lon information: default to None, None if unknown
-def determine_resource_location(element):
-    latitude = None
-    longitude = None
-    if element.tagName == 'openflow:datapath':
-        locations = element.getElementsByTagName('openflow:location')
-    else:
-        locations = element.getElementsByTagName('location')
-    if len(locations) == 0:
-        logger.info("No location information found for %s" % 
-                element.getAttribute('component_id'))
-    for location in locations:
-        latitude = location.getAttribute('latitude')
-        longitude = location.getAttribute('longitude')
-    return (longitude, latitude)
-
-# instantiate and add attributes to a GENIResource()
-def populate_geni_resource(element, ams_dictionary):
-    logger.debug("Instantiating new GENIResource.")
-    resource = GENIResource()
-    resource.am_id = element.getAttribute('component_manager_id')
-    resource.id = element.getAttribute('component_id')
-    resource.name = determine_resource_name(element)
-    (resource.longitude, resource.latitude) = determine_resource_location(element)
-    resource.type = determine_resource_type(resource.name)      
-    if resource.am_id:
-        resource.am = determine_am_name(resource.am_id, ams_dictionary)
-    return resource
-
-# do some checking before adding the resource to list of resources
-# check if minimum parameters exist before adding them
-def add_to_geni_resources(resource, resources):
-    if(resource.id and resource.am_id):
-        logger.debug("Added new GENIResource %s to list of existing resources." %
-                (resource.id))
-        resources.append(resource)
-    else:
-        logger.error("Could not add GENIResource; missing minimum information.")
-        logger.error("  resource.id: %s" % resource.id)
-        logger.error("  resource.am_id: %s" % resource.am_id)
 
 # open connection to DB once to get all AM URN/name data as key/value pairs
-def get_am_names(cur):
-    dictionary = {}
-    select_sql = 'SELECT service_urn, service_name FROM service_registry WHERE service_type = %s'
-    logger.debug("Querying from SR: %s", cur.mogrify(select_sql, (AM_SERVICE_TYPE)))
-    logger.info("Starting database search for AM URNs and names.")
-    cur.execute(select_sql, (AM_SERVICE_TYPE))
-    records = cur.fetchall()
-    if not records:
-        logger.error("Found no AMs in the service registry.")
+def get_am_names(sr_url):
+    sr_proxy = xmlrpclib.ServerProxy(sr_url)
+    response = sr_proxy.get_services_of_type(AM_SERVICE_TYPE)
+
+    # Work around https://github.com/GENI-NSF/geni-ch/issues/516
+    if GeniResponse.CODE in response:
+        aggs = response[GeniResponse.VALUE]
     else:
-        for record in records:
-            dictionary[record['service_urn']] = record['service_name']
-    return dictionary
+        aggs = response
+    return {a['SERVICE_URN']: a['SERVICE_NAME'] for a in aggs}
+
 
 # look through all RSpecs in a directory for GENI resources
-def search_rspecs_for_resources(rspecs_directory, cur):
+def search_rspecs_for_resources(rspecs_directory, sr_url):
 
     resources = []
-    ams_dictionary = get_am_names(cur)
-    
     for filepath in glob.glob(os.path.join(rspecs_directory, "*.xml")):
+        logger.info("Starting parse of %s" % filepath)
         try:
-            xmlfile = minidom.parse(filepath)
-            rspecs = xmlfile.getElementsByTagName('rspec')
+            adHandler = AdvertisementHandler()
+            xml_parser = xml.sax.make_parser()
+            xml_parser.setContentHandler(adHandler)
+            xml_parser.setFeature(xml.sax.handler.feature_namespaces, True)
+            xml_parser.parse(filepath)
         except Exception as e:
             logger.error("Could not parse %s" % filepath)
+            raise
             continue
-            
-        logger.info("Starting parse of %s" % filepath)
-        
-        # should only be one <rspec...> in most files
-        for rspec in rspecs:
-            children = rspec.childNodes
-            
-            # potential <node...> or <openflow:datapath...> elemenets
-            for child in children:
-                if (child.nodeType == minidom.Node.ELEMENT_NODE and 
-                    (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
-                    
-                    resource = populate_geni_resource(child, ams_dictionary)
+        resources.extend(adHandler.resources)
 
-                    # Remove nodes with no lat/long info
-                    if resource.latitude == None or resource.longitude == None:
-                        continue
-
-                    add_to_geni_resources(resource, resources)
-
+    # Is an exception really the best way to handle a failure to
+    # parse any resources?
     if not resources:
-        raise Exception("No resources found in %s. Quitting." % rspecs_directory)
+        raise Exception("No resources found in %s. Quitting."
+                        % rspecs_directory)
 
+    # Resource post-processing. Look up aggregate pretty name and
+    # set the type. Setting the type appears to be a dubious operation,
+    # see GENIResource.set_type for more.
+    ams_dictionary = get_am_names(sr_url)
+    for resource in resources:
+        resource.set_agg_name(ams_dictionary)
+        resource.set_type()
     return resources
+
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        options,args = parse_args(argv)
+        options, args = parse_args(argv)
         init_logging(options)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    
-    (conn, cur) = connect_to_database(options.database, 
-            options.user, options.host, options.password)
-    resources = search_rspecs_for_resources(options.save, cur)
-    disconnect_from_database(conn, cur)
+
+    resources = search_rspecs_for_resources(options.save, options.url)
     write_to_geojson_file(resources, options.output)
 
 if __name__ == "__main__":
