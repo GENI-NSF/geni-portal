@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- Mode: python -*-
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Copyright (c) 2014-2016 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,9 +22,9 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 # IN THE WORK.
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
 # Query all AMs in the SR for advertisement RSpecs
 #
@@ -33,7 +33,7 @@
 #   2) Calls omni listresources for each AM and downloads ad RSpecs
 #   3) Verifies downloaded RSpecs to check for valid XML structure and data
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 import sys
 import os
@@ -47,9 +47,12 @@ import tempfile
 
 sys.path.append('/usr/local/bin/gcf/src')
 sys.path.append('@pkgdatadir@/portal/gcf/src')
-import gcf.oscript as omni
-from gcf.omnilib.util.omnierror import OmniError
-from gcf.omnilib.util.files import *
+try:
+    import gcf.oscript as omni
+    from gcf.omnilib.util.omnierror import OmniError
+    from gcf.omnilib.util.files import *
+except:
+    raise
 
 TEMP_DIR = os.path.join(tempfile.gettempdir(), "rspecs")
 AM_SERVICE_TYPE = "0"
@@ -67,13 +70,14 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser(usage="Query all AMs in the SR for advertisement RSpecs")
+    usage = 'Query all AMs in the SR for advertisement RSpecs'
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("--debug", action="store_true", default=False,
-                       help="enable debugging output")
+                      help="enable debugging output")
     parser.add_option("--silent", action="store_true", default=False,
-                       help="enable silent mode (only show errors)")
+                      help="enable silent mode (only show errors)")
     parser.add_option("--cleanup", action="store_true", default=False,
-                       help="delete invalid RSpecs at the end")
+                      help="delete invalid RSpecs at the end")
     parser.add_option("-c", "--configfile", metavar="FILE",
                       help="Filename for `omni_config` (required)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
@@ -90,7 +94,8 @@ def parse_args(argv):
     if not (options.configfile):
         parser.print_usage()
         raise Exception("Missing some required arguments")
-    return options,args
+    return options, args
+
 
 # check whether RSpec has something in it
 # return false if file cannot be parsed or no <rspec...> element is found
@@ -109,6 +114,7 @@ def rspec_has_contents(filepath):
         logger.error("Couldn't find rspec element(s) in %s" % filepath)
         return False
 
+
 # move RSpec from temporary location to permanent location
 # if new RSpec has contents, overwrite (or write new) file; else, do nothing
 def move_rspec(movefrom, moveto):
@@ -123,6 +129,7 @@ def move_rspec(movefrom, moveto):
             logger.debug("Moved %s to %s" % (movefrom, moveto))
     else:
         logger.error("Couldn't move %s to %s" % (movefrom, moveto))
+
 
 # delete all XML files in a given directory
 def clean_directory(directory):
@@ -170,26 +177,30 @@ def download_rspecs(records, omni_config_file, save_directory):
         service_urn = record['service_urn']
         prefix = os.path.join(save_directory, "ad")
         omniargs = ['-c', omni_config_file, '-a', service_url, '-o',
-                '-V2', 'listresources', '-p', prefix]
+                    '-V2', 'listresources', '-p', prefix]
         logger.debug("Calling omni using the arguments: %s" % (omniargs))
         try:
             text, retItem = omni.call(omniargs, None)
-            # if item exists, if it's of type dictionary, and one key is returned
-            if retItem and isinstance(retItem, dict) and len(retItem.keys()) == 1:
+            # if item exists, if it's of type dictionary, and
+            # one key is returned
+            if (retItem and isinstance(retItem, dict) and
+                    len(retItem.keys()) == 1):
                 rspec = retItem[retItem.keys()[0]]
                 logger.debug("RSpec returned from %s." % service_urn)
             else:
                 logger.error("No RSpec returned from %s." % service_urn)
         except OmniError as oe:
             logger.error("Omni call failed when trying %s: %s" %
-                    (service_urn,oe))
+                         (service_urn, oe))
     logger.info("Downloading complete.")
+
 
 # verify downloaded data is legitimate
 # only move over files to user specified directory that are valid
 def verify_downloaded_rspecs(movefrom_directory, moveto_directory):
     logger.info("Starting verification of downloaded RSpecs.")
-    for movefrom_filepath in glob.glob(os.path.join(movefrom_directory, "*.xml")):
+    for movefrom_filepath in glob.glob(os.path.join(movefrom_directory,
+                                                    "*.xml")):
         movefrom_filename = os.path.basename(movefrom_filepath)
         moveto_filepath = os.path.join(moveto_directory, movefrom_filename)
         if not os.path.exists(moveto_directory):
@@ -198,11 +209,12 @@ def verify_downloaded_rspecs(movefrom_directory, moveto_directory):
         move_rspec(movefrom_filepath, moveto_filepath)
     logger.info("Verification complete.")
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        options,args = parse_args(argv)
+        options, args = parse_args(argv)
         init_logging(options)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
