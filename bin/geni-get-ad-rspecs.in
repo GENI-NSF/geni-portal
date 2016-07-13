@@ -45,6 +45,9 @@ from xml.dom import minidom
 import glob
 import tempfile
 
+# In olden times, geni-tools ("gcf") was installed in
+# the geni-portal area. So manually include that path
+# to include geni-tools packages.
 sys.path.append('/usr/local/bin/gcf/src')
 sys.path.append('@pkgdatadir@/portal/gcf/src')
 try:
@@ -68,6 +71,10 @@ def init_logging(options):
     else:
         level = logging.INFO
     logging.basicConfig(level=level)
+    # Quiet omni, which is quite verbose
+    omni_logger = logging.getLogger('omni')
+    omni_logger.setLevel(logging.WARNING)
+
 
 def parse_args(argv):
     usage = 'Query all AMs in the SR for advertisement RSpecs'
