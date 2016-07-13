@@ -55,6 +55,8 @@ TEMP_DIR = os.path.join(tempfile.gettempdir(), "rspecs")
 AM_SERVICE_TYPE = "0"
 logger = logging.getLogger()
 
+NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
+
 def init_logging(options):
     if options.silent:
         level = logging.ERROR
@@ -99,7 +101,7 @@ def rspec_has_contents(filepath):
         logger.error("Couldn't parse %s" % filepath)
         return False
     # check that <rspec...> occurs somewhere
-    rspecs = xmlfile.getElementsByTagName('rspec')
+    rspecs = xmlfile.getElementsByTagNameNS(NS_RSPEC, 'rspec')
     if rspecs:
         logger.debug("Found rspec element(s) in %s" % filepath)
         return True
