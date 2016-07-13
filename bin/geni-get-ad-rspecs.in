@@ -106,7 +106,7 @@ def rspec_has_contents(filepath):
     else:
         logger.error("Couldn't find rspec element(s) in %s" % filepath)
         return False
-    
+
 # move RSpec from temporary location to permanent location
 # if new RSpec has contents, overwrite (or write new) file; else, do nothing
 def move_rspec(movefrom, moveto):
@@ -141,7 +141,7 @@ def connect_to_database(database, user, host, password):
         conn = psycopg2.connect(**args)
     except:
         raise Exception("Could not connect to database.")
-    logger.info("Established connection to database '%s' on %s." 
+    logger.info("Established connection to database '%s' on %s."
             % (database, host))
     return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
 
@@ -167,7 +167,7 @@ def download_rspecs(records, omni_config_file, save_directory):
         service_url = record['service_url']
         service_urn = record['service_urn']
         prefix = os.path.join(save_directory, "ad")
-        omniargs = ['-c', omni_config_file, '-a', service_url, '-o', 
+        omniargs = ['-c', omni_config_file, '-a', service_url, '-o',
                 '-V2', 'listresources', '-p', prefix]
         logger.debug("Calling omni using the arguments: %s" % (omniargs))
         try:
@@ -179,7 +179,7 @@ def download_rspecs(records, omni_config_file, save_directory):
             else:
                 logger.error("No RSpec returned from %s." % service_urn)
         except OmniError as oe:
-            logger.error("Omni call failed when trying %s: %s" % 
+            logger.error("Omni call failed when trying %s: %s" %
                     (service_urn,oe))
     logger.info("Downloading complete.")
 
@@ -205,8 +205,8 @@ def main(argv=None):
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    
-    (conn, cur) = connect_to_database(options.database, 
+
+    (conn, cur) = connect_to_database(options.database,
                                       options.user,
                                       options.host,
                                       options.password)
