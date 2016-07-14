@@ -118,7 +118,7 @@ include("tool-showmessage.php");
 <p>Your identity provider is not sharing your email address with us.
 <a href="http://www.geni.net">GENI</a> requires an email address
 so that you can be contacted if necessary about your reserved
-resources.</>
+resources.</p>
 <p>If you would like to register for a GENI account, please self-assert
   your email address:</p>
   <form action="kmsendemail.php" method="POST">
