@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Allow self service assertion of email address
+  ([#1673](https://github.com/GENI-NSF/geni-portal/issues/1673))
 * Provide a way to update SSH keys on existing resources
   ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
 * Add some notes to geni-fetch-aggmon for testing

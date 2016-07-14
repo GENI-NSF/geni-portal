@@ -38,6 +38,7 @@ $title = 'GPO Member Authority';
 
   /* Stylesheet(s) */
   echo '<link type="text/css" href="/common/css/kmtool.css" rel="stylesheet"/>';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Droid+Sans+Mono|Material+Icons" rel="stylesheet" type="text/css">';
 
   /* Close the "head" */
   echo '</head>';

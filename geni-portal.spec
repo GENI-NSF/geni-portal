@@ -59,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/ch/www/salist.json
 %{_datadir}/%{legacy_name}/km/db/postgresql/schema.sql
 %{_datadir}/%{legacy_name}/km/db/postgresql/update-1.sql
+%{_datadir}/%{legacy_name}/km/db/postgresql/update-2.sql
 %{_datadir}/%{legacy_name}/lib/php/abac.php
 %{_datadir}/%{legacy_name}/lib/php/aggstatus.php
 %{_datadir}/%{legacy_name}/lib/php/am_client.php
@@ -396,6 +397,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/kmheader.php
 %{webdir}/secure/kmhome.php
 %{webdir}/secure/kmnoemail.php
+%{webdir}/secure/kmsendemail.php
+%{webdir}/secure/kmconfirmemail.php
 %{webdir}/secure/listresources.php
 %{webdir}/secure/listresources_plain.php
 %{webdir}/secure/loadcert.js

@@ -6,7 +6,8 @@ svcwebdir = /var/www/secure
 svccssdir = /var/www/common/css
 
 nobase_dist_svcdata_DATA = db/postgresql/schema.sql \
-	db/postgresql/update-1.sql
+	db/postgresql/update-1.sql \
+	db/postgresql/update-2.sql
 
 dist_svcweb_DATA = \
 	www/kmtool/kmfooter.php \
@@ -16,6 +17,8 @@ dist_svcweb_DATA = \
 	www/kmtool/kmheader.php \
 	www/kmtool/kmhome.php \
 	www/kmtool/kmnoemail.php \
+	www/kmtool/kmsendemail.php \
+	www/kmtool/kmconfirmemail.php \
 	www/kmtool/loadcert.js \
 	www/kmtool/loadcert.php \
 	www/kmtool/renewcert.php
