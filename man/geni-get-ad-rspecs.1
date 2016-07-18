@@ -1,13 +1,11 @@
-.TH GENI-GET-AD-RSPECS 1 "June 10, 2014"
+.TH GENI-GET-AD-RSPECS 1 "July 18, 2016"
 .SH NAME
 geni-get-ad-rspecs \- query all AMs in the SR for advertisement RSpecs
 .SH SYNOPSIS
 .B geni-get-ad-rspecs
 \fB-c \fICONFIG\fR
 [\fB-s \fIDIRECTORY\fR]
-[\fB-d \fIDATABASE\fR]
-[\fB--host \fIHOST\fR]
-[\fB-u \fIUSER\fR]
+[\fB-u \fISR_URL\fR]
 [\fB--debug\fR]
 [\fB--silent\fR]
 [\fB--cleanup\fR]
@@ -23,9 +21,6 @@ Files that are downloaded are first stored in the OS's temporary directory (e.g.
 \fB/tmp/rspecs/\fR on Linux). Valid files are moved to the user-specified
 directory. Invalid files are left in the temporary directory. Cleanup of the
 temporary directory occurs every time \fBgeni-get-ad-rspecs\fR is called.
-
-The user is assumed to have a \fB.pgpass\fR file to access the PostgreSQL
-database.
 .SH OPTIONS
 .TP
 \fB-c\fR, \fB--configfile \fICONFIG
@@ -34,14 +29,8 @@ Path of omni configuration file (required)
 \fB-s\fR, \fB--save \fIDIRECTORY
 Path of directory to save ad RSpecs (default is './')
 .TP
-\fB-d\fR, \fB--database \fIDATABASE
-Database name (default is 'portal')
-.TP
-\fB--host \fIHOST
-Database hostname (default is 'localhost')
-.TP
-\fB-u\fR, \fB--user \fIUSER
-Database user (default is 'portal')
+\fB-u\fR, \fB--url \fISR_URL
+Service Registry XML-RPC endpoint URL
 .TP
 \fB--debug
 Show verbose debugging information.
@@ -53,14 +42,14 @@ Silence all info and debug messages but show errors.
 Delete all .xml files remaining in the temporary directory (i.e. all invalid
 RSpecs) when completed.
 .SH EXAMPLES
-Query all AMs of a service registry running on the local machine:
+Query all AMs of a service registry running on ch.geni.net:
 
     geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs
-    
-Query all AMs of a service registry running on an external machine:
+
+Query all AMs of a specific service registry:
 
     geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
-        --host ch.geni.net
+        -u https://ch.geni.net:8444/SR
 
 Run silently but show errors if they occur:
 
@@ -71,6 +60,6 @@ Run silently and remove invalid RSpecs at the end:
 
     geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
         --silent --cleanup
-        
+
 .SH AUTHOR
 geni-get-ad-rspecs was written by Raytheon BBN Technologies.
