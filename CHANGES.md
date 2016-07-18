@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Allow self service assertion of email address
+  ([#1673](https://github.com/GENI-NSF/geni-portal/issues/1673))
 * Provide a way to update SSH keys on existing resources
   ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
 * Add some notes to geni-fetch-aggmon for testing
@@ -19,7 +21,10 @@
 
 ## Installation Notes
 
-* None
+* Update KM database to add new table for email address self-service:
+    ```
+    psql -U portal -h localhost portal < /usr/share/geni-ch/km/db/postgresql/update-2.sql
+    ```
 
 # [Release 3.14](https://github.com/GENI-NSF/geni-portal/milestones/3.14)
 
