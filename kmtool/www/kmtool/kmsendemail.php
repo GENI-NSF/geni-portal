@@ -170,7 +170,6 @@ if ($db_result) {
   $db_id = $db_result['id'];
   $confirm_url = create_email_confirm_link($db_id, $nonce);
   if (send_user_confirmation_email($email, $confirm_url)) {
-    
     print "<h2>Email Address Asserted</h2>\n";
     print "<p>\n";
     print "A confirmation email has been sent to $email.</p>";
@@ -181,7 +180,7 @@ if ($db_result) {
     print "</p>\n";
   } else {
     // Failed to queue email
-    
+
     // Notify admins  / put in log
     error_log("Failed to send self asserted email confirmation email to " . $email . " for eppn " . $eppn);
 
@@ -195,7 +194,7 @@ if ($db_result) {
 } else {
   // Notify admins  / put in log
   error_log("Failed to insert into DB self asserted email confirmation request for " . $email . " and eppn " . $eppn);
-  
+
   // Produce the result page
   print "<h2>Address Assertion failed</h2>";
   print "<p> We are sorry, your email address assertion failed. ";
