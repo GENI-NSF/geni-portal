@@ -88,15 +88,17 @@ class GENIResource:
         else:
             logger.debug("Component %r agg id %r not in aggregate names",
                          self.id, self.am_id)
-        # Adjust for VTS
-        # if self.am and self.name == VtsHandler.CIRCUIT_PLANE:
-        #     self.am += ' VTS'
+        # Display VTS as its own aggregate: "NPS InstaGENI VTS"
+        if self.am and self.name == VtsHandler.CIRCUIT_PLANE:
+            self.am += ' VTS'
 
     def set_type(self):
         """Make a best guess about the resource type.
 
         Does this even matter any more? We're not matching anything
-        here, everything is labeled as 'unknown'.
+        here, everything is labeled as 'unknown'. And the current
+        map just shows a number of resources, not specific kinds of
+        resurces.
         """
         if 'pc' in self.name:
             return 'pc'
