@@ -46,6 +46,8 @@ logger = logging.getLogger()
 
 NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
 NS_OPENFLOW = u'http://www.geni.net/resources/rspec/ext/openflow/3'
+NS_SITEINFO = u'http://www.protogeni.net/resources/rspec/ext/site-info/1'
+NS_VTS = u'http://geni.bssoftworks.com/rspec/ext/vts/ad/1'
 
 
 class GeniResponse(object):
@@ -86,12 +88,17 @@ class GENIResource:
         else:
             logger.debug("Component %r agg id %r not in aggregate names",
                          self.id, self.am_id)
+        # Display VTS as its own aggregate: "NPS InstaGENI VTS"
+        if self.am and self.name == VtsHandler.CIRCUIT_PLANE:
+            self.am += ' VTS'
 
     def set_type(self):
         """Make a best guess about the resource type.
 
         Does this even matter any more? We're not matching anything
-        here, everything is labeled as 'unknown'.
+        here, everything is labeled as 'unknown'. And the current
+        map just shows a number of resources, not specific kinds of
+        resurces.
         """
         if 'pc' in self.name:
             return 'pc'
@@ -106,6 +113,59 @@ class GENIResource:
         else:
             # print self.name
             return 'unknown'
+
+
+class ResourceHandlerBase(xml.sax.handler.ContentHandler):
+
+    def safe_get_attr(self, attrs, qname, default):
+        logger.debug('names = %r', attrs.getNames())
+        logger.debug('qnames = %r', attrs.getQNames())
+        if qname in attrs.getQNames():
+            return attrs.getValueByQName(qname)
+        else:
+            return default
+
+
+class SiteInfoHandler(ResourceHandlerBase):
+    "Parse site_info tag for location information."
+
+    LATITUDE = u'latitude'
+    LONGITUDE = u'longitude'
+    LOCATION = (NS_SITEINFO, u'location')
+
+    def __init__(self, name, qname, attrs):
+        pass
+
+    def startElementNS(self, name, qname, attrs):
+        if name == SiteInfoHandler.LOCATION:
+            self.latitude = \
+                self.safe_get_attr(attrs, SiteInfoHandler.LATITUDE, None)
+            self.longitude = \
+                self.safe_get_attr(attrs, SiteInfoHandler.LONGITUDE, None)
+
+
+class VtsHandler(ResourceHandlerBase):
+    "Parse VTS advertisements for location information."
+
+    CONSTRAINT = (NS_VTS, u'constraint')
+    LABEL = u'label'
+    KEY = u'key'
+    VALUE = u'value'
+    CIRCUIT_PLANE = u'circuit-plane'
+
+    def __init__(self, name, qname, attrs):
+        self.resource = GENIResource()
+        self.label = \
+            self.safe_get_attr(attrs, VtsHandler.LABEL, None)
+
+    def startElementNS(self, name, qname, attrs):
+        if name == VtsHandler.CONSTRAINT:
+            key = self.safe_get_attr(attrs, VtsHandler.KEY, None)
+            if key == 'local-cmid':
+                self.resource.am_id = self.safe_get_attr(attrs,
+                                                        VtsHandler.VALUE, None)
+                self.resource.name = VtsHandler.CIRCUIT_PLANE
+                self.resource.id = self.label
 
 
 class DatapathHandler(xml.sax.handler.ContentHandler):
@@ -189,38 +249,44 @@ class NodeHandler(xml.sax.handler.ContentHandler):
 
 class RspecHandler(xml.sax.handler.ContentHandler):
 
-    NODE = u'node'
-    DATAPATH = u'datapath'
+    NODE = (NS_RSPEC, u'node')
+    DATAPATH = (NS_OPENFLOW, u'datapath')
+    CIRCUIT_PLANE = (NS_VTS, u'circuit-plane')
+    SITE_INFO = (NS_SITEINFO, u'site_info')
 
     def __init__(self):
         self.delegate = None
         self.resources = []
+        self.handlers = {RspecHandler.NODE: NodeHandler,
+                         RspecHandler.DATAPATH: DatapathHandler,
+                         RspecHandler.CIRCUIT_PLANE: VtsHandler,
+                         RspecHandler.SITE_INFO: SiteInfoHandler
+                         }
+        self.site_latitude = None
+        self.site_longitude = None
 
     def startElementNS(self, name, qname, attrs):
         # logger.debug("rspec startElementNS(%r)", name)
         if self.delegate:
             self.delegate.startElementNS(name, qname, attrs)
-        elif name == (NS_RSPEC, RspecHandler.NODE):
-            logger.debug("Found node tag")
-            self.delegate = NodeHandler(name, qname, attrs)
-        elif name == (NS_OPENFLOW, RspecHandler.DATAPATH):
-            logger.debug("Found datapath tag")
-            self.delegate = DatapathHandler(name, qname, attrs)
-        else:
-            logger.debug("Unknown rspec startElement: %r", name)
+        elif name in self.handlers:
+            (ns, tag) = name
+            logger.debug("Found %s tag", tag)
+            self.delegate = self.handlers[name](name, qname, attrs)
 
     def endElementNS(self, name, qname):
-        # logger.debug("rspec endElement(%r)", name)
-        if (name == (NS_RSPEC, RspecHandler.NODE) or
-                name == (NS_OPENFLOW, RspecHandler.DATAPATH)):
-            if (self.delegate):
-                rsrc = self.delegate.resource
-                if rsrc.id:
-                    self.resources.append(rsrc)
-                logger.debug("node resources: %r" % (self.delegate.resource))
-                self.delegate = None
-            else:
-                logger.info("Why no delegate in RspecHandler.endElement?")
+        if name == RspecHandler.SITE_INFO and self.delegate:
+            self.site_latitude = self.delegate.latitude
+            self.site_longitude = self.delegate.longitude
+            logger.debug("Extracted site location [%s, %s]",
+                         self.site_latitude, self.site_longitude)
+            self.delegate = None
+        elif name in self.handlers and self.delegate:
+            rsrc = self.delegate.resource
+            logger.debug("delegate resource: %r" % (rsrc))
+            if rsrc.id:
+                self.resources.append(rsrc)
+            self.delegate = None
 
 
 class AdvertisementHandler(xml.sax.handler.ContentHandler):
@@ -247,6 +313,11 @@ class AdvertisementHandler(xml.sax.handler.ContentHandler):
             self.delegate.endElementNS(name, qname)
         if name == (NS_RSPEC, u'rspec'):
             if (self.delegate):
+                for rsrc in self.delegate.resources:
+                    if not rsrc.latitude:
+                        rsrc.latitude = self.delegate.site_latitude
+                    if not rsrc.longitude:
+                        rsrc.longitude = self.delegate.site_longitude
                 self.resources.extend(self.delegate.resources)
                 self.delegate = None
             else:

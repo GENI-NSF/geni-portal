@@ -18,11 +18,14 @@
   ([#1707](https://github.com/GENI-NSF/geni-portal/issues/1707))
 * Remove hardcoded help email from code
   ([#1709](https://github.com/GENI-NSF/geni-portal/issues/1709))
+* Add VTS aggregates to map
+  ([#1714](https://github.com/GENI-NSF/geni-portal/issues/1714))
 
 ## Installation Notes
 
 * Update KM database to add new table for email address self-service:
-    ```
+
+    ```shell
     psql -U portal -h localhost portal < /usr/share/geni-ch/km/db/postgresql/update-2.sql
     ```
 
