@@ -1,5 +1,15 @@
 # GENI Portal Release Notes
 
+# [Release 3.16](https://github.com/GENI-NSF/geni-portal/milestones/3.16)
+
+## Changes
+
+* None
+
+## Installation Notes
+
+* None
+
 # [Release 3.15](https://github.com/GENI-NSF/geni-portal/milestones/3.15)
 
 ## Changes
