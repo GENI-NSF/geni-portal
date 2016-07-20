@@ -1,6 +1,5 @@
-<?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2016 Raytheon BBN Technologies
+// Copyright (c) 2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,32 +21,30 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('settings.php');
+/* Supporting functions for slice.js */
 
-// This gets used for both the page title and the page header
-$title = 'GPO Member Authority';
+/**
+ * Figure out if the "Update SSH Keys" button should be enabled.
+ *
+ * It should only be enabled if there is at least one InstaGENI
+ * aggregate with resources in this slice.
+ */
+function enableUpdateSshKeys() {
+  var has_instageni = false;
+  var ui_am_type = "UI_AM_TYPE";
+  var ig_type = "ui_instageni_am";
+  $.each(slice_ams, function(index, value) {
+    var am = jacks_all_ams[value];
+    if (am.attributes[ui_am_type] == ig_type) {
+      has_instageni = true;
+      // Break out of the $.each by returning false
+      return false;
+    }
+  });
+  if (has_instageni) {
+    // Enable the update keys button by removing the 'disabled' attribute.
+    $("#updatekeys").removeAttr("disabled")
+  }
+}
 
-  echo '<!DOCTYPE HTML>';
-  echo '<html lang="en">';
-  echo '<head>';
-  echo '<meta charset="utf-8">';
-  echo '<title>';
-  echo "$title";
-  echo '</title>';
-  echo "<script src='$portal_jquery_url'></script>";
-
-  /* Stylesheet(s) */
-  echo '<link type="text/css" href="/common/css/kmtool.css" rel="stylesheet"/>';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Droid+Sans+Mono|Material+Icons" rel="stylesheet" type="text/css">';
-
-  /* Close the "head" */
-  echo '</head>';
-  echo '<body>';
-  echo '<div id="header">';
-  echo '<a href="http://www.geni.net" target="_blank">';
-  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
-  echo '</a>';
-  echo "<h1>$title</h1>";
-  echo '<hr/>';
-  echo '</div>';
-?>
+$(document).ready(enableUpdateSshKeys);

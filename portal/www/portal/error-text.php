@@ -49,7 +49,7 @@ if (key_exists("error", $_GET)) {
   echo "<p class='warn'>" . $error_text . "</p><br/>\n";
 } else {
   // error_log('$_SERVER = ' . print_r($_SERVER, true));
-  
+
   foreach ($_GET as $line_num => $line) {
     //  error_log("LINE_NUM " . $line_num);
     $text = str_replace('_', ' ', htmlspecialchars(urldecode($line_num)));
@@ -83,8 +83,9 @@ $mailto_query_string = http_build_query($mailto_params);
    RFC3986 encoding. */
 $mailto_query_string = str_replace('+', '%20', $mailto_query_string);
 
-print "<a href='mailto:portal-help@geni.net?$mailto_query_string'>";
-print "Need help? Report a problem?</a>\n";
+print "Need help?\n";
+print "<a href='contact-us.php'>";
+print "Contact us</a>.\n";
 print "<br/>\n";
 print "<br/>\n";
 print "<form method=\"GET\" action=\"back\">\n";

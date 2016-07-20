@@ -116,6 +116,7 @@ dist_svcweb_DATA = \
 	www/portal/do-renew-slice.php \
 	www/portal/do-renew.php \
 	www/portal/do-slice-search.php \
+	www/portal/do-update-keys.php \
 	www/portal/do-update-user-preferences.php \
 	www/portal/do-upload-project-members.php \
 	www/portal/do-user-admin.php \
@@ -197,6 +198,7 @@ dist_svcweb_DATA = \
 	www/portal/slice-map-view.php \
 	www/portal/slice-map-data.php \
 	www/portal/slice-member.php \
+	www/portal/slice.js \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
 	www/portal/slice-table.css \
@@ -215,6 +217,8 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-slices.js \
 	www/portal/tools-user.js \
+	www/portal/updatekeys.js \
+	www/portal/updatekeys.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \

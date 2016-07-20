@@ -22,6 +22,8 @@
  *----------------------------------------------------------------------
  */
 var portal = {};
+/* This should be set by the embedding page. */
+portal.helpEmail = null;
 portal.authorize = function()
 {
   var tool_urn = document.getElementById('toolurn').innerHTML;
@@ -63,7 +65,11 @@ portal.authZResponse = function(speaks_for_cred)
       if (data.status == 406) {
           alert('An error occurred storing your credential. Please use your GENI certificate to sign the credential.');
       } else {
-          alert('An error occurred storing your credential. Please contact portal-help@geni.net');
+          msg = 'An error occurred storing your credential.';
+          if (portal.helpEmail) {
+              msg += ' Please contact ' + portal.helpEmail;
+          }
+          alert(msg);
       }
     });
 }

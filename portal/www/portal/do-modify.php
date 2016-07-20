@@ -253,7 +253,7 @@ print '<p><b>Your account information has been updated.</b></p>';
 if ($pi_request and ! $is_pi) {
   if ($duplicateRequest) {
     print "<p>You already have one outstanding request. You should hear from us within 3-4 business days of your original request.</p>";
-    print "<p>Email <a href='mailto:portal-help@geni.net'>GENI Portal Help</a> if you have questions.</p>";
+    print "<p>Please <a href='contact-us.php'>contact us</a> if you have questions.</p>";
   } else {
     print '<p>' . PHP_EOL;
     print "Your Project Lead request has been received.";

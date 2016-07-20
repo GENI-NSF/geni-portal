@@ -1,11 +1,42 @@
 # GENI Portal Release Notes
 
+# [Release 3.15](https://github.com/GENI-NSF/geni-portal/milestones/3.15)
+
+## Changes
+
+* Allow self service assertion of email address
+  ([#1673](https://github.com/GENI-NSF/geni-portal/issues/1673))
+* Provide a way to update SSH keys on existing resources
+  ([#1393](https://github.com/GENI-NSF/geni-portal/issues/1393))
+* Add some notes to geni-fetch-aggmon for testing
+  ([#1703](https://github.com/GENI-NSF/geni-portal/issues/1703))
+* Update the Jacks URL per Emulab's request
+  ([#1704](https://github.com/GENI-NSF/geni-portal/issues/1704))
+* Remove InstaGENI FOAM aggregates
+  ([#1705](https://github.com/GENI-NSF/geni-portal/issues/1705))
+* Handle large advertisements in geni-parse-map-data
+  ([#1707](https://github.com/GENI-NSF/geni-portal/issues/1707))
+* Remove hardcoded help email from code
+  ([#1709](https://github.com/GENI-NSF/geni-portal/issues/1709))
+* Add VTS aggregates to map
+  ([#1714](https://github.com/GENI-NSF/geni-portal/issues/1714))
+
+## Installation Notes
+
+* Update KM database to add new table for email address self-service:
+
+    ```shell
+    psql -U portal -h localhost portal < /usr/share/geni-ch/km/db/postgresql/update-2.sql
+    ```
+
 # [Release 3.14](https://github.com/GENI-NSF/geni-portal/milestones/3.14)
 
 ## Changes
 
 * Standardize python shebang declaration
   ([#1367](https://github.com/GENI-NSF/geni-portal/issues/1367))
+* Delete obsolete files
+  ([#1701](https://github.com/GENI-NSF/geni-portal/issues/1701))
 
 ## Installation Notes
 
@@ -18,9 +49,9 @@
     sudo rm /var/www/common/map/rspec-*.xml
     sudo rm -r /var/www/common/map/1080display
     sudo rm -r /var/www/common/map/OpenLayers-2.13
-    sudo rm -r /var/www/common/InC_Participant.png
-    sudo rm -r /var/www/common/README-incommon-logo.txt
-    sudo rm -r /var/www/common/logos.html
+    sudo rm /var/www/common/InC_Participant.png
+    sudo rm /var/www/common/README-incommon-logo.txt
+    sudo rm /var/www/common/logos.html
     ```
 
 # [Release 3.13](https://github.com/GENI-NSF/geni-portal/milestones/3.13)

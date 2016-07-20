@@ -2,7 +2,7 @@
 %define legacy_name geni-ch
 
 Name:           geni-portal
-Version:        3.14
+Version:        3.15
 Release:        1%{?dist}
 Summary:        GENI Experimenter Portal
 BuildArch:      noarch
@@ -59,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/ch/www/salist.json
 %{_datadir}/%{legacy_name}/km/db/postgresql/schema.sql
 %{_datadir}/%{legacy_name}/km/db/postgresql/update-1.sql
+%{_datadir}/%{legacy_name}/km/db/postgresql/update-2.sql
 %{_datadir}/%{legacy_name}/lib/php/abac.php
 %{_datadir}/%{legacy_name}/lib/php/aggstatus.php
 %{_datadir}/%{legacy_name}/lib/php/am_client.php
@@ -346,6 +347,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/do-renew.php
 %{webdir}/secure/do-slice-search.php
 %{webdir}/secure/do-update-user-preferences.php
+%{webdir}/secure/do-update-keys.php
 %{webdir}/secure/do-upload-project-members.php
 %{webdir}/secure/do-user-admin.php
 %{webdir}/secure/do-user-search.php
@@ -395,6 +397,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/kmheader.php
 %{webdir}/secure/kmhome.php
 %{webdir}/secure/kmnoemail.php
+%{webdir}/secure/kmsendemail.php
+%{webdir}/secure/kmconfirmemail.php
 %{webdir}/secure/listresources.php
 %{webdir}/secure/listresources_plain.php
 %{webdir}/secure/loadcert.js
@@ -438,6 +442,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/slice-map-view.php
 %{webdir}/secure/slice-member.php
 %{webdir}/secure/slice-table.css
+%{webdir}/secure/slice.js
 %{webdir}/secure/slice.php
 %{webdir}/secure/slicecred.php
 %{webdir}/secure/sliceresource.php
@@ -454,6 +459,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/tool-omniconfig.php
 %{webdir}/secure/tool-slices.js
 %{webdir}/secure/tools-user.js
+%{webdir}/secure/updatekeys.js
+%{webdir}/secure/updatekeys.php
 %{webdir}/secure/upload-file.php
 %{webdir}/secure/upload-project-members.php
 %{webdir}/secure/uploadsshkey.php

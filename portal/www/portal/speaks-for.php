@@ -110,12 +110,13 @@ show_header('GENI Portal: Authorization', FALSE);
 <script type="text/plain" id="toolcert"><?php echo $toolcert;?></script>
 <script type="text/plain" id="ma_url"><?php echo $ma_url;?></script>
 <script type="text/plain" id="ma_name"><?php echo $ma_name;?></script>
+<script type="text/javascript" src="speaks-for.js"></script>
 <script type="text/javascript">
 /* Override the genilib defaults for our trusted host. */
 genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
 genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
+portal.helpEmail = '<?php echo $portal_help_email;?>';
 </script>
-<script type="text/javascript" src="speaks-for.js"></script>
 <link rel="stylesheet" type="text/css" href="speaks-for.css" />
 
 <?php

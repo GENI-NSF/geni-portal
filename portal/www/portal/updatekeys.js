@@ -1,6 +1,5 @@
-<?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2016 Raytheon BBN Technologies
+// Copyright (c) 2016 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,32 +21,21 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('settings.php');
+function updateKeysDone(data, textStatus, jqXHR) {
+  console.log("updateKeysDone");
+  $("#status_working").hide();
+  $("#status_complete").show();
+}
 
-// This gets used for both the page title and the page header
-$title = 'GPO Member Authority';
+function updateKeysFail(data, textStatus, jqXHR) {
+  console.log("updateKeysFail");
+  $("#status_working").hide();
+  $("#status_failed").show();
+}
 
-  echo '<!DOCTYPE HTML>';
-  echo '<html lang="en">';
-  echo '<head>';
-  echo '<meta charset="utf-8">';
-  echo '<title>';
-  echo "$title";
-  echo '</title>';
-  echo "<script src='$portal_jquery_url'></script>";
-
-  /* Stylesheet(s) */
-  echo '<link type="text/css" href="/common/css/kmtool.css" rel="stylesheet"/>';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Droid+Sans+Mono|Material+Icons" rel="stylesheet" type="text/css">';
-
-  /* Close the "head" */
-  echo '</head>';
-  echo '<body>';
-  echo '<div id="header">';
-  echo '<a href="http://www.geni.net" target="_blank">';
-  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
-  echo '</a>';
-  echo "<h1>$title</h1>";
-  echo '<hr/>';
-  echo '</div>';
-?>
+function updatekeys(slice_id) {
+  console.log("Updating keys on slice " + slice_id);
+  $.get("do-update-keys.php", { slice_id: slice_id })
+    .done(updateKeysDone)
+    .fail(updateKeysFail);
+}

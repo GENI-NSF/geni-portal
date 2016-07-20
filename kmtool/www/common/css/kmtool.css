@@ -335,3 +335,108 @@ table .notapply {
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
  border-right: 1px solid #000;
 }
+label {
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+span.required {
+	color:red;
+}
+
+input {
+	margin-left: 5px;
+}
+form {
+  margin: 10px auto;
+}
+
+.card {
+  width: calc(100% - 40px);
+  background-color: #FFFFFF;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  padding: 20px;
+  margin: 25px 0px;
+  clear: both;
+  -webkit-transition-duration: 500ms;
+  transition-duration: 500ms;
+}
+
+.warn {
+  position: relative;
+  background-color: #FFFFFF;
+  border-left: 10px solid red;
+  color: #616161;
+  padding: 20px;
+  font-weight: normal;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.warn:before {
+  content: "Warning";
+  color: red;
+  font-weight: bold;
+  display: block;
+  font-size: 1.1em !important;
+}
+
+.error {
+  position: relative;
+  background-color: #FFFFFF;
+  border-left: 10px solid red;
+  color: #616161;
+  padding: 20px;
+  font-weight: normal;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.error:before {
+  content: "Error";
+  color: red;
+  font-weight: bold;
+  display: block;
+  font-size: 1.1em !important;
+}
+
+#maintenance_alert {
+  border-radius: 0px;
+  margin: 20px auto 0px auto !important;
+  width: calc(95% - 50px);
+  max-width: 1350px;
+  min-width: 750px;
+}
+
+.closebutton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.material-icons {
+  display: inline;
+  vertical-align: middle;
+  font-size: 18px;
+  margin: 0px 3px;
+}
+
+.submenu li button {
+  border: 0px;
+  background-color: #FFFFFF !important;
+  display: block;
+  text-decoration: none !important;
+  color: #303030 !important;
+  width: 100%;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  box-shadow: none;
+  padding: 0px;
+}
+

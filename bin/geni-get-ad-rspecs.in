@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- Mode: python -*-
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Copyright (c) 2014-2016 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,9 +22,9 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 # IN THE WORK.
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
 # Query all AMs in the SR for advertisement RSpecs
 #
@@ -33,27 +33,45 @@
 #   2) Calls omni listresources for each AM and downloads ad RSpecs
 #   3) Verifies downloaded RSpecs to check for valid XML structure and data
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 import sys
 import os
 import logging
 import optparse
-import psycopg2
-import psycopg2.extras
 from xml.dom import minidom
 import glob
 import tempfile
+import xmlrpclib
 
+# In olden times, geni-tools ("gcf") was installed in
+# the geni-portal area. So manually include that path
+# to include geni-tools packages.
 sys.path.append('/usr/local/bin/gcf/src')
 sys.path.append('@pkgdatadir@/portal/gcf/src')
-import gcf.oscript as omni
-from gcf.omnilib.util.omnierror import OmniError
-from gcf.omnilib.util.files import *
+try:
+    import gcf.oscript as omni
+    from gcf.omnilib.util.omnierror import OmniError
+    from gcf.omnilib.util.files import *
+except:
+    raise
 
+
+DEFAULT_SR_URL = 'https://ch.geni.net:8444/SR'
 TEMP_DIR = os.path.join(tempfile.gettempdir(), "rspecs")
-AM_SERVICE_TYPE = "0"
+AM_SERVICE_TYPE = 0
+SR_SERVICE_URL = 'SERVICE_URL'
+SR_SERVICE_URN = 'SERVICE_URN'
 logger = logging.getLogger()
+
+NS_RSPEC = u'http://www.geni.net/resources/rspec/3'
+
+
+class GeniResponse(object):
+    CODE = 'code'
+    VALUE = 'value'
+    OUTPUT = 'output'
+
 
 def init_logging(options):
     if options.silent:
@@ -62,51 +80,56 @@ def init_logging(options):
         level = logging.DEBUG
     else:
         level = logging.INFO
-    logging.basicConfig(level=level)
+    format = '%(asctime)-15s:%(levelname)s:%(name)s: %(message)s'
+    logging.basicConfig(level=level,
+                        format=format)
+    # Quiet omni, which is quite verbose
+    omni_logger = logging.getLogger('omni')
+    omni_logger.setLevel(logging.WARNING)
+
 
 def parse_args(argv):
-    parser = optparse.OptionParser(usage="Query all AMs in the SR for advertisement RSpecs")
+    usage = 'Query all AMs in the SR for advertisement RSpecs'
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("--debug", action="store_true", default=False,
-                       help="enable debugging output")
+                      help="enable debugging output")
     parser.add_option("--silent", action="store_true", default=False,
-                       help="enable silent mode (only show errors)")
+                      help="enable silent mode (only show errors)")
     parser.add_option("--cleanup", action="store_true", default=False,
-                       help="delete invalid RSpecs at the end")
+                      help="delete invalid RSpecs at the end")
     parser.add_option("-c", "--configfile", metavar="FILE",
                       help="Filename for `omni_config` (required)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
                       help="Directory to save ad RSpecs (default is `./`)")
-    parser.add_option("-d", "--database", default='portal',
-                      help="database name (default is `portal`)")
-    parser.add_option("--host", default='localhost',
-                      help="database host (default is `localhost`)")
-    parser.add_option("-u", "--user", default='portal',
-                      help="database user (default is `portal`)")
-    parser.add_option("-p", "--password",
-                      help="database user password")
-    options,args = parser.parse_args()
+    help_txt = "service registry URL (default is %r)" % DEFAULT_SR_URL
+    parser.add_option("-u", "--url", default=DEFAULT_SR_URL,
+                      help=help_txt)
+    options, args = parser.parse_args()
     if not (options.configfile):
         parser.print_usage()
         raise Exception("Missing some required arguments")
-    return options,args
+    return options, args
+
 
 # check whether RSpec has something in it
 # return false if file cannot be parsed or no <rspec...> element is found
 def rspec_has_contents(filepath):
+    logger.info('Verifying %r', filepath)
     try:
         xmlfile = minidom.parse(filepath)
     except Exception as e:
         logger.error("Couldn't parse %s" % filepath)
         return False
     # check that <rspec...> occurs somewhere
-    rspecs = xmlfile.getElementsByTagName('rspec')
+    rspecs = xmlfile.getElementsByTagNameNS(NS_RSPEC, 'rspec')
     if rspecs:
         logger.debug("Found rspec element(s) in %s" % filepath)
         return True
     else:
         logger.error("Couldn't find rspec element(s) in %s" % filepath)
         return False
-    
+
+
 # move RSpec from temporary location to permanent location
 # if new RSpec has contents, overwrite (or write new) file; else, do nothing
 def move_rspec(movefrom, moveto):
@@ -122,6 +145,7 @@ def move_rspec(movefrom, moveto):
     else:
         logger.error("Couldn't move %s to %s" % (movefrom, moveto))
 
+
 # delete all XML files in a given directory
 def clean_directory(directory):
     for xmlfile in glob.glob(os.path.join(directory, "*.xml")):
@@ -129,65 +153,53 @@ def clean_directory(directory):
             os.remove(xmlfile)
             logger.debug("Deleted %s" % xmlfile)
 
-# attempt to connect to database
-# returns connection and cursor variables
-def connect_to_database(database, user, host, password):
-    args=dict(database=database,
-              user=user,
-              host=host)
-    if password:
-        args['password'] = password
-    try:
-        conn = psycopg2.connect(**args)
-    except:
-        raise Exception("Could not connect to database.")
-    logger.info("Established connection to database '%s' on %s." 
-            % (database, host))
-    return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
 
-# close database connection
-def disconnect_from_database(conn, cur):
-    cur.close()
-    conn.close()
-    logger.info("Closed connection to database.")
+def query_sr_for_ams(sr_url):
+    logger.debug("Contacting service registry at %r", sr_url)
+    sr_proxy = xmlrpclib.ServerProxy(sr_url)
+    response = sr_proxy.get_services_of_type(AM_SERVICE_TYPE)
 
-# query the service registry for list of URLs of AMs
-def query_sr_for_ams(cur):
-    select_sql = 'SELECT * FROM service_registry WHERE service_type = %s'
-    cur.execute(select_sql, (AM_SERVICE_TYPE))
-    records = cur.fetchall()
-    if not records:
-        raise Exception("Found no AMs in the service registry.")
-    return records
+    # Work around https://github.com/GENI-NSF/geni-ch/issues/516
+    if GeniResponse.CODE in response:
+        aggs = response[GeniResponse.VALUE]
+    else:
+        aggs = response
+    return aggs
+
 
 # download each AM's ad RSpec to TEMP_DIR
 def download_rspecs(records, omni_config_file, save_directory):
     logger.info("Starting downloading of RSpecs.")
     for record in records:
-        service_url = record['service_url']
-        service_urn = record['service_urn']
+        service_url = record[SR_SERVICE_URL]
+        service_urn = record[SR_SERVICE_URN]
         prefix = os.path.join(save_directory, "ad")
-        omniargs = ['-c', omni_config_file, '-a', service_url, '-o', 
-                '-V2', 'listresources', '-p', prefix]
+        omniargs = ['-c', omni_config_file, '-a', service_url, '-o',
+                    '-V2', 'listresources', '-p', prefix]
         logger.debug("Calling omni using the arguments: %s" % (omniargs))
+        logger.info('Downloading advertisement from %r', service_urn)
         try:
             text, retItem = omni.call(omniargs, None)
-            # if item exists, if it's of type dictionary, and one key is returned
-            if retItem and isinstance(retItem, dict) and len(retItem.keys()) == 1:
+            # if item exists, if it's of type dictionary, and
+            # one key is returned
+            if (retItem and isinstance(retItem, dict) and
+                    len(retItem.keys()) == 1):
                 rspec = retItem[retItem.keys()[0]]
                 logger.debug("RSpec returned from %s." % service_urn)
             else:
                 logger.error("No RSpec returned from %s." % service_urn)
         except OmniError as oe:
-            logger.error("Omni call failed when trying %s: %s" % 
-                    (service_urn,oe))
+            logger.error("Omni call failed when trying %s: %s" %
+                         (service_urn, oe))
     logger.info("Downloading complete.")
+
 
 # verify downloaded data is legitimate
 # only move over files to user specified directory that are valid
 def verify_downloaded_rspecs(movefrom_directory, moveto_directory):
     logger.info("Starting verification of downloaded RSpecs.")
-    for movefrom_filepath in glob.glob(os.path.join(movefrom_directory, "*.xml")):
+    for movefrom_filepath in glob.glob(os.path.join(movefrom_directory,
+                                                    "*.xml")):
         movefrom_filename = os.path.basename(movefrom_filepath)
         moveto_filepath = os.path.join(moveto_directory, movefrom_filename)
         if not os.path.exists(moveto_directory):
@@ -196,24 +208,21 @@ def verify_downloaded_rspecs(movefrom_directory, moveto_directory):
         move_rspec(movefrom_filepath, moveto_filepath)
     logger.info("Verification complete.")
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        options,args = parse_args(argv)
+        options, args = parse_args(argv)
         init_logging(options)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    
-    (conn, cur) = connect_to_database(options.database, 
-                                      options.user,
-                                      options.host,
-                                      options.password)
+
     clean_directory(TEMP_DIR)
-    download_rspecs(query_sr_for_ams(cur), options.configfile, TEMP_DIR)
+    download_rspecs(query_sr_for_ams(options.url), options.configfile,
+                    TEMP_DIR)
     verify_downloaded_rspecs(TEMP_DIR, options.save)
-    disconnect_from_database(conn, cur)
     if options.cleanup:
         clean_directory(TEMP_DIR)
 

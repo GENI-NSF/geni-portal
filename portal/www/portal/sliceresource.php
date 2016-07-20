@@ -58,7 +58,7 @@ if (! count($_REQUEST)) {
 }
 
 // set user ID and invocation
-if(array_key_exists("invocation_id", $_REQUEST) && 
+if(array_key_exists("invocation_id", $_REQUEST) &&
         array_key_exists("invocation_user", $_REQUEST)) {
     $invocation_user = $_REQUEST['invocation_user'];
     $invocation_id = $_REQUEST['invocation_id'];
@@ -98,9 +98,13 @@ include("tool-showmessage.php");
 $dir_to_check = get_invocation_dir_name($invocation_user, $invocation_id);
 if(!is_dir($dir_to_check)) {
     echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
-    echo "<p class='error'>Files and process data related to omni request <b>$invocation_user-$invocation_id</b> not found. Note that older files are periodically removed from the Portal, so it is possible that the files and process-related data have been deleted as part of routine maintenance.<br><br>For further help, please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.</p>";
-    
-    
+    echo "<p class='error'>Files and process data related to omni request";
+    echo " <b>$invocation_user-$invocation_id</b> not found.";
+    echo " Older files are periodically removed from the Portal, so it is possible that the files";
+    echo " and process-related data have been deleted as part of routine maintenance.";
+    echo "<br><br>";
+    echo "Please <a href='contact-us.php'>contact us</a> if you require further assistance.</p>";
+
     echo '<form method="GET" action="back">';
     echo '<input type="button" value="Back" onClick="history.back(-1)"/>';
     echo '</form>';
@@ -120,7 +124,7 @@ $bug_report_subject = "GENI Portal Reservation Problem Report";
     set if tool-lookupids.php hasn't already set it - there's no else clause
     in tool-lookupids.php because the assumption is that the page would have
     already shown an error earlier if $REQUEST['am_id'] hadn't been specified
-*/ 
+*/
 if(!isset($am_id)) {
     $am_id = NULL;
 }
@@ -195,7 +199,7 @@ function validateBugReportSubmit()
   f1 = document.getElementById("f1");
   to = document.getElementById("to");
   message = document.getElementById("message");
-  
+
   if (to.value && message.value) {
     f1.submit();
     return true;
@@ -214,14 +218,20 @@ function validateBugReportSubmit()
 
 <h2>Send a Problem Report</h2>
 
-<p>Ran into a problem or have a question? Search the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">GENI Users</a> archives for answers to similar questions.  If you cannot find an answer, join the <a target="_blank" href="http://groups.geni.net/geni/wiki/GENIExperimenter/CommunityMailingList"> geni-users mailing list</a> and send your problem report there.</p>
+<p>Ran into a problem or have a question? Search the
+  <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">
+    GENI Users</a> archives for answers to similar questions.
+</p>
 
 <ul>
 <li>The problem report will include your name, e-mail address, slice and project information, request RSpec, manifest RSpec(s), progress log, debug log, error log and process metadata.</li>
 <li>The report will not include security-sensitive information such as slice credentials, certificates, private keys and SpeaksFor credentials.</li>
 </ul>
 
-<p>If you are not comfortable sharing your problem report outside the GENI Project Office, email it to <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.</p>
+<p>If you are not comfortable sharing your problem report publicly, email it to
+  <a href="mailto:<?php echo $portal_help_email;?>">
+          <?php echo $portal_help_email;?></a>.
+</p>
 
 <form id="f1" action="send_bug_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateBugReportSubmit()">
 <input type="hidden" name="invocation_id" id="invocation_id" value="<?php echo $invocation_id;?>"/>
