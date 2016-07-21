@@ -104,7 +104,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.downloadingRspec = false;
     this.submittingRspec = false;
-    this.appendingRspec = true;
+    this.appendingRspec = false;
     this.passingContextToURL = null;
     this.invoking_auto_ip = false;
     this.invoking_global_node = false;
