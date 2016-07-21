@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Fix adding global node to work on first page load
+  ([#1718](https://github.com/GENI-NSF/geni-portal/issues/1718))
 
 ## Installation Notes
 

@@ -1,21 +1,21 @@
 /*
 #
 # Copyright (c) 2014 University of Utah and the Flux Group.
-# 
+#
 # {{{GENIPUBLIC-LICENSE
-# 
+#
 # GENI Public License
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
 # deal in the Work without restriction, including without limitation the
 # rights to use, copy, modify, merge, publish, distribute, sublicense,
 # and/or sell copies of the Work, and to permit persons to whom the Work
 # is furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Work.
-# 
+#
 # THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 # OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,8 +27,8 @@
 # }}}
 #
 */
- 
-function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, 
+
+function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 			allRspecs,
 			sliceInfo, userInfo, enableButtons,
 			canvasOptions, constraints,
@@ -67,7 +67,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.sortedAms = [];
     for(var am_id in allAms) {
 	var entry = {
-	    am_id : am_id, 
+	    am_id : am_id,
 	    name: allAms[am_id]['name'],
 	    url : allAms[am_id]['url'],
 	    id : allAms[am_id]['urn'],
@@ -104,7 +104,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.downloadingRspec = false;
     this.submittingRspec = false;
-    this.appendingRspec = true;
+    this.appendingRspec = false;
     this.passingContextToURL = null;
     this.invoking_auto_ip = false;
     this.invoking_global_node = false;
@@ -178,7 +178,7 @@ JacksEditorApp.prototype.debug = function(msg) {
 
 function getDefaultCanvasOptions()
 {
-    var defaults = [ 
+    var defaults = [
         {
 	    name: 'VM',
 	    type: 'default-vm'
@@ -386,7 +386,7 @@ return canvas_options;
 
 }
 
- function getDefaultConstraints() 
+ function getDefaultConstraints()
 {
     var constraints = [];
 
@@ -449,18 +449,18 @@ JacksEditorApp.prototype.setJacksViewer = function(jv) {
     this.jacks_viewer_visible = true;
 }
 
-/** 
+/**
  * Hide the jacks app pane
- */ 
+ */
 JacksEditorApp.prototype.hide = function (msg) {
     $(this.jacks).hide();
     $(this.buttons).hide();
     $(this.status).hide();
 }
 
-/** 
+/**
  * Show the jacks app pane
- */ 
+ */
 JacksEditorApp.prototype.show = function (msg) {
     $(this.jacks).show();
     $(this.buttons).show();
@@ -505,7 +505,7 @@ JacksEditorApp.prototype.initEvents = function() {
 	    debug("EP <- JacksEditorApp: " + eventName + " event");
 	});
 
-    
+
     this.input.on(this.DOWNLOAD_EVENT_TYPE, this.onEpDownload, this);
     this.input.on(this.LOAD_EVENT_TYPE, this.onEpLoad, this);
     this.input.on(this.LOOKUP_EVENT_TYPE, this.onEpLookup, this);
@@ -526,7 +526,7 @@ JacksEditorApp.prototype.rspec_loaded = function(jacks_input) {
     var rspec_loader = $('#rspec_loader');
     var rspec_file = rspec_loader.get(0).files[0];
     var reader = new FileReader();
-    reader.onload = function(evt) { 
+    reader.onload = function(evt) {
 	var contents = evt.target.result;
 	JacksEditorApp.setTopology(contents);
 	$('#rspec_chooser').val("0");
@@ -557,7 +557,7 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
 
     var rspec_select_label = $('<label for "rspec_chooser">Select Rspec: </label>');
     $(buttonSelector).append(rspec_select_label);
-    
+
     var rspec_selector = that.constructRspecSelector();
     $(buttonSelector).append(rspec_selector);
 
@@ -585,7 +585,7 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.handleReserve();});
     $(buttonSelector).append(btn);
 
-    var agg_selector = that.constructAggregateSelector(); 
+    var agg_selector = that.constructAggregateSelector();
     $(buttonSelector).append(agg_selector);
 
     /*
@@ -615,7 +615,7 @@ JacksEditorApp.prototype.amName = function(am_id) {
 JacksEditorApp.prototype.constructAggregateSelector = function() {
     var that = this;
     var selector_text = "";
-    selector_text += 
+    selector_text +=
     '<select name="am_chooser" id="agg_chooser" ">\n';
     $.each(that.sortedAms, function(am_index) {
 	    var am_entry = that.sortedAms[am_index];
@@ -625,7 +625,7 @@ JacksEditorApp.prototype.constructAggregateSelector = function() {
 	    selector_text += '<option value="' + am_id + '">' + am_name + '</option>\n';
 	});
     selector_text += "</select>\n";
-    
+
     return selector_text;
 };
 
@@ -636,7 +636,7 @@ JacksEditorApp.prototype.constructRspecSelector = function() {
 	that.handleSelect();
     };
     var selector_text = "";
-    selector_text += 
+    selector_text +=
     '<select name="rspec_chooser" id="rspec_chooser" onchange="rspec_selector_on_change();">\n';
     selector_text += ' <option value="0"/>'; // Empty first entry
 
@@ -650,12 +650,12 @@ JacksEditorApp.prototype.constructRspecSelector = function() {
 	    if (visibility =="private" ) rspec_text += " [PRIVATE]";
 	    if (bound == "t") rspec_text += " [BOUND]";
 	    if (stitch == "t") rspec_text += " [STITCH]";
-	    selector_text += '<option value="' + rspec_id + '">' + 
+	    selector_text += '<option value="' + rspec_id + '">' +
 		rspec_text + '</option>\n';
 	});
 
     selector_text += "</select>\n";
-    
+
     return selector_text;
 };
 
@@ -669,7 +669,7 @@ JacksEditorApp.prototype.constructRspecSelector = function() {
  * Handle request to select an RSpec from local file system
  */
 JacksEditorApp.prototype.handleLoad = function() {
-    this.output.trigger(this.LOAD_EVENT_TYPE, { name : this.LOAD_EVENT_TYPE, 
+    this.output.trigger(this.LOAD_EVENT_TYPE, { name : this.LOAD_EVENT_TYPE,
 						client_data : {}, slice_id: this.sliceId,
 						callback: this.input}
 	);
@@ -680,8 +680,8 @@ JacksEditorApp.prototype.handleLoad = function() {
  */
 JacksEditorApp.prototype.handleUpload = function(url) {
     var url = $('#rspec_url_text').val();
-    this.output.trigger(this.UPLOAD_EVENT_TYPE, { name : this.UPLOAD_EVENT_TYPE, 
-						  client_data : {}, 
+    this.output.trigger(this.UPLOAD_EVENT_TYPE, { name : this.UPLOAD_EVENT_TYPE,
+						  client_data : {},
 						  url: url,
 						  callback: this.input}
 	);
@@ -702,7 +702,7 @@ JacksEditorApp.prototype.handleSelect = function() {
 		rspec_id : rspec_id,
 		client_data : {},
 		callback : this.input});
-    
+
 };
 
 /**
@@ -728,7 +728,7 @@ JacksEditorApp.prototype.handleAppend = function(rspec) {
 };
 
 /**
- * Add new rspec to existing Jacks topology. 
+ * Add new rspec to existing Jacks topology.
  * Step 2 - Add nodes/links of new rspec to existing RSPEC
  * Changing names of nodes/links/interfaces as needed to avoid
  * conflicts
@@ -755,14 +755,14 @@ JacksEditorApp.prototype.appendToTopology = function(rspec) {
     var current_interfaces = $(current_rspec).find('interface');
     var current_interface_names = this.getListOfClientIds(current_interfaces);
 
-    // Go through new RSPEC. 
-    // For each node, 
+    // Go through new RSPEC.
+    // For each node,
     //    If client_id exists change to client_id + <counter++>
     //    Add to currrent RSPEC
-    // For each link, 
+    // For each link,
     //    if client_id exists, change to cient_id + <counter++>
     //    Add to currrent RSPEC
-    // For each interaface, 
+    // For each interaface,
     //    if client_id exists, change to cient_id + <counter++>
     //    (Do note add to current RSPEC, is a child of node)
     new_nodes = $(new_rspec).find('node');
@@ -796,7 +796,7 @@ JacksEditorApp.prototype.appendToTopology = function(rspec) {
 	new_node = $(new_node).clone();
 
 	// Remove site from new nodes, causing it to show up in new site
-	$(new_node).find('site').remove(); 
+	$(new_node).find('site').remove();
 
 	// If a single site is selected, and the node's site is not specified
 	// Otherwise, remove the site so that a new site is created.
@@ -819,7 +819,7 @@ JacksEditorApp.prototype.appendToTopology = function(rspec) {
 	$(current_rspec).append(new_link);
     }
 
-    // Clear out the rename mapping so we compute it each time we add a 
+    // Clear out the rename mapping so we compute it each time we add a
     // new rspec
     this.rename_mapping = [];
 
@@ -866,14 +866,14 @@ JacksEditorApp.prototype.modifyName = function(node, names) {
  */
 JacksEditorApp.prototype.setTopology = function(rspec) {
     var rspec_append = $('#rspec_append_id');
-    var is_appending = (rspec_append.length > 0 && 
+    var is_appending = (rspec_append.length > 0 &&
 			rspec_append.prop('checked'));
     if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
     sites = null;
     if (this.currentTopology) {
 	sites = this.currentTopology.sites;
     }
-    
+
     // Remove site tags if there are already component_manager_ids set on nodes
     rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
 
@@ -899,9 +899,9 @@ JacksEditorApp.prototype.handlePaste = function() {
 };
 
 // Unused method; see slice-jacks.php
-JacksEditorApp.prototype.postRspec = function(rspecs) 
+JacksEditorApp.prototype.postRspec = function(rspecs)
 {
-    if (rspecs.length == 0 || (!rspecs[0].rspec)) 
+    if (rspecs.length == 0 || (!rspecs[0].rspec))
 	return;
 
     sites = null;
@@ -928,11 +928,11 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 	var selected_option = selector.options[selected_index];
 	var am_id = selected_option['value'];
 	var am_name = selected_option['label'];
-	this.output.trigger(this.RESERVE_EVENT_TYPE, { 
-		name : this.RESERVE_EVENT_TYPE, 
+	this.output.trigger(this.RESERVE_EVENT_TYPE, {
+		name : this.RESERVE_EVENT_TYPE,
 		    rspec : rspec,
-		    am_id : am_id, 
-		    client_data : {}, 
+		    am_id : am_id,
+		    client_data : {},
 		    slice_id: this.sliceId,
 		    callback: this.input}
 	    );
@@ -1067,4 +1067,3 @@ JacksEditorApp.prototype.onEpDownload = function(event) {
     }
     debug("ON_EP_DOWNLOAD");
 };
-
