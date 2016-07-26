@@ -57,6 +57,12 @@ echo '<script src="/secure/slice-add-resources-jacks.js"></script>';
 include("jacks-editor-app.php");
 setup_jacks_editor_slice_context();
 
+$AM_STATUS_LOCATION = "/etc/geni-ch/am-status.json";
+$am_status = array("fake_urn" => "fake_status");
+if (file_exists($AM_STATUS_LOCATION)) {
+  $am_status = json_decode(file_get_contents($AM_STATUS_LOCATION));
+}
+
 ?>
 
 
@@ -82,13 +88,13 @@ print "<script src='portal-jacks-editor-app.js'></script>";
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
   var jacks_all_compute_ams = <?php echo json_encode($all_compute_ams) ?>;
-
+  var jacks_am_status = <?php echo json_encode($am_status) ?>;
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
   var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
 
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
+  var jacks_slice_info = {slice_id : jacks_slice_id,
 			  slice_name : jacks_slice_name};
 
   var jacks_user_name = <?php echo json_encode($user->username) ?>;
@@ -121,7 +127,7 @@ if ($am_ids == null) {
 enable_rspec_selection_mode_portal();
 var am_id = <?php echo $am_id ?>;
 if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
-  $('#agg_chooser').val(am_id); 
+  $('#agg_chooser').val(am_id);
 }
 </script>
 <script>
