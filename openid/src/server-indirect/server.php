@@ -106,7 +106,7 @@ function action_show_trust() {
   // Then depending on what is requested, these other fields
   $ax_request = Auth_OpenID_AX_FetchRequest::fromOpenIDRequest($info);
   if ($ax_request and ! Auth_OpenID_AX::isError($ax_request)) {
-    add_project_slice_info($geni_user, $projects, $slices);
+    add_project_slice_info($geni_user, $projects, $slices, True);
     foreach ($ax_request->iterTypes() as $ax_req_type) {
       switch ($ax_req_type) {
         case 'http://geni.net/projects':
@@ -141,7 +141,6 @@ function action_show_trust() {
 	  break;
         case 'http://geni.net/user/urn':
 	  $urn = $geni_user->urn();
-	  $urn = str_replace('+', '|', $urn);
 	  // your GENI CH URN (includes username)
 	  $released_data .= "<tr><td>URN</td><td>" . $urn . "</td></tr>\n";
 	  break;
@@ -205,7 +204,7 @@ function send_cancel($info)
 
 
 
-function add_project_slice_info($geni_user, &$projects, &$slices) {
+function add_project_slice_info($geni_user, &$projects, &$slices, $printable) {
   $projects = array();
   $slices = array();
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -223,8 +222,12 @@ function add_project_slice_info($geni_user, &$projects, &$slices) {
     if ($expired == 't') {
       continue;
     }
-    $pval = "$project_id";
-    $pval .= "|" . $proj['project_name'];
+    if ($printable) {
+      $pval = $proj['project_name'];
+    } else {
+      $pval = "$project_id";
+      $pval .= "|" . $proj['project_name'];
+    }
     $projects[] = $pval;
     /* error_log("project $project_id: " . print_r($project_objects, true)); */
     foreach ($proj_slices as $slice_id) {
@@ -234,8 +237,12 @@ function add_project_slice_info($geni_user, &$projects, &$slices) {
       if ($expired == 't') {
         continue;
       }
-      $sval = "$slice_id|$project_id";
-      $sval .= "|" . $slice['slice_name'];
+      if ($printable) {
+	$sval = $slice['slice_name'];
+      } else {
+	$sval = "$slice_id|$project_id";
+	$sval .= "|" . $slice['slice_name'];
+      }
       $slices[] = $sval;
     }
   }
@@ -284,7 +291,7 @@ function send_geni_user($server, $info) {
   if ($ax_request and ! Auth_OpenID_AX::isError($ax_request)) {
     /* error_log("received AX request: " . print_r($ax_request, true)); */
     $ax_response = new Auth_OpenID_AX_FetchResponse();
-    add_project_slice_info($geni_user, $projects, $slices);
+    add_project_slice_info($geni_user, $projects, $slices, False);
     foreach ($ax_request->iterTypes() as $ax_req_type) {
       switch ($ax_req_type) {
       case 'http://geni.net/projects':
