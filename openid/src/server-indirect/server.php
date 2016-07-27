@@ -50,7 +50,7 @@ define('server_page_template',
 <div id="content-outer">
   <div id="content">
     <h1>GENI Portal OpenID Trust</h1>
-    You are about to release the following information to <b>%s</b>.
+    You are about to release the following information to <b>%s</b>:
     <br/><br/>
     <table>
     %s
