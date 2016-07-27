@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Show specific shared attributes on OpenID trust page.
+  ([#1697](https://github.com/GENI-NSF/geni-portal/issues/1697))
 * Fix adding global node to work on first page load
   ([#1718](https://github.com/GENI-NSF/geni-portal/issues/1718))
 * Fix Jacks hang when displayed in expanded view

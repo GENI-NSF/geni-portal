@@ -50,8 +50,11 @@ define('server_page_template',
 <div id="content-outer">
   <div id="content">
     <h1>GENI Portal OpenID Trust</h1>
-    You are about to release some of your information to <b>%s</b>.
+    You are about to release the following information to <b>%s</b>:
     <br/><br/>
+    <table>
+    %s
+    </table><br/>
     Do you trust <b>%s</b> ?
     <br/><br/>
     <form action="%s" method="post">
@@ -65,13 +68,13 @@ define('server_page_template',
 
 
 
-function make_trust_page($geni_user, $title, $trust_root, $authorize_url) {
+function make_trust_page($geni_user, $title, $trust_root, $authorize_url, $released_data) {
   $pretty_name = $geni_user->prettyName();
   $username = $geni_user->username;
   $logout_url = '/secure/dologout.php';
 
   $page = sprintf(server_page_template, $title, $pretty_name, $username,
-                  $logout_url, $trust_root, $trust_root, $authorize_url);
+                  $logout_url, $trust_root, $released_data, $trust_root, $authorize_url);
   return $page;
 }
 
@@ -89,7 +92,85 @@ function action_show_trust() {
   $trust_root = htmlspecialchars($info->trust_root);
   $title = 'GENI OpenID Trust';
   $authorize_url = buildURL('authorize', true);
-  $text = make_trust_page($geni_user, $title, $trust_root, $authorize_url);
+
+  // Build up a string describing what will be sent.
+  // Use $info to determine what fields are being sent
+  // username, email are always included
+  // Each field is a row in a table with label and value
+  $released_data = "";
+  $geni_user = geni_loadUser();
+  if ($geni_user) {
+    $released_data .= "<tr><td>Username</td><td>" . $geni_user->username . "</td></tr>\n";
+    $released_data .= "<tr><td>Email</td><td>" . $geni_user->email() . "</td></tr>\n";
+  }
+  // Then depending on what is requested, these other fields
+  $ax_request = Auth_OpenID_AX_FetchRequest::fromOpenIDRequest($info);
+  if ($ax_request and ! Auth_OpenID_AX::isError($ax_request)) {
+    add_project_slice_info($geni_user, $projects, $slices, True);
+    foreach ($ax_request->iterTypes() as $ax_req_type) {
+      switch ($ax_req_type) {
+        case 'http://geni.net/projects':
+	  // project uid|name for unexpired projects you are in
+	  if ($projects) {
+            $released_data .= "<tr><td>Projects</td><td>";
+	    $hadOne = False;
+	    foreach ($projects as $project) {
+              if ($hadOne) {
+                $released_data .= ", ";
+              }
+	      $hadOne = True;
+	      $released_data .= $project;
+	    }
+	    $released_data .= "</td></tr>\n";
+          }
+	  break;
+        case 'http://geni.net/slices':
+	  // slice_id|project+id|slice_name for unexpired slices you are in
+	  if ($slices) {
+	    $released_data .= "<tr><td>Slices</td><td>";
+	    $hadOne = False;
+	    foreach ($slices as $slice) {
+              if ($hadOne) {
+                $released_data .= ", ";
+              }
+	      $hadOne = True;
+	      $released_data .= $slice;
+	    }
+	    $released_data .= "</td></tr>\n";
+          }
+	  break;
+        case 'http://geni.net/user/urn':
+	  $urn = $geni_user->urn();
+	  // your GENI CH URN (includes username)
+	  $released_data .= "<tr><td>URN</td><td>" . $urn . "</td></tr>\n";
+	  break;
+        case 'http://geni.net/user/prettyname':
+	  // your full first+last name
+	  $released_data .= "<tr><td>Name</td><td>" . $geni_user->prettyName() . "</td></tr>\n";
+	  break;
+        case 'http://geni.net/wimax/username':
+        case 'http://geni.net/wimax/wimax_username':
+	  if(isset($geni_user->ma_member->wimax_username)) {
+	    // your GENI Wireless (Orbit / WiMAX) username, else not sent
+	    $released_data .= "<tr><td>GENI Wireless username</td><td>" . $geni_user->ma_member->wimax_username . "</td></tr>\n";
+	  }
+	  break;
+        case 'http://geni.net/irods/username':
+	  if(isset($geni_user->ma_member->irods_username)) {
+	    // your iRODS username
+	    $released_data .= "<tr><td>iRODS username</td><td>" . $geni_user->ma_member->irods_username . "</td></tr>\n";
+	  }
+	  break;
+        case 'http://geni.net/irods/zone':
+	  if (irods_default_zone()) {
+	    $released_data .= "<tr><td>iRODS zone</td><td>" . irods_default_zone() . "</td></tr>\n";
+	  }
+	  break;
+      } // End switch
+    } // End foreach req_type
+  } // End if ax_request
+
+  $text = make_trust_page($geni_user, $title, $trust_root, $authorize_url, $released_data);
   $headers = array();
   return array($headers, $text);
 }
@@ -123,7 +204,7 @@ function send_cancel($info)
 
 
 
-function add_project_slice_info($geni_user, &$projects, &$slices) {
+function add_project_slice_info($geni_user, &$projects, &$slices, $printable) {
   $projects = array();
   $slices = array();
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -141,8 +222,12 @@ function add_project_slice_info($geni_user, &$projects, &$slices) {
     if ($expired == 't') {
       continue;
     }
-    $pval = "$project_id";
-    $pval .= "|" . $proj['project_name'];
+    if ($printable) {
+      $pval = $proj['project_name'];
+    } else {
+      $pval = "$project_id";
+      $pval .= "|" . $proj['project_name'];
+    }
     $projects[] = $pval;
     /* error_log("project $project_id: " . print_r($project_objects, true)); */
     foreach ($proj_slices as $slice_id) {
@@ -152,8 +237,12 @@ function add_project_slice_info($geni_user, &$projects, &$slices) {
       if ($expired == 't') {
         continue;
       }
-      $sval = "$slice_id|$project_id";
-      $sval .= "|" . $slice['slice_name'];
+      if ($printable) {
+	$sval = $slice['slice_name'];
+      } else {
+	$sval = "$slice_id|$project_id";
+	$sval .= "|" . $slice['slice_name'];
+      }
       $slices[] = $sval;
     }
   }
@@ -202,7 +291,7 @@ function send_geni_user($server, $info) {
   if ($ax_request and ! Auth_OpenID_AX::isError($ax_request)) {
     /* error_log("received AX request: " . print_r($ax_request, true)); */
     $ax_response = new Auth_OpenID_AX_FetchResponse();
-    add_project_slice_info($geni_user, $projects, $slices);
+    add_project_slice_info($geni_user, $projects, $slices, False);
     foreach ($ax_request->iterTypes() as $ax_req_type) {
       switch ($ax_req_type) {
       case 'http://geni.net/projects':
