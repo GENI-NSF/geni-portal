@@ -118,9 +118,9 @@ function action_show_trust() {
               $released_data .= ", ";
             }
 	    $hadOne = True;
-	    $released_data .= $project
+	    $released_data .= $project;
 	  }
-	  $release_data .= "</td></tr>\n";
+	  $released_data .= "</td></tr>\n";
 	  break;
         case 'http://geni.net/slices':
 	  // slice_id|project+id|slice_name for unexpired slices you are in
@@ -131,9 +131,9 @@ function action_show_trust() {
               $released_data .= ", ";
             }
 	    $hadOne = True;
-	    $released_data .= $slice
+	    $released_data .= $slice;
 	  }
-	  $release_data .= "</td></tr>\n";
+	  $released_data .= "</td></tr>\n";
 	  break;
         case 'http://geni.net/user/urn':
 	  $urn = $geni_user->urn();
