@@ -111,29 +111,33 @@ function action_show_trust() {
       switch ($ax_req_type) {
         case 'http://geni.net/projects':
 	  // project uid|name for unexpired projects you are in
-	  $released_data .= "<tr><td>Projects</td><td>";
-	  $hadOne = False;
-	  foreach ($projects as $project) {
-            if ($hadOne) {
-              $released_data .= ", ";
-            }
-	    $hadOne = True;
-	    $released_data .= $project;
-	  }
-	  $released_data .= "</td></tr>\n";
+	  if ($projects) {
+            $released_data .= "<tr><td>Projects</td><td>";
+	    $hadOne = False;
+	    foreach ($projects as $project) {
+              if ($hadOne) {
+                $released_data .= ", ";
+              }
+	      $hadOne = True;
+	      $released_data .= $project;
+	    }
+	    $released_data .= "</td></tr>\n";
+          }
 	  break;
         case 'http://geni.net/slices':
 	  // slice_id|project+id|slice_name for unexpired slices you are in
-	  $released_data .= "<tr><td>Slices</td><td>";
-	  $hadOne = False;
-	  foreach ($slices as $slice) {
-            if ($hadOne) {
-              $released_data .= ", ";
-            }
-	    $hadOne = True;
-	    $released_data .= $slice;
-	  }
-	  $released_data .= "</td></tr>\n";
+	  if ($slices) {
+	    $released_data .= "<tr><td>Slices</td><td>";
+	    $hadOne = False;
+	    foreach ($slices as $slice) {
+              if ($hadOne) {
+                $released_data .= ", ";
+              }
+	      $hadOne = True;
+	      $released_data .= $slice;
+	    }
+	    $released_data .= "</td></tr>\n";
+          }
 	  break;
         case 'http://geni.net/user/urn':
 	  $urn = $geni_user->urn();
