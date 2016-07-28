@@ -109,6 +109,7 @@ function do_create_image()
   image_name = ($('#create_image_name'))[0].value;
   image_public = ($('#create_image_public'))[0].checked;
   var div = $('#create_image_text_div');
+  div.empty();
   div.append($('<i>Creating image....</i>'));
   console.log("do_image_create " + image_name + " " + image_public);
   $.getJSON('image_operations.php',
