@@ -4,6 +4,9 @@
 
 ## Changes
 
+* Check that image name to `Create Image` is alphanumeric, and
+  handle error returns from Omni on createimage.
+  ([#1694](https://github.com/GENI-NSF/geni-portal/issues/1694))
 * Fix adding global node to work on first page load
   ([#1718](https://github.com/GENI-NSF/geni-portal/issues/1718))
 * Fix Jacks hang when displayed in expanded view

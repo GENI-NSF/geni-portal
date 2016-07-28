@@ -148,9 +148,10 @@ print "<h1>Create Image on Selected Node</h1>";
 
 print "<form method='POST' >";
 
-print "<table><tr><th>Image Name</th><td><input type='text' id='create_image_name' size'30'></td></tr>";
+print "<table><tr><th>Image Name</th><td><input type='text' id='create_image_name' size'30' required></td></tr>";
 print "<tr><th>Image Visibility</th><td>Public <input type='radio' checked='checked' name='create_image_visibility' id='create_image_public'> Private <input type='radio' name='create_image_visibility' id='create_image_private'></td></tr>";
 print "</table>";
+print "<p>Note: Image name must be non-empty and alphanumeric only.</p>\n";
 
 print "<input type='button' value='Create' onclick='do_create_image()' />";
 print "<input type='button' value='Back' onclick='history.back(-1)'/>";

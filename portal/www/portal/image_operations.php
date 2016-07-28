@@ -120,29 +120,55 @@ function perform_list_operation()
   $am_url = $am[SR_ARGUMENT::SERVICE_URL];
   if($operation == 'listimages') {
     $response = invoke_omni_function($am_url, $user, array('listimages'));
-    $response = $response[1][$am_url];
-    $output = am_response($response['code']['geni_code'], $response['value']);
+    if (is_array($response)) {
+      $response = $response[1][$am_url];
+    }
   } else if ($operation == 'createimage') {
+    // image_name must be alphanumeric and non empty
+    $image_name = $_GET['image_name'];
+    if (! $image_name) {
+      return error_response("Empty image name provided", RESPONSE_ERROR::ARGS);
+    }
+    $isAlpha = preg_match("/^[0-9a-zA-Z]+$/", $image_name, $matches);
+    if ($isAlpha != 1) {
+      error_log("Invalid image name to createimage: " . $image_name)
+      return error_response("Image name must be alphanumeric", RESPONSE_ERROR::ARGS);
+    }
     $response = invoke_omni_function($am_url, $user, 
 				   array('createimage',
 					 $_GET['slice_name'],
-					 $_GET['image_name'],
+					 $image_name,
 					 $_GET['public'],
 					 '--project', $_GET['project_name'],
 					 '-u', $_GET['sliver_id']));
-    $response = $response[1];
+    if (is_array($response)) {
+      $response = $response[1];
+    }
   } else if ($operation == 'deleteimage') {
     $urn = $_GET['image_urn'];
     $args = array('deleteimage', $urn);
     $response = invoke_omni_function($am_url, $user, $args);
-    $response = $response[1][$am_url];
+    if (is_array($response)) {
+      $response = $response[1][$am_url];
+    }
   }
 
-  $code = $response['code']['geni_code'];
-  if ($code == 0)
-    $output = am_response($code, $response['value']);
-  else
-    $output = error_response($response['output'], $code);
+  if (is_array($response) && array_key_exists('code', $response)) {
+    $code = $response['code']['geni_code'];
+    if ($code == 0)
+      $output = am_response($code, $response['value']);
+    else
+      $output = error_response($response['output'], $code);
+  } else {
+    // invoke_omni_function may return a string if that was the Omni output
+    // Unfortunately the real error goes to STDERR. Operators can go find it
+    // in the omni output directory.
+    $output = "Server error";
+    if ($response) {
+      $output .= ": " . $response;
+    }
+    $output .= "<br/>Please <a href='contact-us.php'>contact us</a> for help.";
+  }
   return $output;
 }
 
