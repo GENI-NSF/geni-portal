@@ -131,7 +131,7 @@ function perform_list_operation()
     }
     $isAlpha = preg_match("/^[0-9a-zA-Z]+$/", $image_name, $matches);
     if ($isAlpha != 1) {
-      error_log("Invalid image name to createimage: " . $image_name)
+      error_log("Invalid image name to createimage: '" . $image_name . "'");
       return error_response("Image name must be alphanumeric", RESPONSE_ERROR::ARGS);
     }
     $response = invoke_omni_function($am_url, $user, 
@@ -141,6 +141,7 @@ function perform_list_operation()
 					 $_GET['public'],
 					 '--project', $_GET['project_name'],
 					 '-u', $_GET['sliver_id']));
+    // Return may be a string on error
     if (is_array($response)) {
       $response = $response[1];
     }
@@ -167,7 +168,7 @@ function perform_list_operation()
     if ($response) {
       $output .= ": " . $response;
     }
-    $output .= "<br/>Please <a href='contact-us.php'>contact us</a> for help.";
+    $output .= "<br/><br/>Please <a href='contact-us.php'>contact us</a> for help.";
   }
   return $output;
 }
