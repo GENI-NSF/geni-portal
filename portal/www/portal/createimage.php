@@ -127,7 +127,12 @@ function do_create_image()
 		var image_id = rt.value[1];
 		add_image_info(image_urn, image_id);
 	      } else {
-		add_image_error(rt.output);
+		// On failure the return may be a string, so no 'output'
+		if (typeof(rt.output) !== 'undefined') {
+		  add_image_error(rt.output);
+		} else {
+		  add_image_error(rt);
+		}
 	      }
 	    })
 	    .fail(function (xhr, ts, et) {
