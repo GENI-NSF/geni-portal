@@ -4,6 +4,9 @@
 
 ## Changes
 
+* Handle error / string return from `restart_sliver` in
+  `restartsliver.php`.
+  ([#1724](https://github.com/GENI-NSF/geni-portal/issues/1724))
 * Show specific shared attributes on OpenID trust page.
   ([#1697](https://github.com/GENI-NSF/geni-portal/issues/1697))
 * Fix adding global node to work on first page load
