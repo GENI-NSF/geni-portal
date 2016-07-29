@@ -25,19 +25,19 @@
 <?php
 
 // Support for image operations at IG/PG racks:
-// 
-//   image_operations.php?am_id=am_id&operation=listimages : 
+//
+//   image_operations.php?am_id=am_id&operation=listimages :
 //       Invoke listimages API to list images by current user
 //       Return list of image ID / image  URN
-// 
+//
 //   image_operations.php?operation=deleteimage?image_urn=image_urn
 //       Invoke deleteimage API to delete given image
 //       Return succes / failure
 //
 //   image_operations.php?am_id=am_id&operation=createimage&project_name=project_name&slice_name=slice_name&image_name=image_name&sliver_id=sliver_id&public=public
-//       Invoke createimage API to create image on given sliver 
+//       Invoke createimage API to create image on given sliver
 //       Return image ID and URN
-//  
+//
 
 ?>
 
@@ -57,10 +57,10 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 // Required args for different image operations
 $REQUIRED_IMAGE_OPERATION_ARGS = array("listimages" => array("am_id"),
-				       "createimage" => 
-				       array("am_id", 
-					     "project_name","slice_name", 
-					     "image_name", 
+				       "createimage" =>
+				       array("am_id",
+					     "project_name","slice_name",
+					     "image_name",
 					     "sliver_id", "public"),
 				       "deleteimage" =>
 				       array("am_id", "image_urn"));
@@ -71,7 +71,7 @@ function check_required_args($operation)
   global $REQUIRED_IMAGE_OPERATION_ARGS;
   $missing_args = array();
   foreach($REQUIRED_IMAGE_OPERATION_ARGS[$operation] as $arg) {
-    if(!array_key_exists($arg, $_GET)) 
+    if(!array_key_exists($arg, $_GET))
       $missing_args[] = $arg;
   }
   return $missing_args;
@@ -120,29 +120,56 @@ function perform_list_operation()
   $am_url = $am[SR_ARGUMENT::SERVICE_URL];
   if($operation == 'listimages') {
     $response = invoke_omni_function($am_url, $user, array('listimages'));
-    $response = $response[1][$am_url];
-    $output = am_response($response['code']['geni_code'], $response['value']);
+    if (is_array($response)) {
+      $response = $response[1][$am_url];
+    }
   } else if ($operation == 'createimage') {
-    $response = invoke_omni_function($am_url, $user, 
+    // image_name must be present and alphanumeric
+    $image_name = $_GET['image_name'];
+    if (! $image_name) {
+      return error_response("No image name provided", RESPONSE_ERROR::ARGS);
+    }
+    $isAlpha = preg_match("/^[0-9a-zA-Z]+$/", $image_name, $matches);
+    if ($isAlpha != 1) {
+      error_log("Invalid image name to createimage: '" . $image_name . "'");
+      return error_response("Image name must be alphanumeric", RESPONSE_ERROR::ARGS);
+    }
+    $response = invoke_omni_function($am_url, $user,
 				   array('createimage',
 					 $_GET['slice_name'],
-					 $_GET['image_name'],
+					 $image_name,
 					 $_GET['public'],
 					 '--project', $_GET['project_name'],
 					 '-u', $_GET['sliver_id']));
-    $response = $response[1];
+    // Return may be a string on error
+    if (is_array($response)) {
+      $response = $response[1];
+    }
   } else if ($operation == 'deleteimage') {
     $urn = $_GET['image_urn'];
     $args = array('deleteimage', $urn);
     $response = invoke_omni_function($am_url, $user, $args);
-    $response = $response[1][$am_url];
+    if (is_array($response)) {
+      $response = $response[1][$am_url];
+    }
   }
 
-  $code = $response['code']['geni_code'];
-  if ($code == 0)
-    $output = am_response($code, $response['value']);
-  else
-    $output = error_response($response['output'], $code);
+  if (is_array($response) && array_key_exists('code', $response)) {
+    $code = $response['code']['geni_code'];
+    if ($code == 0)
+      $output = am_response($code, $response['value']);
+    else
+      $output = error_response($response['output'], $code);
+  } else {
+    // invoke_omni_function may return a string if that was the Omni output
+    // Unfortunately the real error goes to STDERR. Operators can go find it
+    // in the omni output directory.
+    $output = "Server error";
+    if ($response) {
+      $output .= ": " . $response;
+    }
+    $output .= "<br/><br/>Please <a href='contact-us.php'>contact us</a> for help.";
+  }
   return $output;
 }
 

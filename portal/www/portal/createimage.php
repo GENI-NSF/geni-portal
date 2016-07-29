@@ -29,7 +29,7 @@
 // Computes slice_name and project_name
 // Solicits image_name and public from user
 // Then calls image_operations?operation=createimage...
-// and 
+// and
 // If successful, displays the image ID and image URN
 // If not, displays error message
 
@@ -69,16 +69,16 @@ function add_image_info(image_urn, image_id)
   var div = $('#create_image_text_div');
   div.empty();
 
-  var line0 = '<p>Your image is being created. You will receive an email ' + 
+  var line0 = '<p>Your image is being created. You will receive an email ' +
     'from the aggregate administrator when the image is ready.</p>';
   div.append($(line0));
 
-  var line_table = '<table>' + 
-    '<tr><th>Image URN</th><td>' + image_urn + '</td></tr>' + 
-    '<tr><th>Image ID</th><td>' + image_id + '</td></tr>' + 
+  var line_table = '<table>' +
+    '<tr><th>Image URN</th><td>' + image_urn + '</td></tr>' +
+    '<tr><th>Image ID</th><td>' + image_id + '</td></tr>' +
     '</table>';
   div.append($(line_table));
-  var line3a = '<p>To use this image at this aggregate in Jacks, ' + 
+  var line3a = '<p>To use this image at this aggregate in Jacks, ' +
     '\n\tselect <i>Other...</i> under the Disk Image pulldown and enter the image URN.</pr>';
   div.append($(line3a));
   var line3 = '<p>To delete this image, run the following command from a command line:</p>';
@@ -89,7 +89,7 @@ function add_image_info(image_urn, image_id)
   div.append($(line5));
   var line6 = '<pre><i>omni -a ' + AM_URL + ' listimages </i></pre>';
   div.append($(line6));
-  var line7 = '<p>More information about managing images is available ' + 
+  var line7 = '<p>More information about managing images is available ' +
     '<a href="http://groups.geni.net/geni/wiki/HowTo/ManageCustomImagesInstaGENI">here</a>.</p>';
   div.append($(line7));
 
@@ -109,11 +109,12 @@ function do_create_image()
   image_name = ($('#create_image_name'))[0].value;
   image_public = ($('#create_image_public'))[0].checked;
   var div = $('#create_image_text_div');
+  div.empty();
   div.append($('<i>Creating image....</i>'));
   console.log("do_image_create " + image_name + " " + image_public);
   $.getJSON('image_operations.php',
 	    {
-	    am_id : AM_ID, 
+	    am_id : AM_ID,
 		operation : 'createimage',
 		project_name : PROJECT_NAME,
 		slice_name : SLICE_NAME,
@@ -127,7 +128,12 @@ function do_create_image()
 		var image_id = rt.value[1];
 		add_image_info(image_urn, image_id);
 	      } else {
-		add_image_error(rt.output);
+		// On failure the return may be a string, so no 'output'
+		if (typeof(rt.output) !== 'undefined') {
+		  add_image_error(rt.output);
+		} else {
+		  add_image_error(rt);
+		}
 	      }
 	    })
 	    .fail(function (xhr, ts, et) {
@@ -148,9 +154,10 @@ print "<h1>Create Image on Selected Node</h1>";
 
 print "<form method='POST' >";
 
-print "<table><tr><th>Image Name</th><td><input type='text' id='create_image_name' size'30'></td></tr>";
+print "<table><tr><th>Image Name</th><td><input type='text' id='create_image_name' size'30' required></td></tr>";
 print "<tr><th>Image Visibility</th><td>Public <input type='radio' checked='checked' name='create_image_visibility' id='create_image_public'> Private <input type='radio' name='create_image_visibility' id='create_image_private'></td></tr>";
 print "</table>";
+print "<p>Image name must be alphanumeric.</p>\n";
 
 print "<input type='button' value='Create' onclick='do_create_image()' />";
 print "<input type='button' value='Back' onclick='history.back(-1)'/>";
@@ -166,5 +173,3 @@ print "</div>";
 <?php
 include("footer.php");
 ?>
-
-

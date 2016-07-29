@@ -4,6 +4,9 @@
 
 ## Changes
 
+* Check that image name to `Create Image` is alphanumeric, and
+  handle error returns from Omni on createimage.
+  ([#1694](https://github.com/GENI-NSF/geni-portal/issues/1694))
 * Show specific shared attributes on OpenID trust page.
   ([#1697](https://github.com/GENI-NSF/geni-portal/issues/1697))
 * Fix adding global node to work on first page load
