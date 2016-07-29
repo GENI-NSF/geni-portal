@@ -124,10 +124,10 @@ function perform_list_operation()
       $response = $response[1][$am_url];
     }
   } else if ($operation == 'createimage') {
-    // image_name must be alphanumeric and non empty
+    // image_name must be present and alphanumeric
     $image_name = $_GET['image_name'];
     if (! $image_name) {
-      return error_response("Empty image name provided", RESPONSE_ERROR::ARGS);
+      return error_response("No image name provided", RESPONSE_ERROR::ARGS);
     }
     $isAlpha = preg_match("/^[0-9a-zA-Z]+$/", $image_name, $matches);
     if ($isAlpha != 1) {
