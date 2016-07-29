@@ -25,19 +25,19 @@
 <?php
 
 // Support for image operations at IG/PG racks:
-// 
-//   image_operations.php?am_id=am_id&operation=listimages : 
+//
+//   image_operations.php?am_id=am_id&operation=listimages :
 //       Invoke listimages API to list images by current user
 //       Return list of image ID / image  URN
-// 
+//
 //   image_operations.php?operation=deleteimage?image_urn=image_urn
 //       Invoke deleteimage API to delete given image
 //       Return succes / failure
 //
 //   image_operations.php?am_id=am_id&operation=createimage&project_name=project_name&slice_name=slice_name&image_name=image_name&sliver_id=sliver_id&public=public
-//       Invoke createimage API to create image on given sliver 
+//       Invoke createimage API to create image on given sliver
 //       Return image ID and URN
-//  
+//
 
 ?>
 
@@ -57,10 +57,10 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 // Required args for different image operations
 $REQUIRED_IMAGE_OPERATION_ARGS = array("listimages" => array("am_id"),
-				       "createimage" => 
-				       array("am_id", 
-					     "project_name","slice_name", 
-					     "image_name", 
+				       "createimage" =>
+				       array("am_id",
+					     "project_name","slice_name",
+					     "image_name",
 					     "sliver_id", "public"),
 				       "deleteimage" =>
 				       array("am_id", "image_urn"));
@@ -71,7 +71,7 @@ function check_required_args($operation)
   global $REQUIRED_IMAGE_OPERATION_ARGS;
   $missing_args = array();
   foreach($REQUIRED_IMAGE_OPERATION_ARGS[$operation] as $arg) {
-    if(!array_key_exists($arg, $_GET)) 
+    if(!array_key_exists($arg, $_GET))
       $missing_args[] = $arg;
   }
   return $missing_args;
@@ -134,7 +134,7 @@ function perform_list_operation()
       error_log("Invalid image name to createimage: '" . $image_name . "'");
       return error_response("Image name must be alphanumeric", RESPONSE_ERROR::ARGS);
     }
-    $response = invoke_omni_function($am_url, $user, 
+    $response = invoke_omni_function($am_url, $user,
 				   array('createimage',
 					 $_GET['slice_name'],
 					 $image_name,
