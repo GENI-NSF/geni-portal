@@ -969,14 +969,12 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 
 function restart_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id)
 {
-  if (! isset($am_url) || is_null($am_url) ){
-    if (!(is_array($am_url) || $am_url != '')) {
-      error_log("am_client cannot invoke Omni without an AM URL");
-      return("Missing AM URL");
-    }
+  if (! $am_url ) {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
   }
 
-  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+  if (! $slice_credential) {
     error_log("am_client cannot act on a slice without a credential");
     return("Missing slice credential");
   }
@@ -992,7 +990,7 @@ function restart_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id
 		'performoperationalaction',
 		$slice_urn,
 		'geni_restart');
-  // Note that this AM no longer has resources
+
   $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, 
 				 false, NULL, $api_version="3");
   unlink($slice_credential_filename);

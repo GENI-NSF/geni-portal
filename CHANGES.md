@@ -4,6 +4,9 @@
 
 ## Changes
 
+* Handle error / string return from `restart_sliver` in
+  `restartsliver.php`.
+  ([#1724](https://github.com/GENI-NSF/geni-portal/issues/1724))
 * Check that image name to `Create Image` is alphanumeric, and
   handle error returns from Omni on createimage.
   ([#1694](https://github.com/GENI-NSF/geni-portal/issues/1694))

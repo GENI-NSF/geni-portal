@@ -135,9 +135,15 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   //error_log("Restart_Sliver output = " . $retVal);
 }
 
-$return_urls = array_keys($retVal[1]);
-$return_url = $return_urls[0];
-$success = $retVal[1][$return_url]['code']['geni_code'] == 0;
+$retMsg = $retVal;
+$success = False;
+if (is_array($retVal)) {
+  // Theoretically restart_sliver could return a string error message on failure
+  $return_urls = array_keys($retVal[1]);
+  $return_url = $return_urls[0];
+  $success = $retVal[1][$return_url]['code']['geni_code'] == 0;
+  $retMsg = $retVal[0];
+}
 
 if ($success) {
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -155,6 +161,8 @@ if ($success) {
 	      "Restarted resources from slice " . $slice_name,
 	      $log_attributes);
   }
+} else {
+  error_log("Failed to restart sliver: " . $retMsg);
 }
 
 ?>
