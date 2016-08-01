@@ -13,6 +13,8 @@
   ([#1718](https://github.com/GENI-NSF/geni-portal/issues/1718))
 * Fix Jacks hang when displayed in expanded view
   ([#1720](https://github.com/GENI-NSF/geni-portal/issues/1720))
+* Update Jacks context to use Ubuntu 14 as default InstaGENI Image
+  ([#1729](https://github.com/GENI-NSF/geni-portal/issues/1729))
 
 ## Installation Notes
 
