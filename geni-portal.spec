@@ -2,7 +2,7 @@
 %define legacy_name geni-ch
 
 Name:           geni-portal
-Version:        3.16
+Version:        3.17
 Release:        1%{?dist}
 Summary:        GENI Experimenter Portal
 BuildArch:      noarch
