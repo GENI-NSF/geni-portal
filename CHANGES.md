@@ -1,5 +1,28 @@
 # GENI Portal Release Notes
 
+# [Release 3.16](https://github.com/GENI-NSF/geni-portal/milestones/3.16)
+
+## Changes
+
+* Handle error / string return from `restart_sliver` in
+  `restartsliver.php`.
+  ([#1724](https://github.com/GENI-NSF/geni-portal/issues/1724))
+* Check that image name to `Create Image` is alphanumeric, and
+  handle error returns from Omni on createimage.
+  ([#1694](https://github.com/GENI-NSF/geni-portal/issues/1694))
+* Show specific shared attributes on OpenID trust page.
+  ([#1697](https://github.com/GENI-NSF/geni-portal/issues/1697))
+* Fix adding global node to work on first page load
+  ([#1718](https://github.com/GENI-NSF/geni-portal/issues/1718))
+* Fix Jacks hang when displayed in expanded view
+  ([#1720](https://github.com/GENI-NSF/geni-portal/issues/1720))
+* Update Jacks context to use Ubuntu 14 as default InstaGENI Image
+  ([#1729](https://github.com/GENI-NSF/geni-portal/issues/1729))
+
+## Installation Notes
+
+* None
+
 # [Release 3.15](https://github.com/GENI-NSF/geni-portal/milestones/3.15)
 
 ## Changes
