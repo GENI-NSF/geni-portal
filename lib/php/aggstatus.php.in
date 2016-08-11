@@ -113,11 +113,11 @@ function make_agg_row($agg, $status_data, $status2_data)
 
   $name = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
   $urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
-  $status = "up";
-  if (array_key_exists($urn, $status_data)) {
-    $status = $status_data[$urn];
-  }
-  $status_cell = status_display($status);
+  // $status = "up";
+  // if (array_key_exists($urn, $status_data)) {
+  //   $status = $status_data[$urn];
+  // }
+  // $status_cell = status_display($status);
   $status2 = "?";
   if (array_key_exists($urn, $status2_data)) {
     $status2 = $status2_data[$urn];
@@ -126,7 +126,7 @@ function make_agg_row($agg, $status_data, $status2_data)
 
   $row = '<tr>';
   $row .= "<td>$name</td>";
-  $row .= "<td>$status_cell</td>";
+  // $row .= "<td>$status_cell</td>";
   $row .= "<td>$status2_cell</td>";
   $row .= '</tr>';
   return $row;
@@ -149,7 +149,8 @@ function agg_status_table() {
   $aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   usort($aggs, "cmp_aggs");
 
-  $status_data = load_am_status($AM_STATUS_FILE);
+  // $status_data = load_am_status($AM_STATUS_FILE);
+  $status_data = array();
   $status_mon_data = load_am_status($AM_STATUS_MON_FILE);
 
   $table_rows = array();
@@ -161,7 +162,7 @@ function agg_status_table() {
   $result .= "<thead>";
   $result .= "<tr>";
   $result .= "<th>Name &#x2191;&#x2193;</th>";
-  $result .= "<th>AM API Status &#x2191;&#x2193;</th>";
+  // $result .= "<th>AM API Status &#x2191;&#x2193;</th>";
   $result .= "<th>Monitoring Status &#x2191;&#x2193;</th>";
   $result .= "</tr>";
   $result .= "</thead>";
@@ -177,11 +178,11 @@ function agg_status_table() {
 function agg_status_legend() {
   $result = '';
   $result .= '<dl>';
-  $result .= '<dt>AM API Status</dt>';'</dt>';
-  $result .= '<dd>';
-  $result .=    status_display("up") . ': Responding to GENI AM API calls <br/>';
-  $result .=    status_display("down") . ': Failed to respond to GENI AM API calls when last checked';
-  $result .= '</dd>';
+  // $result .= '<dt>AM API Status</dt>';'</dt>';
+  // $result .= '<dd>';
+  // $result .=    status_display("up") . ': Responding to GENI AM API calls <br/>';
+  // $result .=    status_display("down") . ': Failed to respond to GENI AM API calls when last checked';
+  // $result .= '</dd>';
   $result .= '<dt>Monitoring Status</dt>';
   $result .= '<dd>';
   $result .=    status_display("up") . ': Reported as up to GENI monitoring <br/>';
