@@ -296,23 +296,13 @@ once a day) to synchronize all groups and accounts.
 
 @subsection Fetch aggregate status information
 @cindex monitoring
-@pindex geni-fetch-amdown
 @pindex geni-fetch-aggmon
 Aggregate status information is displayed on the GENI portal. This
-information is retrieved from other GENI servers and cached locally
-for display. These crontab entries fetch the information and write it
+information is retrieved from the GENI monitoring server and cached locally
+for display. This crontab entry fetches the information and writes it
 to the configured @code{sysconfdir}, probably @code{/etc/geni-ch}.
 
-@emph{N.B. The entry below must appear on a single line, without the
-backslash. The use of backslash and multiple lines is for readability
-in this document}
-
 @example
-# Fetch aggregate data hourly from GPO Nagios
-0 */1 * * * /usr/sbin/geni-fetch-amdown \
-        /usr/share/geni-ch/portal/portal-cert.pem \
-        /usr/share/geni-ch/portal/portal-key.pem
-#
 # Fetch aggregate data hourly from GENI Monitoring
 0 */1 * * * /usr/sbin/geni-fetch-aggmon
 @end example
