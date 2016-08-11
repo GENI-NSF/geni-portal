@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Fix quotes inside examples in texinfo document
+  ([#1731](https://github.com/GENI-NSF/geni-portal/issues/1731))
 
 ## Installation Notes
 
