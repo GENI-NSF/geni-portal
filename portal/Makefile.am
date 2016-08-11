@@ -21,32 +21,6 @@ svcwebcssdir = $(svcwebtopdir)/common/css
 svcwebmapdir = $(svcwebtopdir)/common/map
 svcwebpolicydir = $(svcwebtopdir)/policy
 
-edit = sed \
-	-e 's|@bindir[@]|$(bindir)|g' \
-	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
-	-e 's|@pkgsysconfdir[@]|$(pkgsysconfdir)|g' \
-	-e 's|@prefix[@]|$(prefix)|g'
-
-TEMPLATES = \
-	www/amstatus.php
-
-TEMPLATES.IN = $(TEMPLATES:%=%.in)
-
-$(TEMPLATES): Makefile
-	rm -f $@ $@.tmp
-	srcdir=''; \
-		test -f ./$@.in || srcdir=$(srcdir)/; \
-		$(edit) $${srcdir}$@.in >$@.tmp
-	chmod a-w $@.tmp
-	mv $@.tmp $@
-
-%: $(srcdir)/%.in
-
-# Distribute but do not install
-EXTRA_DIST = $(TEMPLATES.IN)
-
-CLEANFILES = $(TEMPLATES)
-
 nobase_dist_svcdata_DATA = \
 	apache2-http.conf \
 	db/postgresql/data.sql \
@@ -276,7 +250,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/gmap3.js
 
 dist_svcwebtop_DATA = \
-    www/amstatus.php \
+	www/amstatus.php \
 	www/index.php \
 	www/login-help.php \
 	www/favicon.ico
