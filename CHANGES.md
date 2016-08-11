@@ -6,6 +6,8 @@
 
 * Fix quotes inside examples in texinfo document
   ([#1731](https://github.com/GENI-NSF/geni-portal/issues/1731))
+* Change /usr/local to /usr in doc to match RPM installation
+  ([#1732](https://github.com/GENI-NSF/geni-portal/issues/1732))
 
 ## Installation Notes
 
