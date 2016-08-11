@@ -262,7 +262,7 @@ backslash. The use of backslash and multiple lines is for readability
 in this document}
 @example
 # Create the member authority CRL
-10 2 * * * /usr/local/sbin/geni-create-ma-crl \
+10 2 * * * /usr/sbin/geni-create-ma-crl \
         && /sbin/service httpd restart
 @end example
 
@@ -277,7 +277,7 @@ telling them they should renew their certificate.
 
 @example
 # Notify users of expiring certificates
-5 1 * * * /usr/local/sbin/geni-expiring-certs --days 30,14,7,2
+5 1 * * * /usr/sbin/geni-expiring-certs --days 30,14,7,2
 @end example
 
 @subsection Sync wireless groups and accounts
@@ -291,7 +291,7 @@ once a day) to synchronize all groups and accounts.
 @example
 # Synchronize with wireless testbeds
 # Sync wireless groups and accounts
-00 2 * * * /usr/local/bin/geni-sync-wireless --cleanup
+00 2 * * * /usr/bin/geni-sync-wireless --cleanup
 @end example
 
 @subsection Fetch aggregate status information
@@ -309,12 +309,12 @@ in this document}
 
 @example
 # Fetch aggregate data hourly from GPO Nagios
-0 */1 * * * /usr/local/sbin/geni-fetch-amdown \
+0 */1 * * * /usr/sbin/geni-fetch-amdown \
         /usr/share/geni-ch/portal/portal-cert.pem \
         /usr/share/geni-ch/portal/portal-key.pem
 #
 # Fetch aggregate data hourly from GENI Monitoring
-0 */1 * * * /usr/local/sbin/geni-fetch-aggmon
+0 */1 * * * /usr/sbin/geni-fetch-aggmon
 @end example
 
 @section Log files
@@ -392,7 +392,7 @@ Certificate Verification: Error (12): CRL has expired
 The remedy for this error is to run the @code{geni-create-ma-crl} program and
 restart the web server:
 @example
-sudo /usr/local/sbin/geni-create-ma-crl
+sudo /usr/sbin/geni-create-ma-crl
 sudo service apache2 restart
 @end example
 
