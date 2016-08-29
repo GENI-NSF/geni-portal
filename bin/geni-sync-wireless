@@ -46,26 +46,26 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 def parse_args(argv):
-    parser = optparse.OptionParser(usage="Synchronize ORBIT and GENI CH " + 
+    parser = optparse.OptionParser(usage="Synchronize ORBIT and GENI CH " +
                                    "sense of projects/groups and members")
-    parser.add_option("--holdingpen_group", 
+    parser.add_option("--holdingpen_group",
                       help="Name of ORBIT 'holding pen' that is the primary"+\
-                      " group for all GENI users in wimax-enabled projects [default: %default]", 
+                      " group for all GENI users in wimax-enabled projects [default: %default]",
                       default="geni-HOLDINGPEN")
-    parser.add_option("--holdingpen_admin", 
+    parser.add_option("--holdingpen_admin",
                       help="GENI username of admin of ORBIT 'holding pen' [default: %default]",
                       default="agosain")
-    parser.add_option("--project", help="specific project name to sync", 
+    parser.add_option("--project", help="specific project name to sync",
                       default=None)
     parser.add_option("--user", help="specific username to sync", default=None)
-    parser.add_option("--cleanup", 
-                      help="delete obsolete groups and group memberships [default: %default]", 
+    parser.add_option("--cleanup",
+                      help="delete obsolete groups and group memberships [default: %default]",
                       dest='cleanup', action='store_true',
                       default=False)
-    parser.add_option("--settings_file", 
+    parser.add_option("--settings_file",
                       help="location of settings.php file containing db_dsn (database URL) variable [default: %default]",
                       default="/etc/geni-ch/settings.php")
-    parser.add_option("-v", "--verbose", help="Print verbose debug info", 
+    parser.add_option("-v", "--verbose", help="Print verbose debug info",
                       dest = 'verbose', action='store_true',
                       default=False)
 
@@ -78,7 +78,7 @@ def parse_args(argv):
 
     return options,args
 
-# Manaager to manage synchronize between ORBIT groups/users and GENI 
+# Manaager to manage synchronize between ORBIT groups/users and GENI
 # CH wimax-enabled projects and members
 class WirelessProjectManager:
 
@@ -98,15 +98,15 @@ class WirelessProjectManager:
         self._session = self._session_class()
 
         self.PROJECT_TABLE = Table('pa_project', self._metadata, autoload=True)
-        self.PROJECT_ATTRIBUTE_TABLE = Table('pa_project_attribute', 
+        self.PROJECT_ATTRIBUTE_TABLE = Table('pa_project_attribute',
                                              self._metadata, autoload=True)
-        self.PROJECT_MEMBER_TABLE = Table('pa_project_member', 
+        self.PROJECT_MEMBER_TABLE = Table('pa_project_member',
                                           self._metadata, autoload=True)
         self.MEMBER_ATTRIBUTE_TABLE = Table('ma_member_attribute',
                                           self._metadata, autoload=True)
         self.SSH_KEY_TABLE = Table('ma_ssh_key',
                                    self._metadata, autoload=True)
-        self.SERVICE_REGISTRY_TABLE = Table('service_registry', 
+        self.SERVICE_REGISTRY_TABLE = Table('service_registry',
                                    self._metadata, autoload=True)
 
         self.holdingpen_group_description = "GENI ORBIT MEMBER HOLDINGPEN"
@@ -155,7 +155,7 @@ class WirelessProjectManager:
                 db_url = line.split('\'')[1].replace('pgsql', 'postgresql')
                 return db_url
         self.error("No $db_dsn entry in settings file")
-        
+
     # Print error and exit
     def error(self, msg): syslog(msg); sys.exit()
 
@@ -165,11 +165,11 @@ class WirelessProjectManager:
             return member_info['displayName']
         elif 'first_name' in member_info and \
                 'last_name' in member_info:
-            return "%s %s" % (member_info['first_name'], 
+            return "%s %s" % (member_info['first_name'],
                               member_info['last_name'])
         else:
             return member_info['email_address']
-        
+
 
     # Turn GENI name to ORBIT name (add geni- prefix)
     def to_orbit_name(self, name): return "geni-%s" % name
@@ -209,7 +209,7 @@ class WirelessProjectManager:
     # Make sure the 'holding pen' group and admin exist
     # Make sure all members of wimax-enabled projects exist in ORBIT
     # Make sure all wimax-enabled projects exist as ORBIT groups
-    # Make sure membership in wimax-enabled projects leads to 
+    # Make sure membership in wimax-enabled projects leads to
     #     membership in ORBIT groups
     # Make sure project lead on wimax-enabled projects translates to
     #     admin in ORBIT group
@@ -230,7 +230,7 @@ class WirelessProjectManager:
         # Grab members in wimax-enabled projects
         self.get_geni_members()
 
-        # Remove disabled members from projects and members 
+        # Remove disabled members from projects and members
         # (unless member is lead)
         self.remove_disabled_members()
 
@@ -263,7 +263,7 @@ class WirelessProjectManager:
         # Make sure the admins of orbit groups match the leads of GENI projects
         self.ensure_project_leads_are_group_admins()
 
-        # If we're doing cleanup, 
+        # If we're doing cleanup,
         #   delete group members who aren't project members
         #   delete groups that aren't GENI projects
         #   disable any users not in any GENI project
@@ -322,7 +322,7 @@ class WirelessProjectManager:
                                         holdingpen_admin_info['email_address'],
                                         holdingpen_admin_info['last_name'],
                                         holdingpen_admin_ssh_keys,
-                                        self.holdingpen_group_description, 
+                                        self.holdingpen_group_description,
                                         user_irodsname)
             syslog("Creating holdingpen admin: %s" % \
                 holdingpen_admin_username)
@@ -334,7 +334,7 @@ class WirelessProjectManager:
     # If not, create and place in holdingpen group as their primary group
     # The holdingpen admin is in the list of geni members, but don't need
     #   to create his account: should already be there
-    def ensure_project_members_exist(self): 
+    def ensure_project_members_exist(self):
         for member_id, member_info in self._geni_members.items():
             username = member_info['username']
             if username == self._options.holdingpen_admin:
@@ -349,12 +349,12 @@ class WirelessProjectManager:
                 member_pretty_name = self.get_pretty_name(member_info)
                 syslog("Creating ORBIT user: %s" % orbit_username)
                 first_name = ""
-                if 'first_name' in member_info: 
+                if 'first_name' in member_info:
                     first_name = member_info['first_name']
                 elif 'email_address' in member_info:
                     first_name = member_info['email_address']
                 last_name = ""
-                if 'last_name' in member_info: 
+                if 'last_name' in member_info:
                     last_name = member_info['last_name']
                 irodsname = None
                 if 'irods_username' in member_info:
@@ -371,10 +371,10 @@ class WirelessProjectManager:
                                             irodsname)
                 self._orb.saveUser(ldif_text)
 
-    
-    # Make sure all wimax-enabled GENI projects have a corresponding 
+
+    # Make sure all wimax-enabled GENI projects have a corresponding
     # ORBIT group
-    def ensure_projects_exist(self): 
+    def ensure_projects_exist(self):
         for project_id, project_info in self._geni_projects.items():
             project_name = project_info['project_name']
             project_description = project_info['project_description']
@@ -384,10 +384,10 @@ class WirelessProjectManager:
                 lead_id = project_info['lead_id']
                 lead_username = self._geni_members[lead_id]['username']
                 orbit_lead_username = self.to_orbit_name(lead_username)
-                ldif_text = self._orb.ldif_for_group(orbit_group_name, 
+                ldif_text = self._orb.ldif_for_group(orbit_group_name,
                                                project_description)
                 ldif_text = ldif_text + \
-                    self._orb.ldif_for_group_admin(orbit_group_name, 
+                    self._orb.ldif_for_group_admin(orbit_group_name,
                                              orbit_lead_username,
                                              self._options.holdingpen_group)
                 self._orb.saveUser(ldif_text)
@@ -401,7 +401,7 @@ class WirelessProjectManager:
     # Make sure all members of wimax-enabledf GENI projects are membes
     # of the corresponding ORBIT group
     # Enable all users that are members of a non-holdingpen group
-    def ensure_project_members_in_groups(self): 
+    def ensure_project_members_in_groups(self):
         users_to_enable = set()
         for project_id, project_info in self._geni_projects.items():
             project_name = project_info['project_name']
@@ -415,7 +415,7 @@ class WirelessProjectManager:
                 geni_username = member_info['username']
                 orbit_username = self.to_orbit_name(geni_username)
                 if orbit_username not in group_info['users']:
-                    syslog("Adding user %s to group %s" % (orbit_username, 
+                    syslog("Adding user %s to group %s" % (orbit_username,
                                                           orbit_group_name))
                     self._orb.add_user_to_group(orbit_group_name, orbit_username)
                     users_to_enable.add(orbit_username)
@@ -426,7 +426,7 @@ class WirelessProjectManager:
             self._orb.enable_user(user_to_enable)
 
     # Make sure the lead of the project is the corresponding group admin
-    def ensure_project_leads_are_group_admins(self): 
+    def ensure_project_leads_are_group_admins(self):
         for project_id, project_info in self._geni_projects.items():
             project_name = project_info['project_name']
             orbit_group_name = self.to_orbit_name(project_name)
@@ -441,7 +441,7 @@ class WirelessProjectManager:
 
     # Delete members of a group that aren't members of corresponding project
     # Keep list of users removed from groups
-    def delete_group_members_not_in_project(self): 
+    def delete_group_members_not_in_project(self):
         for group_name, group_info in self._orbit_groups.items():
             geni_project_name = self.to_geni_name(group_name)
             if self._project and geni_project_name != self._project: continue
@@ -454,7 +454,7 @@ class WirelessProjectManager:
                          if geni_member_id in self._geni_members]
             else:
                 # No GENI project, remove all group members
-                geni_project_members = [] 
+                geni_project_members = []
             for orbit_username in group_info['users']:
                 geni_username = self.to_geni_name(orbit_username)
                 if geni_username not in geni_project_members:
@@ -467,7 +467,7 @@ class WirelessProjectManager:
 
     # Delete groups that don't correspond to projects
     # Keep a list of deleted groups
-    def delete_groups_without_projects(self): 
+    def delete_groups_without_projects(self):
         for group_name, group_info in self._orbit_groups.items():
             geni_project_name = self.to_geni_name(group_name)
             if self._project and geni_project_name != self._project: continue
@@ -479,10 +479,10 @@ class WirelessProjectManager:
                 self._deleted_orbit_groups.append(group_name)
 
     # Disable users who are only in the ORBIT holdingpen group
-    # Note: we've deleted some projects at this point, so 
+    # Note: we've deleted some projects at this point, so
     # we mean users who are in at least one recently deleted group
     # but no other non-deleted groups
-    def disable_users_in_no_project(self): 
+    def disable_users_in_no_project(self):
         for orbit_username in self._orbit_users:
             geni_username = self.to_geni_name(orbit_username)
             user_in_some_deleted_group = False
@@ -522,10 +522,10 @@ class WirelessProjectManager:
         projects = {}
 
         # Get all the WIMAX-enabled projects
-        query = self._session.query(self.PROJECT_TABLE.c.lead_id, 
-                                    self.PROJECT_TABLE.c.project_name, 
-                                    self.PROJECT_TABLE.c.project_id, 
-                                    self.PROJECT_TABLE.c.project_purpose) 
+        query = self._session.query(self.PROJECT_TABLE.c.lead_id,
+                                    self.PROJECT_TABLE.c.project_name,
+                                    self.PROJECT_TABLE.c.project_id,
+                                    self.PROJECT_TABLE.c.project_purpose)
         query = query.filter(self.PROJECT_TABLE.c.project_id == \
                                  self.PROJECT_ATTRIBUTE_TABLE.c.project_id)
         query = query.filter(self.PROJECT_ATTRIBUTE_TABLE.c.name == \
@@ -563,7 +563,7 @@ class WirelessProjectManager:
         for row in member_rows:
             projects[row.project_id]['members'].append(row.member_id)
 
-        # Don't return any projects with no members 
+        # Don't return any projects with no members
         # (if we're filtering by user)
         for project_id, project_info in projects.items():
             if len(project_info['members']) == 0:
@@ -605,18 +605,18 @@ class WirelessProjectManager:
         query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.member_id.in_(\
                 member_ids))
         query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name.in_(\
-                ["username", 'member_enabled', "first_name", "email_address", 
+                ["username", 'member_enabled', "first_name", "email_address",
                  "last_name", "displayName", 'wimax_username']))
-        
+
         member_rows = query.all()
         for row in member_rows:
-            if row.member_id not in members: 
+            if row.member_id not in members:
                 members[row.member_id] = {}
             members[row.member_id][row.name] = row.value
 
 
         # Grab SSH keys for all members
-        for member_id, member_info in members.items(): 
+        for member_id, member_info in members.items():
             member_info['ssh_keys']=[]
         query = self._session.query(self.SSH_KEY_TABLE)
         query = query.filter(self.SSH_KEY_TABLE.c.member_id.in_(\
