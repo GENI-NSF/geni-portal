@@ -37,7 +37,7 @@
 import datetime
 import logging
 import xml.dom.minidom
-import optparse
+import argparse
 import sys
 from syslog import syslog
 from portal_utils.orbit_interface import ORBIT_Interface
@@ -46,37 +46,37 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 def parse_args(argv):
-    parser = optparse.OptionParser(usage="Synchronize ORBIT and GENI CH " +
-                                   "sense of projects/groups and members")
-    parser.add_option("--holdingpen_group",
-                      help="Name of ORBIT 'holding pen' that is the primary"+\
-                      " group for all GENI users in wimax-enabled projects [default: %default]",
-                      default="geni-HOLDINGPEN")
-    parser.add_option("--holdingpen_admin",
-                      help="GENI username of admin of ORBIT 'holding pen' [default: %default]",
-                      default="agosain")
-    parser.add_option("--project", help="specific project name to sync",
-                      default=None)
-    parser.add_option("--user", help="specific username to sync", default=None)
-    parser.add_option("--cleanup",
-                      help="delete obsolete groups and group memberships [default: %default]",
-                      dest='cleanup', action='store_true',
-                      default=False)
-    parser.add_option("--settings_file",
-                      help="location of settings.php file containing db_dsn (database URL) variable [default: %default]",
-                      default="/etc/geni-ch/settings.php")
-    parser.add_option("-v", "--verbose", help="Print verbose debug info",
-                      dest = 'verbose', action='store_true',
-                      default=False)
+    desc = 'Synchronize ORBIT and GENI CH sense of projects/groups and members'
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument("--holdingpen_group",
+                        help="Name of ORBIT 'holding pen' that is the primary"+\
+                        " group for all GENI users in wimax-enabled projects [default: %(default)s]",
+                        default="geni-HOLDINGPEN")
+    parser.add_argument("--holdingpen_admin",
+                        help="GENI username of admin of ORBIT 'holding pen' [default: %(default)s]",
+                        default="agosain")
+    parser.add_argument("--project", help="specific project name to sync",
+                        default=None)
+    parser.add_argument("--user", help="specific username to sync", default=None)
+    parser.add_argument("--cleanup",
+                        help="delete obsolete groups and group memberships [default: %(default)s]",
+                        dest='cleanup', action='store_true',
+                        default=False)
+    parser.add_argument("--settings_file",
+                        help="location of settings.php file containing db_dsn (database URL) variable [default: %(default)s]",
+                        default="/etc/geni-ch/settings.php")
+    parser.add_argument("-v", "--verbose", help="Print verbose debug info",
+                        dest = 'verbose', action='store_true',
+                        default=False)
 
-    options,args = parser.parse_args()
+    args = parser.parse_args()
 
     # User and project options are mutually exclusive
-    if options.project and options.user:
+    if args.project and args.user:
         syslog( "Only one of --project, --user allowed")
         sys.exit()
 
-    return options,args
+    return args
 
 # Manaager to manage synchronize between ORBIT groups/users and GENI
 # CH wimax-enabled projects and members
@@ -658,9 +658,9 @@ class WirelessProjectManager:
 
 def main():
 
-    options, args = parse_args(sys.argv)
+    args = parse_args(sys.argv)
 
-    wpm = WirelessProjectManager(options)
+    wpm = WirelessProjectManager(args)
     wpm.synchronize()
 
 
