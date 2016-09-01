@@ -78,7 +78,7 @@ echo "DEFAULT_TAB = '$default_slice_tab';</script>";
 <script src='cards.js'></script>
 
 <?php
-  
+
 // Get user's slices and projects
 $retVal  = get_project_slice_member_info( $sa_url, $ma_url, $user, True);
 $project_objects = $retVal[0];
@@ -105,7 +105,7 @@ $project_objects = $unexpired_projects;
 
 if (count($all_projects) == 0) { // You are in no active projects, active or expired
   make_no_projects_greeting($user, true);
-} else { 
+} else {
   if(count($project_objects) == 0) { // You are in no active projects
     make_no_projects_greeting($user, false);
     print "<script type='text/javascript'>";
@@ -134,7 +134,7 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
     // Get all of the slice owner names
     $slice_owner_names = array();
     if (count($slice_objects) > 0) {
-      $slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $slice_objects, 
+      $slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $slice_objects,
                                                         SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
     }
     $user_id = $user->account_id;
@@ -177,19 +177,19 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
       $max_renewal_days = get_max_renewal_days($project_expiration);
 
       $slice_boxes .= make_slice_box($slice_name, $slice_id, $slice_owner_id, $slice_owner_name,
-                                     $slice_project_name, $slice_project_id, count($slivers), 
+                                     $slice_project_name, $slice_project_id, count($slivers),
                                      $slice_exp_date, $next_resource_exp_date, $max_renewal_days);
     }
 
     // Get names of all the project leads for the user's projects
-    $lead_names = lookup_member_names_for_rows($ma_url, $user, $all_projects, 
+    $lead_names = lookup_member_names_for_rows($ma_url, $user, $all_projects,
                                                PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
 
     // Make and fill dictionary of project join requests
     // Do this for ACTIVE projects only
     $project_request_map = array();
     if (count($project_objects) > 0) {
-      $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
+      $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id,
                   CS_CONTEXT_TYPE::PROJECT);
       foreach ($reqlist as $req) {
         if ($req[RQ_REQUEST_TABLE_FIELDNAME::STATUS] != RQ_REQUEST_STATUS::PENDING) {
@@ -201,7 +201,7 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
         } else {
           $project_request_map[$context_id] = array($req);
         }
-      }                       
+      }
     }
 
     // Make filters for slice section, we'll add project names to this as we go through projects
@@ -217,7 +217,7 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
     $slice_card_project_buttons = "";
     $project_boxes = "";
 
-    // Make project box for all projects 
+    // Make project box for all projects
     // Make slice filter-by-project dropdown, and "manage proj" and "new slice buttons" for active projects
     foreach ($all_projects as $project) {
       // Gather basic project info
@@ -242,9 +242,9 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
         $slice_card_project_buttons .= "$create_slice_button $manage_project_button</div>";
         $slice_filters .= "<li data-value='{$project_name}'>$project_name</li>";
       }
-      
+
       $handle_req_str = get_pending_requests($project_id, $project_request_map);
-      $project_boxes .= make_project_box($project_id, $project_name, $user_id, $lead_id, $lead_name, 
+      $project_boxes .= make_project_box($project_id, $project_name, $user_id, $lead_id, $lead_name,
                                          $purpose, $expiration, $expired, $handle_req_str);
     }
 
@@ -256,8 +256,8 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
     // Slice filters
     $slice_card .= "<div id='projectcontrols'>";
     $slice_card .= "<h6 class='dashtext'>Filter by:</h6>";
-    $slice_card .= $slice_filters; 
-    
+    $slice_card .= $slice_filters;
+
     // Slice sorts
     $slice_sorts = "<ul class='selectorcontainer'>";
     $slice_sorts .= "<li class='has-sub selector' style='float:none;' id='slicesortby'>";
@@ -311,7 +311,7 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
     $project_card .= "<h6 class='dashtext'>Sort by:</h6>";
     $project_card .= $project_sorts;
 
-    
+
     $project_card .= "<div style='margin: 15px 0px; clear: both;'>";
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
       $project_card .= "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
@@ -321,8 +321,8 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
       $project_card .= "<a class='button' href='modify.php?belead=belead'>Ask to be a Project Lead</a></div>";
     }
 
-    $project_card .= "<div id='projectarea'>$project_boxes</div></div>";    
-    print $project_card;   
+    $project_card .= "<div id='projectarea'>$project_boxes</div></div>";
+    print $project_card;
   } else {
     print "<div class='card' id='slices'>";
     unset($project_id);
@@ -335,9 +335,9 @@ if (count($all_projects) == 0) { // You are in no active projects, active or exp
     include("tool-expired-projects.php");
     print "</div>";
   }
-} 
+}
 
-// Print the tab switching navigation bar 
+// Print the tab switching navigation bar
 function make_navigation_tabs() {
   print "<div class='nav2'><ul class='tabs'>";
   print "<li><a class='tab' data-tabindex=1 data-tabname='slices' href='#slices'>Slices</a></li>";
@@ -363,7 +363,7 @@ function make_no_projects_greeting($user, $new_user) {
     if ($new_user) {
       print "<p class='instruction'>";
       print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
-      print "You have been made a 'Project Lead', meaning you can create GENI Projects, "; 
+      print "You have been made a 'Project Lead', meaning you can create GENI Projects, ";
       print "as well as create slices in projects and reserve resources.<br/><br/>";
       print "A project is a group of people and their research, ";
       print "led by a single responsible individual - the project lead.";
@@ -386,7 +386,7 @@ function make_no_projects_greeting($user, $new_user) {
       print "Note that your account is not a 'Project Lead' account, meaning you must join a project created by someone else, ";
       print "before you can create slices or use GENI resources.<br/><br/>";
       print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
-      print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>"; 
+      print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>";
       print "<p class='warn'>";
       print "You are not a member of any projects. Please join an
          existing Project, ask someone to create a Project for you, or ask
@@ -437,7 +437,7 @@ function get_next_resource_expiration($slivers) {
   return $next_exp == "" ? "" : dateUIFormat($next_exp);
 }
 
-// Return a string representing the pending requests for project given by $project_id 
+// Return a string representing the pending requests for project given by $project_id
 // and with a link to handle them
 function get_pending_requests($project_id, $project_request_map) {
   global $user;
@@ -474,12 +474,12 @@ function make_slice_box($slice_name, $slice_id, $owner_id, $owner_name, $project
 
 
   // Give div specific classes for filtering purposes, data-* attributes for sorting purposes
-  $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
-          data-resourcecount='$resource_count' data-slicename='$slice_name' 
+  $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources'
+          data-resourcecount='$resource_count' data-slicename='$slice_name'
           data-sliceexp='$slice_exp_hours' data-resourceexp='$resource_exp_hours'
           data-projname='$project_name'>";
   $box .= "<table>";
-  
+
   $slice_url = "slice.php?slice_id=" . $slice_id;
   $box .= "<tr><td class='slicetopbar' title='Manage slice $slice_name' style='text-align:left;'>";
   $box .= "<a class='slicename' href='$slice_url'>$slice_name</a></td>";
@@ -526,7 +526,7 @@ function make_slice_box($slice_name, $slice_id, $owner_id, $owner_name, $project
 }
 
 // Return the dropdown (what you get when you hover over ...) for the slice with id $slice_id
-function make_slice_actions_dropdown($slice_id, $max_renewal_days, $slice_exp_hours, 
+function make_slice_actions_dropdown($slice_id, $max_renewal_days, $slice_exp_hours,
                                      $resource_exp_hours, $resource_count) {
   global $user;
   $add_resource_url = "slice-add-resources-jacks.php?slice_id=" . $slice_id;
@@ -612,9 +612,9 @@ function make_project_box($project_id, $project_name, $user_id, $lead_id, $lead_
     $slice_word = $slice_count > 1 ? "slices" : "slice";
     $box .= "<tr><td colspan='2'>Has <a onclick='show_slices_for_project(\"$project_name\");'>";
     $box .= "<b>$slice_count</b> $slice_word</a>";
-  }                        
+  }
   $box .= "</td></tr>";
-  
+
   if ($expiration) {
     if (!$expired) {
       $expiration_string = get_time_diff_string($exp_diff);
@@ -641,7 +641,7 @@ function make_project_actions_dropdown($project_id, $expired) {
   global $user;
   $dropdown = "<ul><li class='has-sub'>";
   $dropdown .= "<i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
-  
+
   $dropdown .= "<li><a href='project.php?project_id=$project_id'>Manage project</a></li>";
   if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id) && !$expired) {
     $dropdown .= "<li><a href='createslice.php?project_id=$project_id'>New slice</a></li>";
@@ -650,7 +650,8 @@ function make_project_actions_dropdown($project_id, $expired) {
     $dropdown .= "<li><a href='edit-project.php?project_id=$project_id'>Edit project</a></li>";
   }
   if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-    $dropdown .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
+    $url = "project.php?project_id=$project_id#members";
+    $dropdown .= "<li><a href='$url'>Edit membership</a></li>";
   }
   $dropdown .= "</ul></li></ul>";
   return $dropdown;
@@ -662,7 +663,7 @@ function make_project_actions_dropdown($project_id, $expired) {
   <h3 class="dashtext">Logs</h3><br>
   <div style='text-align: left;'>
     <h6 class='dashtext' style='margin-top: 20px;'>Showing logs for the last</h6>
-    <ul class="selectorcontainer"> 
+    <ul class="selectorcontainer">
       <li class='has-sub selector' id='loglengthselector' style='float:none;'>
         <span class='selectorshown'>day</span>
         <ul class='submenu' id='loglength'>
