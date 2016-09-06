@@ -10,6 +10,8 @@
   ([#1732](https://github.com/GENI-NSF/geni-portal/issues/1732))
 * geni-fetch-amdown fails outside GPO Lab
   ([#1734](https://github.com/GENI-NSF/geni-portal/issues/1734))
+* Streamline and unify edit membership and edit project paths
+  ([#1739](https://github.com/GENI-NSF/geni-portal/issues/1739))
 
 ## Installation Notes
 
