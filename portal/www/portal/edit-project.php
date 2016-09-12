@@ -183,13 +183,10 @@ if ($isnew) {
   }
   print "</table>\n";
 
-  $edit_url = relative_url("edit-project-member.php?project_id=$project_id");
+  $edit_url = relative_url("project.php?project_id=$project_id#members");
   print "<p><button onClick=\"window.location='$edit_url'\">";
   print "<b>Edit Membership</b></button>\n";
-
-  $inv_url= relative_url("invite-to-project.php?project_id=$project_id");
-  print " <button onClick=\"window.location='$inv_url'\">";
-  print "<b>Invite New Project Members</b></button><br/>\n";
+  print "<br/>\n";
 }
 print "</p>\n";
 
