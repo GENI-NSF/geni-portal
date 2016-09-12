@@ -45,6 +45,14 @@ from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+sys.path.append('/usr/share/geni-ch/gcf/src')
+
+try:
+    from gcf.geni.util.secure_xmlrpc_client import make_client
+except:
+    raise
+
+
 def parse_args(argv):
     desc = 'Synchronize ORBIT and GENI CH sense of projects/groups and members'
     parser = argparse.ArgumentParser(description=desc)
@@ -65,6 +73,13 @@ def parse_args(argv):
     parser.add_argument("--settings_file",
                         help="location of settings.php file containing db_dsn (database URL) variable [default: %(default)s]",
                         default="/etc/geni-ch/settings.php")
+    parser.add_argument('-c', '--certificate',
+                        help='certificate of user performing action')
+    parser.add_argument('-k', '--key',
+                        help='private key of user performing action')
+    parser.add_argument('-u', '--url',
+                        help='Clearinghouse base URL [default: %(default)s]',
+                        default='https://ch.geni.net')
     parser.add_argument("-v", "--verbose", help="Print verbose debug info",
                         dest = 'verbose', action='store_true',
                         default=False)
@@ -78,6 +93,88 @@ def parse_args(argv):
 
     return args
 
+
+class GeniException(Exception):
+    pass
+
+
+class GeniResponse(object):
+    CODE = 'code'
+    VALUE = 'value'
+    OUTPUT = 'output'
+    SUCCESS = 0
+
+    @classmethod
+    def check(cls, response):
+        if GeniResponse.CODE not in response:
+            raise GeniException('Invalid response, no "code".')
+        if response[GeniResponse.CODE] != GeniResponse.SUCCESS:
+            msg = 'Server error %d' % (response[GeniResponse.CODE])
+            if GeniResponse.OUTPUT in response:
+                msg += ': %s' % (response[GeniResponse.OUTPUT])
+            raise GeniException(msg)
+
+
+class ProjectAttribute(object):
+    NAME = 'name'
+    ENABLE_WIMAX = 'enable_wimax'
+    # not sure we need wimax group, but just in case...
+    WIMAX_GROUP = 'wimax_group_name'
+
+
+class Project(object):
+    SA_UID = 'PROJECT_UID'
+    SA_LEAD = '_GENI_PROJECT_OWNER'
+    SA_DESCRIPTION = 'PROJECT_DESCRIPTION'
+    SA_NAME = 'PROJECT_NAME'
+    SA_URN = 'PROJECT_URN'
+
+    @classmethod
+    def create(cls, map):
+        p = Project()
+        p.id = map[Project.SA_UID]
+        p.lead_id = map[Project.SA_LEAD]
+        p.project_description = map[Project.SA_DESCRIPTION]
+        p.project_name = map[Project.SA_NAME]
+        p.urn = map[Project.SA_URN]
+        return p
+
+    def __init__(self):
+        self.members = []
+
+    def __getitem__(self, key):
+        print "key is %r" % (key)
+        if not hasattr(self, key):
+            raise KeyError(key)
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+        print "setitem(%r, %r)" % (key, value)
+
+    def __delitem__(self, key):
+        delattr(self, key)
+
+    def keys(self):
+        return self.__dict__.keys()
+
+
+class GENI(object):
+    class MA(object):
+        EMAIL = 'MEMBER_EMAIL'
+        FIRST_NAME = 'MEMBER_FIRSTNAME'
+        LAST_NAME = 'MEMBER_LASTNAME'
+        DISPLAY_NAME = '_GENI_MEMBER_DISPLAYNAME'
+        USERNAME = 'MEMBER_USERNAME'
+        WIMAX_USERNAME = '_GENI_WIMAX_USERNAME'
+        FieldMap = {EMAIL: 'email_address',
+                    FIRST_NAME: 'first_name',
+                    LAST_NAME: 'last_name',
+                    DISPLAY_NAME: 'displayName',
+                    USERNAME: 'username',
+                    WIMAX_USERNAME: 'wimax_username'}
+
+
 # Manaager to manage synchronize between ORBIT groups/users and GENI
 # CH wimax-enabled projects and members
 class WirelessProjectManager:
@@ -88,6 +185,9 @@ class WirelessProjectManager:
         self._project = self._options.project
         self._cleanup = self._options.cleanup
         self._user = self._options.user
+        self._url = self._options.url
+        self._certificate = self._options.certificate
+        self._key = self._options.key
 
         self._db_url = self.find_database_url()
         self._db = create_engine(self._db_url)
@@ -515,61 +615,90 @@ class WirelessProjectManager:
                 return  project_info
         return None
 
+    def make_project_dict(self, sa_project):
+        """Extract information from the slice authority (SA) response
+        pertaining to a project. Return a dict comprising the information
+        needed for other functions later in the wireless sync process.
+        """
+        return dict(lead_id=sa_project[Project.SA_LEAD],
+                    members=[],
+                    project_description=sa_project[Project.SA_DESCRIPTION],
+                    project_name=sa_project[Project.SA_NAME],
+                    urn=sa_project[Project.SA_URN])
+
+    def is_wimax_project(self, xmlrpc_client, sa_project):
+        is_wimax = False
+        credentials = []
+        project_id = sa_project[Project.SA_UID]
+        project_urn = sa_project[Project.SA_URN]
+        opt_match = {Project.SA_UID: [project_id]}
+        options = dict(match=opt_match)
+        response = xmlrpc_client.lookup_project_attributes(project_urn,
+                                                           credentials,
+                                                           options)
+        # Check for errors from server
+        GeniResponse.check(response)
+        attribs = response[GeniResponse.VALUE]
+        for attrib in attribs:
+            if attrib[ProjectAttribute.NAME] == ProjectAttribute.ENABLE_WIMAX:
+                is_wimax = True
+                break
+        return is_wimax
+
+    def get_project_members(self, client, project_info, username):
+        credentials = []
+        options = {}
+        urn = project_info['urn']
+        response = client.lookup_project_members(urn, credentials, options)
+        # Check for errors from server
+        GeniResponse.check(response)
+        members = response[GeniResponse.VALUE]
+        urn_suffix = ''
+        if username:
+            urn_suffix = '+user+%s' % (str(username))
+        filtered_members = [m['PROJECT_MEMBER_UID'] for m in members
+                            if m['PROJECT_MEMBER'].endswith(urn_suffix)]
+        return filtered_members
+
+    def get_wimax_projects(self, xmlrpc_client, project_name=None,
+                           user_name=None):
+        credentials = []
+        opt_match = dict(PROJECT_EXPIRED=False)
+        # If --project is specified add it to opt_match
+        if project_name:
+            opt_match[Project.SA_NAME] = project_name
+        opt_filter = [Project.SA_UID, Project.SA_LEAD, Project.SA_DESCRIPTION,
+                      Project.SA_NAME, Project.SA_URN]
+        options = dict(match=opt_match, filter=opt_filter)
+        # options = dict(match=opt_match)
+        response = xmlrpc_client.lookup('PROJECT', credentials, options)
+        # Check for errors from server
+        GeniResponse.check(response)
+        all_projects = response[GeniResponse.VALUE]
+        wimax_projects = {p[Project.SA_UID]: self.make_project_dict(p)
+                          for p in all_projects.values()
+                          if self.is_wimax_project(xmlrpc_client, p)}
+        # Now add users to the wimax_projects
+        # TODO: if --user was specified, only include that username
+        #    Do this by checking if the user's urn .endswith(username)
+        #    if self._username and not urn.endswith(self.__username):
+        #        contine
+
+        for proj in wimax_projects.values():
+            proj['members'] = self.get_project_members(xmlrpc_client, proj,
+                                                       user_name)
+        return wimax_projects
+
     # Grab project info [indexed by project id] for all wimax-enabled projects
     # Only single project for --project option
     # Only projects to which given users belongs for --user option
     def get_geni_projects(self):
-        projects = {}
-
-        # Get all the WIMAX-enabled projects
-        query = self._session.query(self.PROJECT_TABLE.c.lead_id,
-                                    self.PROJECT_TABLE.c.project_name,
-                                    self.PROJECT_TABLE.c.project_id,
-                                    self.PROJECT_TABLE.c.project_purpose)
-        query = query.filter(self.PROJECT_TABLE.c.project_id == \
-                                 self.PROJECT_ATTRIBUTE_TABLE.c.project_id)
-        query = query.filter(self.PROJECT_ATTRIBUTE_TABLE.c.name == \
-                                 'enable_wimax')
-        query = query.filter(self.PROJECT_TABLE.c.expired == 'f')
-        if (self._project):
-            query = query.filter(self.PROJECT_TABLE.c.project_name == \
-                                     self._project)
-        project_rows = query.all()
-        project_ids = []
-
-
-        for row in project_rows:
-            project_ids.append(row.project_id)
-            projects[row.project_id] = {
-                'lead_id' : row.lead_id,
-                'project_name' : row.project_name,
-                'project_description' : row.project_purpose,
-                'members' : []
-                }
-
-        # Get all members of WIMAX-enabled projects
-        query = self._session.query(self.PROJECT_MEMBER_TABLE.c.member_id,
-                                    self.PROJECT_MEMBER_TABLE.c.project_id)
-        query = query.filter(self.PROJECT_MEMBER_TABLE.c.project_id.in_(\
-                project_ids))
-        if self._user:
-            query = query.filter(self.PROJECT_MEMBER_TABLE.c.member_id == \
-                                     self.MEMBER_ATTRIBUTE_TABLE.c.member_id)
-            query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name == \
-                                     'username')
-            query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.value == \
-                                     self._user)
-        member_rows = query.all()
-        for row in member_rows:
-            projects[row.project_id]['members'].append(row.member_id)
-
-        # Don't return any projects with no members
-        # (if we're filtering by user)
-        for project_id, project_info in projects.items():
-            if len(project_info['members']) == 0:
-                del projects[project_id]
-
-        self._geni_projects = projects
+        # TODO: Should get URL from service registry, not invent the URL
+        # by string appends
+        sa_url = self._url + '/SA'
+        sa_client = make_client(sa_url, self._key, self._certificate)
+        self._geni_projects = self.get_wimax_projects(sa_client, self._project,
+                                                      self._user)
 
     # Grab info about all people in wimax projects
     def get_geni_members(self):
