@@ -655,11 +655,6 @@ class WirelessProjectManager:
                           for p in all_projects.values()
                           if self.is_wimax_project(xmlrpc_client, p)}
         # Now add users to the wimax_projects
-        # TODO: if --user was specified, only include that username
-        #    Do this by checking if the user's urn .endswith(username)
-        #    if self._username and not urn.endswith(self.__username):
-        #        contine
-
         for proj in wimax_projects.values():
             proj['members'] = self.get_project_members(xmlrpc_client, proj,
                                                        user_name)
@@ -732,7 +727,6 @@ class WirelessProjectManager:
                 # TODO: Why do the ssh keys have a '\n' at the end?
                 #       Can ''.rstrip('\n') be used to *safely* strip it away?
                 members[k]['ssh_keys'].append(ssh_key['KEY_PUBLIC'])
-        # TODO: Map response keys to user_info keys (see above)
         all_urns = members.keys()
         for urn in all_urns:
             for ma_key,new_key in GENI.MA.FieldMap.iteritems():
