@@ -237,6 +237,10 @@ class WirelessProjectManager:
         self._deleted_orbit_groups = []
         self._deleted_orbit_members = {}
 
+    def get_ma_client(self, sr_url):
+        ma_url = self.get_service_url(sr_url, GENI.SR.SERVICE_TYPE_MA)
+        return make_client(ma_url, self._key, self._certificate)
+
     def get_service_url(self, sr_url, service_type):
         sr = xmlrpclib.ServerProxy(sr_url)
         response = sr.get_services_of_type(service_type)
@@ -289,18 +293,20 @@ class WirelessProjectManager:
     def to_geni_name(self, name): return name[5:]
 
     def insert_wimax_username(self, member_id, member_info):
+        # NOTE: member_id is not used in this implementation, but was
+        # used when this method accessed the database directly.
         username = member_info['username']
+        member_urn = member_info['MEMBER_URN']
         name = 'wimax_username'
         value = self.to_orbit_name(username)
         self_asserted = False
         syslog("Setting wimax_username for %s to %s" % (username, value))
-        ins = self.MEMBER_ATTRIBUTE_TABLE.insert().values(
-                member_id=member_id,
-                name=name,
-                value=value,
-                self_asserted=self_asserted)
-        result = self._session.execute(ins)
-        self._session.commit()
+        ma = self.get_ma_client(self._url)
+        credentials = []
+        options = {}
+        response = ma.add_member_attribute(member_urn, name, value,
+                                           self_asserted, credentials, options)
+        GeniResponse.check(response)
 
     def ensure_wimax_username(self, member_id, member_info):
         """Ensure that the given member has a wimax_username set
@@ -778,8 +784,7 @@ class WirelessProjectManager:
 
     # Grab info about all people in wimax projects
     def get_geni_members(self):
-        ma_url = self.get_service_url(self._url, GENI.SR.SERVICE_TYPE_MA)
-        ma_client = make_client(ma_url, self._key, self._certificate)
+        ma_client = self.get_ma_client(self._url)
         projects = self._geni_projects
         self._geni_members = self.get_wimax_members(ma_client, projects)
 
