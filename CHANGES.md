@@ -8,6 +8,8 @@
   ([#1731](https://github.com/GENI-NSF/geni-portal/issues/1731))
 * Change /usr/local to /usr in doc to match RPM installation
   ([#1732](https://github.com/GENI-NSF/geni-portal/issues/1732))
+* Use clearinghouse APIs for geni-sync-wireless
+  ([#1733](https://github.com/GENI-NSF/geni-portal/issues/1733))
 * geni-fetch-amdown fails outside GPO Lab
   ([#1734](https://github.com/GENI-NSF/geni-portal/issues/1734))
 * Streamline and unify edit membership and edit project paths
