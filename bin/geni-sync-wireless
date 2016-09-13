@@ -700,61 +700,81 @@ class WirelessProjectManager:
         self._geni_projects = self.get_wimax_projects(sa_client, self._project,
                                                       self._user)
 
+    def holdingpen_admin_ids(self, ma_client):
+        # Get the UUID of the 'holdingpen_admin'
+        opt_match = {'MEMBER_USERNAME': self._options.holdingpen_admin}
+        opt_filter = ['MEMBER_UID']
+        options = dict(match=opt_match, filter=opt_filter)
+        # pprint.pprint(options)
+        credentials = []
+        response = ma_client.lookup_public_member_info(credentials, options)
+        # Check for errors from server
+        GeniResponse.check(response)
+        members = response[GeniResponse.VALUE]
+        result = set()
+        for info in members.values():
+            result.add(info['MEMBER_UID'])
+        return list(result)
+
+
+    def get_ssh_keys(self, ma_client, members):
+        all_uuids = [v['MEMBER_UID'] for v in members.values()]
+        opt_match = {'_GENI_KEY_MEMBER_UID': all_uuids}
+        opt_filter = ['KEY_PUBLIC']
+        options = dict(match=opt_match, filter=opt_filter)
+        credentials = []
+        response = ma_client.lookup_keys(credentials, options)
+        # Check for errors from server
+        GeniResponse.check(response)
+        return response[GeniResponse.VALUE]
+
+    def get_wimax_members(self, ma_client, projects):
+        all_uuids = set()
+        for proj_info in projects.values():
+            all_uuids.update(proj_info['members'])
+        all_uuids.update(self.holdingpen_admin_ids(ma_client))
+        opt_match = {'MEMBER_UID': list(all_uuids)}
+        opt_filter = [GENI.MA.EMAIL, GENI.MA.FIRST_NAME, 'MEMBER_LASTNAME',
+                      'MEMBER_USERNAME', '_GENI_MEMBER_DISPLAYNAME',
+                      '_GENI_WIMAX_USERNAME', 'MEMBER_URN', '_GENI_MEMBER_ENABLED',
+                      'MEMBER_UID']
+        options = dict(match=opt_match, filter=opt_filter)
+        # pprint.pprint(options)
+        credentials = []
+        response = ma_client.lookup('MEMBER', credentials, options)
+        # Check for errors from server
+        GeniResponse.check(response)
+        members = response[GeniResponse.VALUE]
+        # Filter out disabled members
+        members = {k: v for k,v in members.iteritems()
+                   if v['_GENI_MEMBER_ENABLED']}
+        for k in members.keys():
+            members[k]['ssh_keys'] = []
+        # Attach SSH public key to user_info['ssh_keys']
+        ssh_keys = self.get_ssh_keys(ma_client, members)
+        for k, v in ssh_keys.iteritems():
+            members[k]['ssh_keys'] = []
+            for ssh_key in v:
+                # TODO: Why do the ssh keys have a '\n' at the end?
+                #       Can ''.rstrip('\n') be used to *safely* strip it away?
+                members[k]['ssh_keys'].append(ssh_key['KEY_PUBLIC'])
+        # TODO: Map response keys to user_info keys (see above)
+        all_urns = members.keys()
+        for urn in all_urns:
+            for ma_key,new_key in GENI.MA.FieldMap.iteritems():
+                members[urn][new_key] = members[urn].pop(ma_key)
+            uid = members[urn]['MEMBER_UID']
+            members[uid] = members.pop(urn)
+        return members
+
     # Grab info about all people in wimax projects
     def get_geni_members(self):
-
+        # TODO: Should get URL from service registry, not invent the URL
+        # by string appends
+        ma_url = self._url + '/MA'
+        ma_client = make_client(ma_url, self._key, self._certificate)
         projects = self._geni_projects
-
-        members = {}
-
-        # Get unique list of all member_ids over all projects
-        member_ids =  set()
-        for proj_id, project_info in projects.items():
-            for member_id in project_info['members']:
-                member_ids.add(member_id)
-
-        # add the holdingpen admin, who may not be the member of any project
-        query = self._session.query(self.MEMBER_ATTRIBUTE_TABLE.c.member_id)
-        query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name == 'username')
-        query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.value == \
-                                 self._options.holdingpen_admin)
-        holdingpen_admin_rows = query.all()
-        for row in holdingpen_admin_rows:
-            member_ids.add(row.member_id)
-
-        # Add the project leads
-        for proj_id, project_info in projects.items():
-            lead_id = project_info['lead_id']
-            member_ids.add(lead_id)
-
-        # Turn set back into list, to grab all users with these member ID's
-        member_ids = list(member_ids)
-
-        query = self._session.query(self.MEMBER_ATTRIBUTE_TABLE)
-        query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.member_id.in_(\
-                member_ids))
-        query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name.in_(\
-                ["username", 'member_enabled', "first_name", "email_address",
-                 "last_name", "displayName", 'wimax_username']))
-
-        member_rows = query.all()
-        for row in member_rows:
-            if row.member_id not in members:
-                members[row.member_id] = {}
-            members[row.member_id][row.name] = row.value
-
-
-        # Grab SSH keys for all members
-        for member_id, member_info in members.items():
-            member_info['ssh_keys']=[]
-        query = self._session.query(self.SSH_KEY_TABLE)
-        query = query.filter(self.SSH_KEY_TABLE.c.member_id.in_(\
-                member_ids))
-        key_rows = query.all()
-        for row in key_rows:
-            members[row.member_id]['ssh_keys'].append(row.public_key)
-
-        self._geni_members = members
+        self._geni_members = self.get_wimax_members(ma_client, projects)
 
     # Remove disabled members from projects and members
     # Unless the disabled member is the lead of project
