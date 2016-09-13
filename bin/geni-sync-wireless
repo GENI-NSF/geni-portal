@@ -42,9 +42,6 @@ import sys
 from syslog import syslog
 from portal_utils.orbit_interface import ORBIT_Interface
 import xmlrpclib
-from sqlalchemy import *
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
 sys.path.append('/usr/share/geni-ch/gcf/src')
 
@@ -71,9 +68,6 @@ def parse_args(argv):
                         help="delete obsolete groups and group memberships [default: %(default)s]",
                         dest='cleanup', action='store_true',
                         default=False)
-    parser.add_argument("--settings_file",
-                        help="location of settings.php file containing db_dsn (database URL) variable [default: %(default)s]",
-                        default="/etc/geni-ch/settings.php")
     parser.add_argument('-c', '--certificate',
                         help='certificate of user performing action')
     parser.add_argument('-k', '--key',
@@ -197,26 +191,6 @@ class WirelessProjectManager:
         self._certificate = self._options.certificate
         self._key = self._options.key
 
-        self._db_url = self.find_database_url()
-        self._db = create_engine(self._db_url)
-        self._session_class = sessionmaker(bind=self._db)
-        self._metadata = MetaData(self._db)
-        base = declarative_base()
-        base.metadata.create_all(self._db)
-        self._session = self._session_class()
-
-        self.PROJECT_TABLE = Table('pa_project', self._metadata, autoload=True)
-        self.PROJECT_ATTRIBUTE_TABLE = Table('pa_project_attribute',
-                                             self._metadata, autoload=True)
-        self.PROJECT_MEMBER_TABLE = Table('pa_project_member',
-                                          self._metadata, autoload=True)
-        self.MEMBER_ATTRIBUTE_TABLE = Table('ma_member_attribute',
-                                          self._metadata, autoload=True)
-        self.SSH_KEY_TABLE = Table('ma_ssh_key',
-                                   self._metadata, autoload=True)
-        self.SERVICE_REGISTRY_TABLE = Table('service_registry',
-                                   self._metadata, autoload=True)
-
         self.holdingpen_group_description = "GENI ORBIT MEMBER HOLDINGPEN"
 
         self._base_orbit_url = self.get_orbit_base_url(self._url)
@@ -255,21 +229,6 @@ class WirelessProjectManager:
     # Return URL for ORBIT Delegated AM REST API from service registry
     def get_orbit_base_url(self, sr_url):
         return self.get_service_url(sr_url, GENI.SR.SERVICE_TYPE_WIMAX_SITE)
-
-    # Parse settings.php file and extract db_dsn value
-    def find_database_url(self):
-        data = None
-        try:
-            data = open(self._options.settings_file, 'r').read()
-        except Exception:
-            self.error("Error reading settings file: %s" % \
-                           self._options.settings_file)
-        lines = data.split('\n')
-        for line in lines:
-            if line.find("$db_dsn") == 0:
-                db_url = line.split('\'')[1].replace('pgsql', 'postgresql')
-                return db_url
-        self.error("No $db_dsn entry in settings file")
 
     # Print error and exit
     def error(self, msg): syslog(msg); sys.exit()
