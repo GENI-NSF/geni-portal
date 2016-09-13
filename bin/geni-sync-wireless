@@ -41,6 +41,7 @@ import argparse
 import sys
 from syslog import syslog
 from portal_utils.orbit_interface import ORBIT_Interface
+import xmlrpclib
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -78,8 +79,8 @@ def parse_args(argv):
     parser.add_argument('-k', '--key',
                         help='private key of user performing action')
     parser.add_argument('-u', '--url',
-                        help='Clearinghouse base URL [default: %(default)s]',
-                        default='https://ch.geni.net')
+                        help='Service registry URL [default: %(default)s]',
+                        default='https://ch.geni.net:8444/SR')
     parser.add_argument("-v", "--verbose", help="Print verbose debug info",
                         dest = 'verbose', action='store_true',
                         default=False)
@@ -160,6 +161,7 @@ class Project(object):
 
 
 class GENI(object):
+
     class MA(object):
         EMAIL = 'MEMBER_EMAIL'
         FIRST_NAME = 'MEMBER_FIRSTNAME'
@@ -173,6 +175,12 @@ class GENI(object):
                     DISPLAY_NAME: 'displayName',
                     USERNAME: 'username',
                     WIMAX_USERNAME: 'wimax_username'}
+
+    class SR(object):
+        SERVICE_TYPE_SA = 1
+        SERVICE_TYPE_MA = 3
+        SERVICE_TYPE_WIMAX_SITE = 10
+        SERVICE_URL = 'SERVICE_URL'
 
 
 # Manaager to manage synchronize between ORBIT groups/users and GENI
@@ -211,7 +219,7 @@ class WirelessProjectManager:
 
         self.holdingpen_group_description = "GENI ORBIT MEMBER HOLDINGPEN"
 
-        self._base_orbit_url = self.get_orbit_base_url()
+        self._base_orbit_url = self.get_orbit_base_url(self._url)
         self._orb = ORBIT_Interface(self._base_orbit_url)
 
         # These are instance variables filled in during synchronize
@@ -229,17 +237,20 @@ class WirelessProjectManager:
         self._deleted_orbit_groups = []
         self._deleted_orbit_members = {}
 
-    # Return URL for ORBIT Delegated AM REST API from service registry
-    def get_orbit_base_url(self):
-        WIMAX_SITE = 10
-        query = self._session.query(self.SERVICE_REGISTRY_TABLE)
-        query = query.filter(self.SERVICE_REGISTRY_TABLE.c.service_type == WIMAX_SITE)
-        rows = query.all()
+    def get_service_url(self, sr_url, service_type):
+        sr = xmlrpclib.ServerProxy(sr_url)
+        response = sr.get_services_of_type(service_type)
+        GeniResponse.check(response)
+        rows = response[GeniResponse.VALUE]
         if len(rows) == 0:
-            self.error("NO WIMAX_SITE (%s) defined in SERVICE_REGISTRY" % \
-                           WIMAX_SITE)
-        orbit_base_url = rows[0].service_url
-        return orbit_base_url
+            msg = 'No service with type (%r) defined in SERVICE_REGISTRY'
+            self.error(msg % service_type)
+        service_url = rows[0][GENI.SR.SERVICE_URL]
+        return service_url
+
+    # Return URL for ORBIT Delegated AM REST API from service registry
+    def get_orbit_base_url(self, sr_url):
+        return self.get_service_url(sr_url, GENI.SR.SERVICE_TYPE_WIMAX_SITE)
 
     # Parse settings.php file and extract db_dsn value
     def find_database_url(self):
@@ -693,9 +704,7 @@ class WirelessProjectManager:
     # Only single project for --project option
     # Only projects to which given users belongs for --user option
     def get_geni_projects(self):
-        # TODO: Should get URL from service registry, not invent the URL
-        # by string appends
-        sa_url = self._url + '/SA'
+        sa_url = self.get_service_url(self._url, GENI.SR.SERVICE_TYPE_SA)
         sa_client = make_client(sa_url, self._key, self._certificate)
         self._geni_projects = self.get_wimax_projects(sa_client, self._project,
                                                       self._user)
@@ -769,9 +778,7 @@ class WirelessProjectManager:
 
     # Grab info about all people in wimax projects
     def get_geni_members(self):
-        # TODO: Should get URL from service registry, not invent the URL
-        # by string appends
-        ma_url = self._url + '/MA'
+        ma_url = self.get_service_url(self._url, GENI.SR.SERVICE_TYPE_MA)
         ma_client = make_client(ma_url, self._key, self._certificate)
         projects = self._geni_projects
         self._geni_members = self.get_wimax_members(ma_client, projects)
