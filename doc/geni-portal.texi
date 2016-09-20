@@ -9,6 +9,10 @@
 @c combine the program index into the concept index
 @syncodeindex pg cp
 
+@c Use ascii quotes in @code, @example, and similar blocks
+@set codequoteundirected on
+@set codequotebacktick on
+
 @copying
 Copyright @copyright{} 2015-2016 Raytheon BBN Technologies
 
@@ -258,7 +262,7 @@ backslash. The use of backslash and multiple lines is for readability
 in this document}
 @example
 # Create the member authority CRL
-10 2 * * * /usr/local/sbin/geni-create-ma-crl \
+10 2 * * * /usr/sbin/geni-create-ma-crl \
         && /sbin/service httpd restart
 @end example
 
@@ -273,7 +277,7 @@ telling them they should renew their certificate.
 
 @example
 # Notify users of expiring certificates
-5 1 * * * /usr/local/sbin/geni-expiring-certs --days 30,14,7,2
+5 1 * * * /usr/sbin/geni-expiring-certs --days 30,14,7,2
 @end example
 
 @subsection Sync wireless groups and accounts
@@ -287,30 +291,20 @@ once a day) to synchronize all groups and accounts.
 @example
 # Synchronize with wireless testbeds
 # Sync wireless groups and accounts
-00 2 * * * /usr/local/bin/geni-sync-wireless --cleanup
+00 2 * * * /usr/bin/geni-sync-wireless --cleanup
 @end example
 
 @subsection Fetch aggregate status information
 @cindex monitoring
-@pindex geni-fetch-amdown
 @pindex geni-fetch-aggmon
 Aggregate status information is displayed on the GENI portal. This
-information is retrieved from other GENI servers and cached locally
-for display. These crontab entries fetch the information and write it
+information is retrieved from the GENI monitoring server and cached locally
+for display. This crontab entry fetches the information and writes it
 to the configured @code{sysconfdir}, probably @code{/etc/geni-ch}.
 
-@emph{N.B. The entry below must appear on a single line, without the
-backslash. The use of backslash and multiple lines is for readability
-in this document}
-
 @example
-# Fetch aggregate data hourly from GPO Nagios
-0 */1 * * * /usr/local/sbin/geni-fetch-amdown \
-        /usr/share/geni-ch/portal/portal-cert.pem \
-        /usr/share/geni-ch/portal/portal-key.pem
-#
 # Fetch aggregate data hourly from GENI Monitoring
-0 */1 * * * /usr/local/sbin/geni-fetch-aggmon
+0 */1 * * * /usr/sbin/geni-fetch-aggmon
 @end example
 
 @section Log files
@@ -388,7 +382,7 @@ Certificate Verification: Error (12): CRL has expired
 The remedy for this error is to run the @code{geni-create-ma-crl} program and
 restart the web server:
 @example
-sudo /usr/local/sbin/geni-create-ma-crl
+sudo /usr/sbin/geni-create-ma-crl
 sudo service apache2 restart
 @end example
 
@@ -581,7 +575,6 @@ authority=origin.example.com
 @emph{This step is only necessary if the new server will use a
 different domain name than the original server.}
 @c render the single quotes properly for copy/paste
-@set codequoteundirected on
 @example
 update service_registry
   set service_url = replace(service_url,
@@ -589,7 +582,6 @@ update service_registry
                             'dest.example.com')
   where service_url like '%origin.example.com%';
 @end example
-@set codequoteundirected off
 
 @section Configure host: DNS update
 This step is only necessary if the new, or ``target'' server will use the same

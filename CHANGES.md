@@ -1,5 +1,24 @@
 # GENI Portal Release Notes
 
+# [Release 3.17](https://github.com/GENI-NSF/geni-portal/milestones/3.17)
+
+## Changes
+
+* Fix quotes inside examples in texinfo document
+  ([#1731](https://github.com/GENI-NSF/geni-portal/issues/1731))
+* Change /usr/local to /usr in doc to match RPM installation
+  ([#1732](https://github.com/GENI-NSF/geni-portal/issues/1732))
+* Use clearinghouse APIs for geni-sync-wireless
+  ([#1733](https://github.com/GENI-NSF/geni-portal/issues/1733))
+* geni-fetch-amdown fails outside GPO Lab
+  ([#1734](https://github.com/GENI-NSF/geni-portal/issues/1734))
+* Streamline and unify edit membership and edit project paths
+  ([#1739](https://github.com/GENI-NSF/geni-portal/issues/1739))
+
+## Installation Notes
+
+* None
+
 # [Release 3.16](https://github.com/GENI-NSF/geni-portal/milestones/3.16)
 
 ## Changes
