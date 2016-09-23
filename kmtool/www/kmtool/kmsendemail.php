@@ -86,7 +86,7 @@ if ($in_maintenance_mode) {
 // Generate a random string (nums, uppercase, lowercase) of width $width
 function random_id($width=6) {
     $result = '';
-    for ($i=0; $i < $width; $i++) { 
+    for ($i=0; $i < $width; $i++) {
         $result .= base_convert(strval(rand(0, 35)), 10, 36);
     }
     return strtoupper($result);
@@ -152,11 +152,12 @@ function get_user_conf_email_body($confirm_url) {
 // Email requester to confirm their email address
 // Note that we BCC portal admins
 function send_user_confirmation_email($user_email, $confirm_url) {
-  global $portal_help_email, $portal_admin_email;
+  global $portal_help_email;
   $subject = "GENI Account Email Confirmation";
   $body = get_user_conf_email_body($confirm_url);
-  $headers = "Reply-To: $portal_help_email" . "\r\n" . "Bcc: " . $portal_admin_email . "\r\n" . 
-    "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
+  $headers = "Reply-To: $portal_help_email";
+  $headers .= "\r\nContent-Type: text/plain; charset=UTF-8";
+  $headers .= "\r\nContent-Transfer-Encoding: 8bit";
   return mail($user_email, $subject, $body, $headers);
 }
 
