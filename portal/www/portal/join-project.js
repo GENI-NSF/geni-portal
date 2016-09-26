@@ -1,15 +1,23 @@
+function show_lookup_error(msg) {
+  $('#finderror').append(msg);
+  $('#findname').select();
+}
+
 function handle_lookup(data) {
   if (data.code == 0) {
     // Project lookup was successful
     // redirect to join-this-project.php?project_id=id
     // get project from value field, and project_id from that
     var project = data.value
-    var url = "join-this-project.php?project_id=" + project.project_id;
-    window.location.href = url;
+    if (project.expired) {
+      show_lookup_error("Project " + project.project_name + " has expired.");
+    } else {
+      var url = "join-this-project.php?project_id=" + project.project_id;
+      window.location.href = url;
+    }
   } else {
     // Handle error case
-    $('#finderror').append(data.output);
-    $('#findname').select();
+    show_lookup_error(data.output);
   }
 }
 
