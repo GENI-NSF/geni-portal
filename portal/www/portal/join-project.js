@@ -1,20 +1,21 @@
 function handle_lookup(data) {
   if (data.code == 0) {
     // Project lookup was successful
-    // get project id from data
     // redirect to join-this-project.php?project_id=id
+    // get project from value field, and project_id from that
     var project = data.value
-    console.log(project.project_id);
+    var url = "join-this-project.php?project_id=" + project.project_id;
+    window.location.href = url;
   } else {
     // Handle error case
-    console.log("fail")
     $('#finderror').append(data.output);
     $('#findname').select();
   }
 }
+
 function handle_error(jqXHR, textStatus, errorThrown) {
-  console.log("error");
   // An unknown error has occurred. Pop up a dialog box.
+  alert("An unknown error occurred.");
 }
 
 function lookup_project(project_name) {
