@@ -111,8 +111,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 <?php
   print "<table id=\"projects\" class=\"display\">\n";
   print "<thead>\n";
-  print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
-  $jointhis_url = "join-this-project.php?project_id=";
+  print "<tr><th>Project Purpose</th><th>Project Lead</th></tr>\n";
   $project_details = lookup_project_details($sa_url, $user, $pids);
   usort($project_details, "project_name_compare");
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
@@ -129,16 +128,11 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     //    $project = lookup_project($sa_url, $user, $project_id);
     $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
     if (convert_boolean($expired)) continue;
-    print "<tr><td>";
-    print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    print "</td><td>";
-    print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-    print "</td><td>";
+    $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+    if (! $purpose) continue;
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
     $leadname = $member_names[$lead_id];
-    print $leadname;
-    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-    print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
+    print "<tr><td>$purpose</td><td>$leadname</td></tr>\n";
   }
   print "</tbody>\n";
   print "</table>\n";
