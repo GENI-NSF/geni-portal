@@ -62,6 +62,9 @@ show_header('GENI Portal: Projects');
 
 include("tool-breadcrumbs.php");
 
+// Load this page's javascript
+echo '<script src="join-project.js"></script>';
+
 // Join a project
 // Get list of all projects you are not in or already requested to join
 // Produce a table of projects you could join
@@ -81,6 +84,7 @@ print "<p>Once the project lead makes a decision about your request you
  will be notified through email. Once you are a member of a project,
  you can create a slice, or request to join an existing slice.";
 
+
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
@@ -95,14 +99,16 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<p><i>Please do not try to join arbitrary projects. Abuse of
    this functionality may result in revocation of your GENI account.
    </i></p>";
+?>
 
-  /* datatables.net (for sortable/searchable tables) */
-  echo '<script type="text/javascript">';
-  echo '$(document).ready( function () {';
-  echo '  $(\'#projects\').DataTable({paging: false});';
-  echo '} );';
-  echo '</script>';
+<form>
+<input id="findname" type="text"/>
+<div id="finderror"></div>
+<br/>
+<button id="findbtn" type="submit">Join</button>
+</form>
 
+<?php
   print "<table id=\"projects\" class=\"display\">\n";
   print "<thead>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";

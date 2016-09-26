@@ -132,9 +132,11 @@ dist_svcweb_DATA = \
 	www/portal/jacks-editor-app-expanded.php \
 	www/portal/jacks-lib.js \
 	www/portal/jfed.php \
+	www/portal/join-project.js \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
+	www/portal/lookup-project.php \
 	www/portal/listresources_plain.php \
 	www/portal/maintenance_redirect_page.php \
 	www/portal/modify.php \
