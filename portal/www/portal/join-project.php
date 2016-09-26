@@ -33,8 +33,8 @@ require_once("cs_constants.php");
 
 function project_name_compare($p1, $p2)
 {
-  $pn1 = $p1[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
-  $pn2 = $p2[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
+  $pn1 = $p1[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  $pn2 = $p2[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   if ($pn1 == $pn2) {
     return 0;
   } else {
@@ -95,14 +95,14 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<p><i>Please do not try to join arbitrary projects. Abuse of
    this functionality may result in revocation of your GENI account.
    </i></p>";
-   
+
   /* datatables.net (for sortable/searchable tables) */
   echo '<script type="text/javascript">';
   echo '$(document).ready( function () {';
   echo '  $(\'#projects\').DataTable({paging: false});';
   echo '} );';
   echo '</script>';
-   
+
   print "<table id=\"projects\" class=\"display\">\n";
   print "<thead>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
@@ -112,8 +112,8 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
 
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  $member_names = lookup_member_names_for_rows($ma_url, $user, 
-					       $project_details, 
+  $member_names = lookup_member_names_for_rows($ma_url, $user,
+					       $project_details,
 					       PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
   //  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
 
