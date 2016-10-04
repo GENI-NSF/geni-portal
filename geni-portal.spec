@@ -388,6 +388,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/jacks-editor-app.js
 %{webdir}/secure/jacks-lib.js
 %{webdir}/secure/jfed.php
+%{webdir}/secure/join-project.css
 %{webdir}/secure/join-project.js
 %{webdir}/secure/join-project.php
 %{webdir}/secure/join-this-project.php

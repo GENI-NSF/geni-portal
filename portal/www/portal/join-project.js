@@ -1,5 +1,5 @@
 function show_lookup_error(msg) {
-  $('#finderror').append(msg);
+  $('#finderror').html(msg);
   $('#findname').select();
 }
 
@@ -28,7 +28,7 @@ function handle_error(jqXHR, textStatus, errorThrown) {
 
 function lookup_project(project_name) {
   // Clear out any previous errors
-  $('#finderror').empty();
+  $('#finderror').html('&nbsp;');
   var lookup_url = "/secure/lookup-project.php";
   var data = {name: project_name};
   $.post(lookup_url, data, handle_lookup, 'json').fail(handle_error);
@@ -44,4 +44,5 @@ $(document).ready( function () {
   /* datatables.net (for sortable/searchable tables) */
   $('#projects').DataTable({paging: false});
   $('#findbtn').click(do_lookup_project);
+  $('<link rel="stylesheet" href="join-project.css"></link>').appendTo(document.head);
 } );

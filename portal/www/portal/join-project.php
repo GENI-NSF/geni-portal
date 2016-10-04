@@ -77,7 +77,8 @@ print "<p>All GENI actions must be taken in the context of a
 
 print "<p><b>You should only request to join a project if the project
  lead knows you, as the  project lead is taking responsibility for
- your actions. Abuse of this functionality may result in revocation
+ your actions. Please do not try to join arbitrary projects. Abuse of
+ this functionality may result in revocation
  of your GENI account.</b></p>";
 
 print "<p>Once the project lead makes a decision about your request you
@@ -95,20 +96,18 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 
 } else {
 
-  print "<h2>Select a project to join</h2>\n";
-  print "<p><i>Please do not try to join arbitrary projects. Abuse of
-   this functionality may result in revocation of your GENI account.
-   </i></p>";
 ?>
 
+<section id="findform">
 <form>
-<input id="findname" type="text"/>
-<div id="finderror"></div>
-<br/>
+Enter a project name: <input id="findname" type="text"/>
 <button id="findbtn" type="submit">Join</button>
+<div id="finderror">&nbsp;</div>
+</section>
 </form>
 
 <?php
+  print "<h2>GENI Projects</h2>\n";
   print "<table id=\"projects\" class=\"display\">\n";
   print "<thead>\n";
   print "<tr><th>Project Purpose</th><th>Project Lead</th></tr>\n";
