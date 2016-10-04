@@ -4,11 +4,11 @@ function show_lookup_error(msg) {
 }
 
 function handle_lookup(data) {
-  if (data.code == 0) {
+  if (data.code === 0) {
     // Project lookup was successful
     // redirect to join-this-project.php?project_id=id
     // get project from value field, and project_id from that
-    var project = data.value
+    var project = data.value;
     if (project.expired) {
       show_lookup_error("Project " + project.project_name + " has expired.");
     } else {
@@ -29,8 +29,8 @@ function handle_error(jqXHR, textStatus, errorThrown) {
 function lookup_project(project_name) {
   // Clear out any previous errors
   $('#finderror').empty();
-  var lookup_url = "/secure/lookup-project.php"
-  var data = {name: project_name}
+  var lookup_url = "/secure/lookup-project.php";
+  var data = {name: project_name};
   $.post(lookup_url, data, handle_lookup, 'json').fail(handle_error);
 }
 
