@@ -69,23 +69,28 @@ echo '<script src="join-project.js"></script>';
 // Get list of all projects you are not in or already requested to join
 // Produce a table of projects you could join
 // project name, project lead, project description, Button to Join
+?>
+<h1>Join a Project</h1>
 
-print "<h1>Join a Project</h1>\n";
+<p>
+You must belong to a GENI Project in order to create or join slices
+and run experiments.  On this page, you can request to join a project.
+</p>
 
-print "<p>All GENI actions must be taken in the context of a
-  project. On this page, you can request to join a project.</p>";
+<p><b>
+You should request to join a project only if the project lead knows you,
+as he or she is taking responsibility for your actions. Attempts to join
+projects whose leads you do not know may result in the revocation of your
+GENI account.
+</b></p>
 
-print "<p><b>You should only request to join a project if the project
- lead knows you, as the  project lead is taking responsibility for
- your actions. Please do not try to join arbitrary projects. Abuse of
- this functionality may result in revocation
- of your GENI account.</b></p>";
+<p>
+After the project lead makes a decision about your request, you will be
+notified by email. Once you are a member of a project, you can create or
+request to join a slice.
+</p>
 
-print "<p>Once the project lead makes a decision about your request you
- will be notified through email. Once you are a member of a project,
- you can create a slice, or request to join an existing slice.";
-
-
+<?php
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
