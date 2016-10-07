@@ -124,7 +124,7 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
 https://$hostname/secure/handle-project-request.php?project_id=$project_id&member_id=" . $user->account_id . "&request_id=$request_id
 
 Remember that when you approve this request, you agree to take
-responsibility for my use of GENI resources within the project. 
+responsibility for my use of GENI resources within the project.
 You should not approve unsolicited requests to join your project.
 
 Thank you,\n" . $user->prettyName() . "\n";
@@ -149,7 +149,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   $name = $user->prettyName();
   if (isset($log_url)) {
     log_event($log_url, Portal::getInstance(),
-	      "$name requested to join project $project_name", 
+	      "$name requested to join project $project_name",
 	      $attributes);
   }
 
@@ -163,11 +163,11 @@ Thank you,\n" . $user->prettyName() . "\n";
     $cc = ""; // FIXME: Include portal-dev-admin?
   }
   $headers = "Reply-To: $email" . "\r\n" . $cc . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
-  
+
   mail($lead->prettyEmailAddress(),
        "Request to Join GENI project $project_name",
        $message, $headers);
-       
+
   // We could supply the -f arg to make bounces go back to this portal user,
   // but we probably want to know if the lead's email address is bouncing.
        //       "-f $email");
@@ -176,7 +176,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   show_header('GENI Portal: Projects');
   include("tool-breadcrumbs.php");
   print "<h1>Join Project <i>$project_name</i></h1>\n";
-  
+
   print "<p>\n";
   print "<b>Sent</b> request to join GENI project <b>$project_name</b> to <b>$leadname</b>.</p>\n";
   $lines = explode("\r\n", $message);
@@ -187,22 +187,33 @@ Thank you,\n" . $user->prettyName() . "\n";
   print "</pre>";
   include("footer.php");
   exit();
-  
+
 }
 
 show_header('GENI Portal: Projects');
 include("tool-breadcrumbs.php");
-print "<h1>Join Project <i>$project_name</i></h1>\n";
 
-print "<p>All GENI actions must be taken in the context of a project. \n";
-print "On this page, you can request to join the project <i>$project_name</i>.</p> " 
-  . "<p>The project lead ($leadname) will be sent an email, to approve or deny your request. \n";
-print "That email will have a link to a page where the project lead can act on your request. \n";
-print "When the project lead ($leadname) acts on your request, you will get an email " .
-"notifying you whether your request was approved.\n";
-print "Once approved, you can create a slice, or request to join an existing slice.</p>\n";
-print "<p>When you ask to join a project, you are requesting that the project lead take responsibility for your use of GENI resources within that project. You should only request to join a project if the project lead knows who you are and wishes for you to join his or her project.</p>\n";
+?>
 
+<h1>Join Project <i><?php echo $project_name; ?></i></h1>
+
+<p>
+You are about to request to join the project
+<i><?php echo $project_name; ?></i> whose lead is
+<i><?php echo $leadname; ?></i>.
+You should continue with this request only if
+<?php echo $leadname; ?> knows you and would be willing to
+take responsibility for your use of GENI resources.
+</p>
+
+<p>
+When you send your join request, <?php echo $leadname; ?> will
+be sent an email with instructions to approve or deny
+your request. After your request is approved, you can create
+or join a slice in this project.
+</p>
+
+<?php
 //- Show info on the project, lead
 print "<h3>Project <i>$project_name</i> details:</h3>\n";
 print "<table>\n";

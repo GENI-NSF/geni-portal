@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Rework the 'Join A Project' page for better privacy
+  ([#1743](https://github.com/GENI-NSF/geni-portal/issues/1743))
 * Remove cc to admins on self-asserted email address
   ([#1744](https://github.com/GENI-NSF/geni-portal/issues/1744))
 
