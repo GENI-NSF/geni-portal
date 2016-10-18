@@ -71,7 +71,7 @@ function add_gemini($rspec_string)
   $isExogeni = False;
   //$gem_mp_node = getGeminiNode($rspec_roottag,'MP');
   //$gem_mp_node = getGeminiNode($ddoc,'MP');
-  $DiskJSON = json_decode(file_get_contents('http://gemini.netlab.uky.edu/DiskImages.json'),True);
+  $DiskJSON = json_decode(file_get_contents('http://genidesktop.netlab.uky.edu/repo/DiskImages.json'),True);
   $all_ams = array();
   $nodes_to_delete = array();
   $rspec_nodes = $rspec_roottag->getElementsByTagNameNS(rspec_namespace, 'node');
