@@ -8,6 +8,8 @@
   ([#1743](https://github.com/GENI-NSF/geni-portal/issues/1743))
 * Remove cc to admins on self-asserted email address
   ([#1744](https://github.com/GENI-NSF/geni-portal/issues/1744))
+* Use GENI Monitoring for Jacks AM status
+  ([#1747](https://github.com/GENI-NSF/geni-portal/issues/1747))
 * Change the Disk Image JSON URL for the Genidesktop
   ([#1748](https://github.com/GENI-NSF/geni-portal/issues/1748))
 

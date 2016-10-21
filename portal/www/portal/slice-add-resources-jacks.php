@@ -31,6 +31,7 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once("settings.php");
 require_once 'geni_syslog.php';
+require_once("aggstatus.php");
 
 $current_rspec = "";
 if (array_key_exists('current_editor_rspec', $_POST)) {
@@ -119,7 +120,7 @@ $all_rspecs = fetchRSpecMetaData($user);
 include("jacks-editor-app.php");
 setup_jacks_editor_slice_context();
 
-$AM_STATUS_LOCATION = "/etc/geni-ch/am-status.json";
+$AM_STATUS_LOCATION = $AM_STATUS_MON_FILE;
 $am_status = array("fake_urn" => "fake_status");
 if (file_exists($AM_STATUS_LOCATION)) {
   $am_status = json_decode(file_get_contents($AM_STATUS_LOCATION));

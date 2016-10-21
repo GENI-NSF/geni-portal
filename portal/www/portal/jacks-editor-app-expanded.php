@@ -25,6 +25,7 @@
 require_once("user.php");
 require_once("header.php");
 require_once("settings.php");
+require_once("aggstatus.php");
 
 // error_log("POST = " . print_r($_POST, true));
 
@@ -57,7 +58,7 @@ echo '<script src="/secure/slice-add-resources-jacks.js"></script>';
 include("jacks-editor-app.php");
 setup_jacks_editor_slice_context();
 
-$AM_STATUS_LOCATION = "/etc/geni-ch/am-status.json";
+$AM_STATUS_LOCATION = $AM_STATUS_MON_FILE;
 $am_status = array("fake_urn" => "fake_status");
 if (file_exists($AM_STATUS_LOCATION)) {
   $am_status = json_decode(file_get_contents($AM_STATUS_LOCATION));
