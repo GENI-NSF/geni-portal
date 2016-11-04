@@ -192,4 +192,25 @@ function agg_status_legend() {
   $result .= '</dl>';
   return $result;
 }
+
+function agg_status_legend_section() {
+  $result = '';
+  $result .= '<section>';
+  $result .= '<h3>Legend</h3>';
+  $result .= agg_status_legend();
+  $result .= '</section>';
+  return $result;
+}
+
+function agg_status_monitoring_section() {
+  $result = '<section>';
+  $result .= 'The following is a summary up/down status for each aggregate as reported by ';
+  $result .= '<a href="https://genimon.uky.edu/login" target="_blank">';
+  $result .= 'GENI Monitoring</a>. ';
+  $result .= 'For detailed information go to the ';
+  $result .= '<a href="https://genimon.uky.edu/status" target="_blank">';
+  $result .= 'GENI monitoring aggregate status page</a> (no login required).';
+  $result .= '</section>';
+  return $result;
+}
 ?>

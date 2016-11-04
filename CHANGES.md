@@ -12,7 +12,7 @@
   ([#1747](https://github.com/GENI-NSF/geni-portal/issues/1747))
 * Change the Disk Image JSON URL for the Genidesktop
   ([#1748](https://github.com/GENI-NSF/geni-portal/issues/1748))
-* Add Links to GENI monitoring on aggregate status page
+* Add Links to GENI monitoring on aggregate status pages
   ([#1751](https://github.com/GENI-NSF/geni-portal/issues/1751))
 
 ## Installation Notes
