@@ -71,12 +71,12 @@ echo 'and available without charge for research and classroom use.';
 
 <h2> Logging into GENI </h2>
 
-<p> 
+<p>
 GENI is freely available for research and educational purposes. To get
 started, simply log in and activate your account.</p>
 
 <p>
-GENI allows users to log in using their existing accounts via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
+GENI allows users to log in using their existing accounts via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation.
 <ul>
   <li>If you are affiliated with a US college or university that is a
   <a
@@ -85,7 +85,7 @@ GENI allows users to log in using their existing accounts via our partnership in
   using your usual username and password to activate
   your GENI account.
   </li><li>If you are not affiliated with an InCommon federated
-  institution, you may <a href="https://shib-idp.geni.net/geni/request.html">request a GENI-only login</a>.</li>
+  institution, you may <a href="https://go.ncsa.illinois.edu/geni">request a federated login</a>.</li>
 </ul>
 </p>
 
@@ -114,14 +114,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 <ul>
 <li>
 <b>... and don't have a login or can't login</b>,
-  <a href="https://shib-idp.geni.net/geni/request.html">request a GENI-only login</a>.
-</li>
-</ul>
-
-<h3>If your account is with the GENI Identity Provider but you have forgotten your password...</h3>
-<ul>
-<li>
-... Go <a href="https://shib-idp.geni.net/geni/reset.html">here</a> and supply your existing username and desired new password to request that your password be reset.
+  <a href="https://go.ncsa.illinois.edu/geni">request a federated login</a>.
 </li>
 </ul>
 
@@ -135,4 +128,3 @@ GENI allows users to log in using their existing accounts via our partnership in
 </div>
 
 <?php include("footer.php"); ?>
-
