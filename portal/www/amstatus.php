@@ -34,11 +34,8 @@ show_html_head('GENI Aggregate Status');
 <div id="content-outer" class="one-card">
 <div id="content">
 <h1>GENI Aggregate Status</h1>
-
-  <section>
-    <h3>Legend</h3>
-    <?php print agg_status_legend(); ?>
-  </section>
+  <?php print agg_status_monitoring_section(); ?>
+  <?php print agg_status_legend_section(); ?>
   <section>
     <h3>Aggregate Status</h3>
     <div class='tablecontainer'>
