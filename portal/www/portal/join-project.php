@@ -33,8 +33,8 @@ require_once("cs_constants.php");
 
 function project_name_compare($p1, $p2)
 {
-  $pn1 = $p1[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
-  $pn2 = $p2[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
+  $pn1 = $p1[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  $pn2 = $p2[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   if ($pn1 == $pn2) {
     return 0;
   } else {
@@ -62,25 +62,35 @@ show_header('GENI Portal: Projects');
 
 include("tool-breadcrumbs.php");
 
+// Load this page's javascript
+echo '<script src="join-project.js"></script>';
+
 // Join a project
 // Get list of all projects you are not in or already requested to join
 // Produce a table of projects you could join
 // project name, project lead, project description, Button to Join
+?>
+<h1>Join a Project</h1>
 
-print "<h1>Join a Project</h1>\n";
+<p>
+You must belong to a GENI Project in order to create or join slices
+and run experiments.  On this page, you can request to join a project.
+</p>
 
-print "<p>All GENI actions must be taken in the context of a
-  project. On this page, you can request to join a project.</p>";
+<p><b>
+You should request to join a project only if the project lead knows you,
+as he or she is taking responsibility for your actions. Attempts to join
+projects whose leads you do not know may result in the revocation of your
+GENI account.
+</b></p>
 
-print "<p><b>You should only request to join a project if the project
- lead knows you, as the  project lead is taking responsibility for
- your actions. Abuse of this functionality may result in revocation
- of your GENI account.</b></p>";
+<p>
+After the project lead makes a decision about your request, you will be
+notified by email. Once you are a member of a project, you can create or
+request to join a slice.
+</p>
 
-print "<p>Once the project lead makes a decision about your request you
- will be notified through email. Once you are a member of a project,
- you can create a slice, or request to join an existing slice.";
-
+<?php
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
@@ -91,29 +101,28 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 
 } else {
 
-  print "<h2>Select a project to join</h2>\n";
-  print "<p><i>Please do not try to join arbitrary projects. Abuse of
-   this functionality may result in revocation of your GENI account.
-   </i></p>";
-   
-  /* datatables.net (for sortable/searchable tables) */
-  echo '<script type="text/javascript">';
-  echo '$(document).ready( function () {';
-  echo '  $(\'#projects\').DataTable({paging: false});';
-  echo '} );';
-  echo '</script>';
-   
+?>
+
+<section id="findform">
+<form>
+Enter a project name: <input id="findname" type="text"/>
+<button id="findbtn" type="submit">Join</button>
+<div id="finderror">&nbsp;</div>
+</section>
+</form>
+
+<?php
+  print "<h2>GENI Projects</h2>\n";
   print "<table id=\"projects\" class=\"display\">\n";
   print "<thead>\n";
-  print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
-  $jointhis_url = "join-this-project.php?project_id=";
+  print "<tr><th>Project Purpose</th><th>Project Lead</th></tr>\n";
   $project_details = lookup_project_details($sa_url, $user, $pids);
   usort($project_details, "project_name_compare");
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
 
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  $member_names = lookup_member_names_for_rows($ma_url, $user, 
-					       $project_details, 
+  $member_names = lookup_member_names_for_rows($ma_url, $user,
+					       $project_details,
 					       PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
   //  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
 
@@ -123,16 +132,11 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     //    $project = lookup_project($sa_url, $user, $project_id);
     $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
     if (convert_boolean($expired)) continue;
-    print "<tr><td>";
-    print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    print "</td><td>";
-    print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-    print "</td><td>";
+    $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+    if (! $purpose) continue;
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
     $leadname = $member_names[$lead_id];
-    print $leadname;
-    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-    print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
+    print "<tr><td>$purpose</td><td>$leadname</td></tr>\n";
   }
   print "</tbody>\n";
   print "</table>\n";

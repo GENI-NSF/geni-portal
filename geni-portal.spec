@@ -2,7 +2,7 @@
 %define legacy_name geni-ch
 
 Name:           geni-portal
-Version:        3.17
+Version:        3.18
 Release:        1%{?dist}
 Summary:        GENI Experimenter Portal
 BuildArch:      noarch
@@ -388,6 +388,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/jacks-editor-app.js
 %{webdir}/secure/jacks-lib.js
 %{webdir}/secure/jfed.php
+%{webdir}/secure/join-project.css
+%{webdir}/secure/join-project.js
 %{webdir}/secure/join-project.php
 %{webdir}/secure/join-this-project.php
 %{webdir}/secure/km_utils.php
@@ -400,6 +402,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/kmsendemail.php
 %{webdir}/secure/kmconfirmemail.php
 %{webdir}/secure/listresources.php
+%{webdir}/secure/lookup-project.php
 %{webdir}/secure/listresources_plain.php
 %{webdir}/secure/loadcert.js
 %{webdir}/secure/loadcert.php
