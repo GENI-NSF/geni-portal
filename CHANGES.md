@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Install Jacks icon file VM-noTxt-centered
+  ([#1756](https://github.com/GENI-NSF/geni-portal/issues/1756))
 
 ## Installation Notes
 
