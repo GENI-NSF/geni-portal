@@ -301,6 +301,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/images/Symbols-Tips-icon-clear.png
 %{webdir}/images/UseGENI.png
 %{webdir}/images/witest-logo-white.png
+%{webdir}/images/VM-noTxt-centered.svg
 %{webdir}/images/Xen-VM-noTxt-centered.svg
 %{webdir}/images/Xen-VM-noTxt.svg
 %{webdir}/images/Xen-VM.svg
