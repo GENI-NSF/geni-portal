@@ -2,7 +2,7 @@
 
 <VirtualHost @portal_host@:80>
 <Directory /var/www/>
-        # Redirect HTTP to HTTPS 
+        # Redirect HTTP to HTTPS
         RewriteEngine On
         RewriteCond %{HTTPS} !=on
         RewriteRule ^(.*) https://%{HTTP_HOST}%{REQUEST_URL} [R,L]
@@ -185,7 +185,7 @@
 	# Load the Shibboleth module.
 	#
 	#LoadModule mod_shib /usr/lib/apache2/modules/mod_shib_22.so
-	
+
 	#
 	# Used for example logo and style sheet in error templates.
 	#
@@ -196,7 +196,7 @@
 		Alias /shibboleth-sp/main.css /usr/share/shibboleth/main.css
 		Alias /shibboleth-sp/logo.jpg /usr/share/shibboleth/logo.jpg
 	</IfModule>
-	
+
 	#
 	# Configure the module for content.
 	#
@@ -212,6 +212,8 @@
 		php_value include_path ".:/usr/share/php:/usr/share/geni-ch/lib/php:/usr/share/pear"
 	</Location>
 
+        # Include the OpenID apache config
+        Include /usr/share/geni-ch/openid/httpd-centos7.conf
 </VirtualHost>
 
 # Catch-all default virtual host, so other CNAMEs to this IP are not

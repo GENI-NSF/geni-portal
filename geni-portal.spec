@@ -133,6 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/lib/php/util.php
 %{_datadir}/%{legacy_name}/openid/apache2-consumer.conf
 %{_datadir}/%{legacy_name}/openid/apache2.conf
+%{_datadir}/%{legacy_name}/openid/httpd-centos7.conf
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID.php
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID/Association.php
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID/AX.php

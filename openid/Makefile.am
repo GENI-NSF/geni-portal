@@ -1,5 +1,28 @@
 svcdatadir = $(pkgdatadir)/openid
 
+edit = sed \
+	-e 's|@svcdatadir[@]|$(svcdatadir)|g'
+
+doc/apache2.conf doc/httpd-centos7.conf: Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+	  test -f ./$@.in || srcdir=$(srcdir)/; \
+	  $(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	mv $@.tmp $@
+
+doc/apache2.conf: $(srcdir)/doc/apache2.conf.in
+doc/httpd-centos7.conf: $(srcdir)/doc/httpd-centos7.conf.in
+
+# Distribute these but do not install them
+EXTRA_DIST = \
+	doc/apache2.conf.in \
+	doc/httpd-centos7.conf.in
+
+CLEANFILES = \
+	doc/apache2.conf \
+	doc/httpd-centos7.conf
+
 nobase_dist_svcdata_DATA = \
 	src/consumer/common.php \
 	src/consumer/finish_auth.php \
@@ -80,7 +103,8 @@ nobase_dist_svcdata_DATA = \
 
 dist_svcdata_DATA = \
 	doc/apache2.conf \
-	doc/apache2-consumer.conf
+	doc/apache2-consumer.conf \
+	doc/httpd-centos7.conf
 
 # I don't think we need config.php.tmpl installed.
 # There are config.php files in the server-[in]direct directories.
