@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Add CentOS 7 httpd config for OpenID
+  ([#1755](https://github.com/GENI-NSF/geni-portal/issues/1755))
 * Install Jacks icon file VM-noTxt-centered
   ([#1756](https://github.com/GENI-NSF/geni-portal/issues/1756))
 

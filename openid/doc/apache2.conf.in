@@ -1,0 +1,13 @@
+Alias /server @svcdatadir@/src/server-direct
+<Directory @svcdatadir@/src/server-direct>
+  Options MultiViews
+  Order allow,deny
+  Allow from all
+</Directory>
+
+Alias /secure/openid @svcdatadir@/src/server-indirect
+<Directory @svcdatadir@/src/server-indirect>
+  Options MultiViews
+  Order allow,deny
+  Allow from all
+</Directory>

@@ -1,0 +1,6 @@
+Alias /openid @svcdatadir@/src/consumer
+<Directory @svcdatadir@/src/consumer>
+  Options MultiViews
+  Order allow,deny
+  Allow from all
+</Directory>
