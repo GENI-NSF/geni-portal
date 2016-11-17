@@ -2,7 +2,7 @@
 %define legacy_name geni-ch
 
 Name:           geni-portal
-Version:        3.18
+Version:        3.19
 Release:        1%{?dist}
 Summary:        GENI Experimenter Portal
 BuildArch:      noarch
@@ -133,6 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/lib/php/util.php
 %{_datadir}/%{legacy_name}/openid/apache2-consumer.conf
 %{_datadir}/%{legacy_name}/openid/apache2.conf
+%{_datadir}/%{legacy_name}/openid/httpd-centos7.conf
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID.php
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID/Association.php
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID/AX.php
@@ -301,6 +302,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/images/Symbols-Tips-icon-clear.png
 %{webdir}/images/UseGENI.png
 %{webdir}/images/witest-logo-white.png
+%{webdir}/images/VM-noTxt-centered.svg
 %{webdir}/images/Xen-VM-noTxt-centered.svg
 %{webdir}/images/Xen-VM-noTxt.svg
 %{webdir}/images/Xen-VM.svg

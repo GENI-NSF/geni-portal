@@ -1,5 +1,20 @@
 # GENI Portal Release Notes
 
+# [Release 3.19](https://github.com/GENI-NSF/geni-portal/milestones/3.19)
+
+## Changes
+
+* Add CentOS 7 httpd config for OpenID
+  ([#1755](https://github.com/GENI-NSF/geni-portal/issues/1755))
+* Install Jacks icon file VM-noTxt-centered
+  ([#1756](https://github.com/GENI-NSF/geni-portal/issues/1756))
+* Make geni-fetch-aggmon request more data
+  ([#1762](https://github.com/GENI-NSF/geni-portal/issues/1762))
+
+## Installation Notes
+
+* None
+
 # [Release 3.18](https://github.com/GENI-NSF/geni-portal/milestones/3.18)
 
 ## Changes
