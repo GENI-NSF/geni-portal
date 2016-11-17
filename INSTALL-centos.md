@@ -4,7 +4,7 @@
 
 For installing the GENI Portal Software, shell windows on three servers are required:
 
- * The Portal host 
+ * The Portal host
  * The IdP host
  * The development host (from which the user can scp from/to the other hosts)
 
@@ -108,7 +108,7 @@ sudo cp /tmp/hosts /etc/hosts
 ```
 
 
-# 3. Install Shibboleth Software 
+# 3. Install Shibboleth Software
 
 3a. Edit shibboleth attribute-map.xml
 ```
@@ -165,11 +165,11 @@ sudo service tomcat6 restart
 
 ```
 # On development host:
-scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /tmp/idp-metadata-$IDP_HOST.xml 
+scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /tmp/idp-metadata-$IDP_HOST.xml
 scp /tmp/idp-metadata-$IDP_HOST.xml $PORTAL_HOST:/tmp
 ```
 
-``` 
+```
 # On portal host:
 # Add host-specific extensions to IDP metadata for GENI logo, name, etc.
 sed -e "/<Extensions>/r /tmp/idp-metadata-extension.xml" /tmp/idp-metadata-$IDP_HOST.xml > /tmp/idp-metadata-$IDP_HOST.extended.xml
@@ -204,7 +204,44 @@ sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 ```
 
-# 9. Restart HTTPD service
-```bash
+# 9. Disable HTTPD private tmp directory
+
+The portal uses /tmp to communicate between the portal and launched
+omni/stitcher commands. Depending on the installation, CentOS may enable
+a private /tmp directory for httpd which will hide the necessary files
+from launched omni/stitcher processes.
+
+To disable private tmp directory for httpd, edit the file:
+
+    /etc/systemd/system/multi-user.target.wants/httpd.service
+
+and set `PrivateTmp` to false:
+
+````
+PrivateTmp=false
+````
+
+# 10. Enable HTTPD and SHIBD services to start at boot time
+
+The following commands will enable the services to start at boot time:
+
+````sh
+sudo systemctl enable httpd.service
+
+sudo systemctl enable shibd.service
+````
+
+The following commands will verify that the services are set to start
+at boot time. These should report "enabled".
+
+````sh
+sudo systemctl is-enabled httpd.service
+
+sudo systemctl is-enabled shibd.service
+````
+
+# 11. Restart HTTPD service
+
+```sh
 sudo systemctl restart httpd.service
 ```
