@@ -8,6 +8,8 @@
   ([#1755](https://github.com/GENI-NSF/geni-portal/issues/1755))
 * Install Jacks icon file VM-noTxt-centered
   ([#1756](https://github.com/GENI-NSF/geni-portal/issues/1756))
+* Make geni-fetch-aggmon request more data
+  ([#1762](https://github.com/GENI-NSF/geni-portal/issues/1762))
 
 ## Installation Notes
 
