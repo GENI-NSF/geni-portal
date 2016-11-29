@@ -5,10 +5,10 @@ rpm package. In order to build the package you must first install
 the rpm packaging tools. On CentOS 7, the tools can be
 installed with the following commands:
 
-```
-yum install rpm-build rpmdevtools rpmlint
-yum groupinstall "Development Tools"
-yum install httd texinfo
+```sh
+sudo yum install -y rpm-build rpmdevtools rpmlint createrepo
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y httpd texinfo
 ```
 
 As a regular user (not root), set up an rpm build area:
@@ -20,15 +20,23 @@ rpmdev-setuptree
 Download the geni-ch tar file. Check for the file on the releases tab at
 the [GitHub project page](https://github.com/GENI-NSF/geni-portal).
 
-Alternatively, instead of downloading the geni-ch tar file, you can create it as follows:
+Alternatively, instead of downloading the geni-ch tar file, you can create
+it as follows:
+
 ```
 git clone https://github.com/GENI-NSF/geni-portal.git
-git checkout transition
+cd geni-portal
+
+# Optionally checkout a branch other than the default
+
 ./autogen.sh
 ./configure
 make dist
-cp geni-portal/geni-ch-3.11.tar.gz ~/rpmbuild/SOURCES
-cp geni-portal/geni-portal.spec ~/rpmbuild/SPECS
+
+# Replace version number below with current version number
+VERSION=3.19
+
+cp geni-ch-${VERSION}.tar.gz ~/rpmbuild/SOURCES
 rpmbuild -ba geni-portal.spec
 ```
 
@@ -36,7 +44,7 @@ Once the tar file has been downloaded or created,
 follow these steps to build the package:
 
 ```
-VERSION=3.11
+VERSION=3.19
 tar zxf geni-ch-${VERSION}.tar.gz
 mv geni-ch-${VERSION}.tar.gz "${HOME}"/rpmbuild/SOURCES
 mv geni-ch-${VERSION}/geni-portal.spec "${HOME}"/rpmbuild/SPECS
@@ -49,12 +57,6 @@ This will generate the following files:
  * The source rpm: `"${HOME}"/rpmbuild/SRPMS/geni-portal-${VERSION}-1.el7.src.rpm`
 
 # Creating a yum repository
-
-Install the `createrepo` tool:
-
-```
-yum install createrepo
-```
 
 Create a repository directory and move the files into it:
 
