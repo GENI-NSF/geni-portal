@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Update packaging and cron documentation
+  ([#1765](https://github.com/GENI-NSF/geni-portal/issues/1765))
 
 ## Installation Notes
 
