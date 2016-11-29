@@ -286,12 +286,19 @@ telling them they should renew their certificate.
 For integration with wireless testbeds the GENI portal can synchronize
 GENI projects and users with wireless LDAP databases. In order to keep
 these two systems in sync a cron job runs a script periodically (nominally
-once a day) to synchronize all groups and accounts.
+once a day) to synchronize all groups and accounts. This command is
+typically run with the portal certificate and private key. These are
+commonly found in the directory @code{/usr/share/geni-ch/portal}.
+
+@emph{N.B. The entry below must appear on a single line, without the
+backslash. The use of backslash and multiple lines is for readability
+in this document}
 
 @example
 # Synchronize with wireless testbeds
 # Sync wireless groups and accounts
-00 2 * * * /usr/bin/geni-sync-wireless --cleanup
+0 2 * * * /usr/bin/geni-sync-wireless --cleanup \
+        -k /path/to/private-key.pem -c /path/to/certificate.pem
 @end example
 
 @subsection Fetch aggregate status information
