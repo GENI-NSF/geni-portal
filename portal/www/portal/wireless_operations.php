@@ -25,9 +25,9 @@
 <?php
 
 // Support for wireless operations for enabling/disabling projects
-//   in ORBIT/Wireless/WiMAX testbeds and 
+//   in ORBIT/Wireless/WiMAX testbeds and
 //   synchronizing project/member information between GENI and ORBIT
-// 
+//
 //  wireless_operations?operation=sync&project_name=X
 //    synchronize project data for project X between GENI and ORBIT
 //
@@ -36,7 +36,7 @@
 //
 //  wireless_operations?operation=disable&project_name=X&project_id=XID
 //    disable project X for wireless operations
-// 
+//
 
 ?>
 
@@ -61,11 +61,16 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 // Invoke geni-sync-wireless tool on given project
 function sync_object($object_type, $object_name)
 {
+  global $portal_cert_file;
+  global $portal_private_key_file;
+
   # Should only provide error information on stderr: put stdout to syslog
   $cmd = "geni-sync-wireless $object_type $object_name";
+  $cmd .= " -k $portal_private_key_file";
+  $cmd .= " -c $portal_cert_file";
   error_log("SYNC(cmd) " . $cmd);
-  $descriptors = array(0 => array("pipe", "r",), 
-		 1 => array("pipe", "w"), 
+  $descriptors = array(0 => array("pipe", "r",),
+		 1 => array("pipe", "w"),
 		 2 => array("pipe", "w"));
   $process = proc_open($cmd, $descriptors, $pipes);
   $std_output = stream_get_contents($pipes[1]); # Should be empty
@@ -87,7 +92,7 @@ function sync_object($object_type, $object_name)
 }
 
 // Synch GENI and ORBIT project/group and member/user data for given project
-function perform_wireless_sync($project_name) 
+function perform_wireless_sync($project_name)
 {
   $ret_code = sync_object("--project", $project_name);
   return generate_response($ret_code, "", array());
@@ -103,7 +108,7 @@ function perform_wireless_sync_for_user($username)
 function perform_wireless_enable($sa_url, $user, $project_id, $project_name)
 {
   $result = add_project_attribute($sa_url, $user, $project_id,
-				  PA_ATTRIBUTE_NAME::ENABLE_WIMAX, 
+				  PA_ATTRIBUTE_NAME::ENABLE_WIMAX,
 				  $user->account_id);
 
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
@@ -126,12 +131,12 @@ function perform_wireless_disable($sa_url, $user, $project_id, $project_name)
 }
 
 if(
-   !array_key_exists('operation', $_GET) || 
+   !array_key_exists('operation', $_GET) ||
    !array_key_exists('project_id', $_GET) ||
    !array_key_exists('project_name', $_GET))
     {
       $result = generate_response(RESPONSE_ERROR::ARGS,
-				  "No operation or project_id or project_name specified to wireless_operations", 
+				  "No operation or project_id or project_name specified to wireless_operations",
 				  array());
     } else {
   $operation = $_GET['operation'];
@@ -145,7 +150,7 @@ if(
     $result = perform_wireless_disable($sa_url, $user, $project_id, $project_name);
   } else {
     $result = generate_response(RESPONSE_ERROR::ARGS,
-				"Unsupported wireless operation: " + $_GET['operation'], 
+				"Unsupported wireless operation: " + $_GET['operation'],
 				array());
   }
 }
