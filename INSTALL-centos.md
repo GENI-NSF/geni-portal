@@ -16,6 +16,19 @@ In addition, these environment variables must be defined on the appropriate wind
  * $CH_HOST : the address of the GENI Clearinghouse to which the Portal is being associated
  * $IDP_HOST : The address of the IdP (Identity Provider) to which the Portal is being associated
 
+Examples of setting these environment variables would be:
+
+For bash:
+
+```
+export PORTAL_HOST=geni-portal.site.edu
+```
+
+For csh:
+```
+setenv PORTAL_HOST geni-portal.site.edu
+```
+
 # Install Portal Software
 
 Ensure OS is up to date
@@ -52,10 +65,16 @@ Test it out
 ntpq -p
 ```
 
+Install wget command:
+
+```
+sudo yum install -y wget
+```
+
 Add Shibboleth repository:
 
 ```bash
-wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo
+sudo wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo
 sudo cp security\:shibboleth.repo /etc/yum.repos.d/
 ```
 
@@ -97,13 +116,11 @@ sudo yum reinstall -y polkit\* power
 sudo reboot
 ```
 
-
-
 Map public facing IP address to fully-qualified domain name:
 
 ```bash
-cp /etc/hosts /tmp/hosts
-echo "`hostname -i`  `hostname -f`" >> /tmp/hosts
+sudo cp /etc/hosts /tmp/hosts
+sudo echo "`hostname -i`  `hostname -f`" >> /tmp/hosts
 sudo cp /tmp/hosts /etc/hosts
 ```
 
@@ -115,6 +132,8 @@ sudo cp /tmp/hosts /etc/hosts
 Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
 below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
 ```
+
+[NOTE: comments are delimited by <!-- at the start of the comment and --> at the end of the comment]
 
 3b. Install Embedded Discovery Service
 ```bash
@@ -134,6 +153,8 @@ sudo cp /usr/share/geni-ch/templates/parameters.json \
 # Edit /etc/geni-ch/parameters.json [Especially note portal_host, ch_host, db_host and idp_host]
 sudo /sbin/geni-portal-install-templates
 ```
+
+**[NOTE for Hussam: Please let me know if idp_host is in the parameters.json file when you do the install]**
 
 # 5. Install and run Shib SP
 ```bash
@@ -176,7 +197,16 @@ sed -e "/<Extensions>/r /tmp/idp-metadata-extension.xml" /tmp/idp-metadata-$IDP_
 sudo cp /tmp/idp-metadata-$IDP_HOST.extended.xml /etc/shibboleth/idp-metadata-$IDP_HOST.xml
 ```
 
+**[NOTE for Hussam: Please let me know if this works as is.  There was some confusion with this.  I have the notes below]**
 
+Start the web server:
+```
+sudo systemctl enable httpd
+sudo systemctl start httpd
+cd /var/www/html
+sudo ln -s ../secure .
+
+**[end of NOTE for Hussam]**
 
 # 7. Install GENI PORTAL tables
 ```bash
@@ -193,6 +223,11 @@ $PSQL -f /usr/share/geni-ch/km/db/postgresql/schema.sql
 ```
 
 # 8. Install km and portal certs from CH machine
+
+Copy cert to allow scp **[install command/process here]** and change userid to centos@ **[from?]**
+
+
+
 ```bash
 # On Development Host:
 scp $CH_HOST:/usr/share/geni-ch/portal/portal-*.pem /tmp
