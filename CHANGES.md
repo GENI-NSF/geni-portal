@@ -6,6 +6,8 @@
 
 * Update packaging and cron documentation
   ([#1765](https://github.com/GENI-NSF/geni-portal/issues/1765))
+* Switch to GitHub Flow
+  ([#1766](https://github.com/GENI-NSF/geni-portal/issues/1766))
 * Add cert and key to geni-sync-wireless call to sync one project
   ([#1767](https://github.com/GENI-NSF/geni-portal/issues/1767))
 
