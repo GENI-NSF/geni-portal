@@ -90,7 +90,7 @@ clearinghouse is an XML-RPC server written in Python.
 Installation is only supported on CentOS 7.  Installation instructions
 are found in the file @code{INSTALL-centos.md}. This file can be found
 online at
-@code{https://github.com/GENI-NSF/geni-portal/blob/develop/INSTALL-centos.md}
+@code{https://github.com/GENI-NSF/geni-portal/blob/master/INSTALL-centos.md}
 
 
 @node Operations

@@ -4,19 +4,24 @@ The GENI-NSF repositories are very much a community driven effort, and
 your contributions are critical. A big thank you to all our contributors!
 
 ## Mailing Lists
- * GENI Portal and Clearinghouse users may raise issues or get announcements on the general [GENI Users mailing list](https://groups.google.com/forum/#!forum/geni-users).
- * GENI developers discuss general GENI development on dev@geni.net. Subscribe here: http://lists.geni.net/mailman/listinfo/dev.
+
+* GENI experimenters can ask questions and get announcements on the
+  [GENI Users Google group](https://groups.google.com/forum/#!forum/geni-users).
+* Developers can discuss GENI development on the
+  [GENI Developers Google group](https://groups.google.com/forum/#!forum/geni-developers).
 
 ## General Guidelines
- - GENI-NSF projects follow the general [GitHub open source project guidelines](https://guides.github.com/activities/contributing-to-open-source/#contributing).
- - [Create a GitHub Issue](#reporting-issues) for any bug, feature, or enhancement you find or intend to address.
- - Submit enhancements or bug fixes using pull requests (see the [sample workflow below](#sample-contribution-workflow)).
- - GENI-NSF projects use the branching model found at
- http://nvie.com/posts/a-successful-git-branching-model/
-  - All work happens in issue-specific branches off of the `develop`
-  branch.
-   - For example, a branch for Issue 1234 might be named `tkt1234-my-feature`.
- - Note that all GENI-NSF code is released under the [GENI Public License](LICENSE.txt) and should include that license.
+
+* GENI-NSF projects follow the
+  [GitHub open source project guidelines](https://guides.github.com/activities/contributing-to-open-source/#contributing).
+* [Create a GitHub Issue](#reporting-issues) for any bug, feature, or
+  enhancement you find or intend to address.
+* Submit enhancements or bug fixes using pull requests
+  (see the [sample workflow below](#sample-contribution-workflow)).
+* GENI-NSF projects use the
+  [GitHub Flow](https://guides.github.com/introduction/flow/) branching model.
+* All GENI-NSF code is released under the [GENI Public License](LICENSE.txt)
+  and should include that license.
 
 ## Reporting Issues ##
  - Check [existing issues](https://github.com/GENI-NSF/geni-portal/issues) first to see if the issue has already been reported.
@@ -32,9 +37,7 @@ GENI Portal source code is available on [GitHub](https://github.com/GENI-NSF/gen
 
 ## Sample Contribution Workflow ##
  1. [Report the issue](#reporting-issues) or check issue comments for a suggested solution.
- 2. Create an issue-specific branch off of the `develop` branch in your [fork of the repository](http://guides.github.com/activities/forking/).
-  - Per the [branching model](http://nvie.com/posts/a-successful-git-branching-model/)
-  - E.G. `git checkout develop`, `git pull origin develop`, and then `git checkout -b tkt1234-my-feature`
+ 2. Create an issue-specific branch off of the `master` branch in your [fork of the repository](http://guides.github.com/activities/forking/).
  3. Develop your fix.
   - Follow the [code guidelines below](#code-style).
   - Reference the appropriate issue numbers in your commit messages.
@@ -42,7 +45,7 @@ GENI Portal source code is available on [GitHub](https://github.com/GENI-NSF/gen
   - All changes should be listed in the [CHANGES](CHANGES) file, with an issue number.
  4. Test your fix
  5. [Pull in any new changes](https://help.github.com/articles/syncing-a-fork) from the main repository ('upstream' repository).
- 6. [Submit a pull request](https://help.github.com/articles/using-pull-requests/) against the `develop` branch of the project repository.
+ 6. [Submit a pull request](https://help.github.com/articles/using-pull-requests/) against the `master` branch of the project repository.
  - In your pull request description, note what issue(s) your pull request addresses.
 
 ## Code Style ##
