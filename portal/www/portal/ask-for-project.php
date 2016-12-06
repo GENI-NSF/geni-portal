@@ -84,7 +84,7 @@ if (array_key_exists("to", $_REQUEST)) {
   $message .= "\nCreate my project here: https://$hostname/secure/edit-project.php
 
 In case you are new to GENI:
-GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
+GENI is an NSF funded virtual testbed supporting computer networking research and innovation.
 For more info on GENI, see: http://www.geni.net
 
 To create a project for me in GENI, you first go to the GENI Portal: https://$hostname
@@ -93,15 +93,15 @@ Then you need to wait for your GENI account to be approved to create
 projects, if you don't have that permission yet.
 You'll get email when your GENI account is approved to create projects, and you can go back to the GENI portal to log in.
 
-Once you are logged in to the GENI portal, click 'Create Project' to create a new project. 
+Once you are logged in to the GENI portal, click 'Create Project' to create a new project.
 (https://$hostname/secure/edit-project.php)
 
 Please give it the project name I listed, so I can find it again (or something similar).
 
 On the following project page, you should see an 'Invite Project Member' button. Click that, and enter my email address (" . $user->email() . "), to invite me to join the new project.
 
-I'll get an email telling me I've been invited, with a link in it. That link will take me to the 'Request to Join' the new project page in the GENI portal. 
-Once I request to join the project, you'll get another email, asking you to approve my membership in the new project. Click on the link 
+I'll get an email telling me I've been invited, with a link in it. That link will take me to the 'Request to Join' the new project page in the GENI portal.
+Once I request to join the project, you'll get another email, asking you to approve my membership in the new project. Click on the link
 in that email to add me to the project.
 
 Thank you,\n" . $user->prettyName() . "\n";
@@ -165,7 +165,7 @@ print "<textarea name='message' cols='60' rows='5'>Would you please create a GEN
 I need to use GENI for my research, and I need someone to create a 'GENI project' to hold my research.
 I don't have the right permissions to create a GENI project, but I think you do or could.
 
-Would you be willing to create a GENI project for my research, and be the responsible Project Lead for my project? 
+Would you be willing to create a GENI project for my research, and be the responsible Project Lead for my project?
 </textarea><br/>\n";
 print "<b>Message footer</b>: <br/>\n";
 print "Create my project here: https://$hostname/secure/edit-project.php<br/>
