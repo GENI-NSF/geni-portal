@@ -231,8 +231,9 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     }
 
     // set up e-mail
+    global $portal_from_email;
     $boundary_string = md5(date('r', time()));
-    $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
+    $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <$portal_from_email>";
     $subject = "GENI Portal Reservation Problem Report";
 
     $headers   = array();
@@ -243,7 +244,6 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
         $headers[] = "Cc: $cc";
     }
     $headers[] = "Reply-To: " . $user->prettyEmailAddress();
-    $headers[] = "Subject: {$subject}";
     $headers[] = "X-Mailer: PHP/" . phpversion();
 
     // start output buffering
