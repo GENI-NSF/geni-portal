@@ -376,7 +376,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/home.php
 %{webdir}/secure/image_operations.php
 %{webdir}/secure/index.php
-%{webdir}/secure/invite-to-geni.php
 %{webdir}/secure/invite-to-project.php
 %{webdir}/secure/irods.php
 %{webdir}/secure/jacks-app-details.php
