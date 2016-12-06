@@ -96,14 +96,14 @@ if (array_key_exists("to", $_REQUEST)) {
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
   $hostname = $_SERVER['SERVER_NAME'];
-  $message .= "\nTo join my project, go here: 
+  $message .= "\nTo join my project, go here:
       https://$hostname/secure/join-this-project.php?project_id=$project_id
 
 Once you request to join, I'll get an email to come back to the GENI portal and approve you.
 Then you can work with slices in my project.
 
 If you are new to GENI:
-GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
+GENI is an NSF funded virtual testbed supporting computer networking research and innovation.
 I use GENI, and you should too.
 For more info on GENI, see: http://www.geni.net
 To get started using GENI, go to the GENI Portal: https://$hostname
@@ -192,7 +192,7 @@ print "<h3>Invitation message:</h3>\n";
 // FIXME: ticket #66: Make this a template. Take from 'To join my' out of the editable bits.
 print "<p><textarea name='message' cols='60' rows='5'>Please work with me on GENI project $project_name!
 
-Since we work in the same lab, we should do our GENI research together. 
+Since we work in the same lab, we should do our GENI research together.
 That means belonging to the same GENI project.\n</textarea></p>\n";
 print "<h3>Message footer:</h3>\n";
 print "<p><i>To join my project, go here: <br/>
@@ -202,7 +202,7 @@ Once you request to join, I'll get an email to come back to the GENI portal and 
 Then you can work with slices in my project.
 <br/>
 If you are new to GENI:<br/>
-GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
+GENI is an NSF funded virtual testbed supporting computer networking research and innovation.
 I use GENI, and you should too.<br/>
 For more info on GENI, see: http://www.geni.net<br/>
 To get started using GENI, go to the GENI Portal: https://$hostname<br/>
