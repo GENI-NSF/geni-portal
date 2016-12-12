@@ -119,7 +119,6 @@ dist_svcweb_DATA = \
 	www/portal/index.php \
 	www/portal/home.php \
 	www/portal/image_operations.php \
-	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \
         www/portal/jacks-app.css \
         www/portal/jacks-app.js \

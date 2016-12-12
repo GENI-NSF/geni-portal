@@ -10,10 +10,12 @@
   ([#1766](https://github.com/GENI-NSF/geni-portal/issues/1766))
 * Add cert and key to geni-sync-wireless call to sync one project
   ([#1767](https://github.com/GENI-NSF/geni-portal/issues/1767))
+* Add from email address to settings instead of hard coded
+  ([#1769](https://github.com/GENI-NSF/geni-portal/issues/1769))
 
 ## Installation Notes
 
-* None
+* Add `$portal_from_email` to `/etc/geni-ch/settings.php`
 
 # [Release 3.19](https://github.com/GENI-NSF/geni-portal/milestones/3.19)
 
