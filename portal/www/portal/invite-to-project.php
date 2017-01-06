@@ -142,7 +142,7 @@ Thank you,\n" . $user->prettyName() . "\n";
        "Join my GENI project $project_name!",
        $message,
        $headers,
-       "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
+       "-f $portal_from_email");
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "$name invited people to project $project_name: $to";

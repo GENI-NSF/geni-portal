@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Set envelope sender to the portal's own email address
+  ([#1774](https://github.com/GENI-NSF/geni-portal/issues/1774))
 
 ## Installation Notes
 

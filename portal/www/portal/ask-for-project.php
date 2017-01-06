@@ -122,7 +122,7 @@ if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($er
        "Please create me a GENI Project",
        $message,
        $headers,
-       "-f $email");
+       "-f $portal_from_email");
 
   // FIXME: Ticket #65: Put this as a request. Include the request ID in the email?
   // Then when the request is handled, can auto add the member who requested the project.
