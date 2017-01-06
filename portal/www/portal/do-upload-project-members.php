@@ -124,7 +124,7 @@ foreach($selections as $email_name => $attribs) {
 
     mail($email, $email_subject, $email_text,
 	 $headers,
-	 "-f $userEmail");
+	 "-f $portal_from_email");
     $num_members_invited = $num_members_invited + 1;
   }
 }
