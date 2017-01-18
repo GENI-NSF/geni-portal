@@ -70,7 +70,7 @@ if ($error != NULL || count($_POST) == 0) {
     echo "</div>\n";
   }
   include('uploadsshkey.html');
-  
+
   // show button only if there are no SSH keys on file
   // don't let user generate public/private keypair if
   // they already have 1+ public keys on file
@@ -78,7 +78,7 @@ if ($error != NULL || count($_POST) == 0) {
   if (count($keys) == 0) {
     echo "<p>If you don't have an SSH keypair or want to create a new SSH keypair, <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>.</p>";
   }
-  
+
   include("footer.php");
   exit;
 }
@@ -96,7 +96,7 @@ register_ssh_key($ma_url, $user, $user->account_id, $filename, $description,
 
 $_SESSION['lastmessage'] = "Uploaded SSH public key from " . $_FILES["file"]["name"];
 
-relative_redirect('profile');
+relative_redirect('profile.php');
 ?>
 Your key was uploaded.<br/>
 <a href="profile.php">My Profile page</a>

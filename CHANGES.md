@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Fix redirect on upload ssh key
+  ([#1778](https://github.com/GENI-NSF/geni-portal/issues/1778))
 
 ## Installation Notes
 
