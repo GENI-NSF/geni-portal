@@ -416,9 +416,13 @@ class WirelessProjectManager:
             if username == self._options.holdingpen_admin:
                 continue
             member_ssh_keys = member_info['ssh_keys']
-            if len(member_ssh_keys) == 0:
-                syslog("Skipping user with no ssh keys: %s" % username)
-                continue
+            # The LDAP server on the other end requires ssh keys. If a user
+            # does not have them, use an obvious fake tag so they will See
+            # it in their profile. This solution is courtesy of Ivan at
+            # WinLab.
+            if not member_ssh_keys:
+                syslog('User %s has no ssh keys, using placeholder.' % (username))
+                member_ssh_keys = ['missing GENI ssh key']
             orbit_username = self.to_orbit_name(username)
             self.ensure_wimax_username(member_id, member_info)
             if orbit_username not in self._orbit_users:
