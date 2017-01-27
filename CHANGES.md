@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Use a placeholder ssh key in geni-sync-wireless
+  ([#1726](https://github.com/GENI-NSF/geni-portal/issues/1726))
 * Fix redirect on upload ssh key
   ([#1778](https://github.com/GENI-NSF/geni-portal/issues/1778))
 
