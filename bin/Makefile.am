@@ -31,10 +31,6 @@ dist_bin_SCRIPTS = \
 bin_SCRIPTS = \
 	geni-get-ad-rspecs
 
-if INSTALL_GITHASH
-pkgsysconf_DATA = geni-ch-githash
-endif
-
 # GPO Lab
 # Install in /usr/local/lib, not /usr/lib
 PYFILES = portal_utils/__init__.py portal_utils/orbit_interface.py

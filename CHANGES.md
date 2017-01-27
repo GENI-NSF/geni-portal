@@ -8,6 +8,8 @@
   ([#1726](https://github.com/GENI-NSF/geni-portal/issues/1726))
 * Fix redirect on upload ssh key
   ([#1778](https://github.com/GENI-NSF/geni-portal/issues/1778))
+* Remove githash file
+  ([#1781](https://github.com/GENI-NSF/geni-portal/issues/1781))
 
 ## Installation Notes
 

@@ -19,23 +19,20 @@ SRC_DIR = ../$(notdir $(CURDIR))
 default:
 	echo "Choose a specific sync target."
 
-bin/geni-ch-githash: .git
-	git rev-parse HEAD > bin/geni-ch-githash
-
-syncb: bin/geni-ch-githash
+syncb:
 	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) bigslide.gpolab.bbn.com:
 
-syncd: bin/geni-ch-githash
+syncd:
 	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) dagoola.gpolab.bbn.com:
 
-syncm: bin/geni-ch-githash
+syncm:
 	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) marilac.gpolab.bbn.com:
 
-synci: bin/geni-ch-githash
+synci:
 	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) illyrica.gpolab.bbn.com:
 
-syncc: bin/geni-ch-githash
+syncc:
 	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) cascade.gpolab.bbn.com:
 
-syncn: bin/geni-ch-githash
+syncn:
 	$(RSYNC) $(RSYNC_ARGS) $(SRC_DIR) nye.gpolab.bbn.com:
