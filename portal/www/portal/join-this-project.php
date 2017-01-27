@@ -63,6 +63,14 @@ if (! isset($project) || is_null($project)) {
   }
 }
 
+// Get the MA url for accessing member information
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! isset($ma_url)) {
+    error_log("Found no Member Authority Service");
+  }
+}
+
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
@@ -70,18 +78,26 @@ $leadname = $lead->prettyName();
 // Get all the admins for this project, so we can email them as well
 $admin_emails = array();
 
-// FIXME: For now, we can't send emails to project admins
-//
-// $admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
-//
-//if ($admins and count($admins) > 0) {
-//  foreach ($admins as $admin_res) {
-//    $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
-//    $admin_emails[] = $admin->prettyEmailAddress();
-//    //    error_log("Adding admin " . $admin->prettyName());
-//  }
-//}
-//
+// Per Vic T., do an end around here and use the privileged portal certificate
+// to fetch the project admins so that they get the project join request email.
+$admins = get_project_members($sa_url, Portal::getInstance(), $project_id);
+
+if ($admins and count($admins) > 0) {
+  foreach ($admins as $admin_res) {
+    $role = $admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+    if ($role != CS_ATTRIBUTE_TYPE::ADMIN) {
+      // error_log("Skipping member with role $role");
+      continue;
+    }
+    // error_log("Adding member with role $role");
+    $admin_id = $admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $admin_data = ma_lookup_member_by_id($ma_url, Portal::getInstance(), $admin_id);
+    $admin = new GeniUser();
+    $admin->init_from_member($admin_data);
+    $admin_emails[] = $admin->prettyEmailAddress();
+    // error_log("Adding admin " . $admin->prettyEmailAddress());
+  }
+}
 
 $error = null;
 $message = null;
