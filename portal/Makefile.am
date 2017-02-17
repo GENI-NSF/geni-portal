@@ -193,11 +193,14 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-slices.js \
 	www/portal/tools-user.js \
+	www/portal/transfer.js \
+	www/portal/transfer.php \
 	www/portal/updatekeys.js \
 	www/portal/updatekeys.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
+	www/portal/verifyuser.php \
 	www/portal/wimax-enable.php \
 	www/portal/wireless_operations.php \
 	www/portal/wireless_redirect.php
