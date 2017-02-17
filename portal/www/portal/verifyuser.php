@@ -22,6 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 require_once("user.php");
+include_once('/etc/geni-ch/settings.php');
 
 // Get the authenticated user for logging
 $user = geni_loadUser();
@@ -51,14 +52,16 @@ if (array_key_exists($KEY_PASS, $_REQUEST)) {
 }
 
 
-// Get these from /etc settings
-$idp_user = "scott";
-$idp_password = "tiger";
-$idp_host = "idp.example.com";
+// These must be present in /etc/geni-ch/settings.php
+if (! (isset($idp_user) && isset($idp_pass) && isset($idp_host))) {
+        error_log("IdP configuration missing from /etc/geni-ch/settings.php");
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
 
 $url = "https://$idp_host/manage/verifyuser.php?user=$gpo_user&pass=$gpo_pass";
 $ch = curl_init($url);
-curl_setopt($ch, CURLOPT_USERPWD, "$idp_user:$idp_password");
+curl_setopt($ch, CURLOPT_USERPWD, "$idp_user:$idp_pass");
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // enable this
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
