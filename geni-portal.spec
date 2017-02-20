@@ -354,6 +354,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/do-user-admin.php
 %{webdir}/secure/do-user-search.php
 %{webdir}/secure/dologout.php
+%{webdir}/secure/dotransfer.php
 %{webdir}/secure/downloadkeycert.php
 %{webdir}/secure/downloadomnibundle.php
 %{webdir}/secure/downloadputtykey.php

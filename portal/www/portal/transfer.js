@@ -4,11 +4,28 @@ function transfer_verify() {
   // alert("User " + user + " with pass " + pass);
   var jqxhr = $.post("verifyuser.php", {user: user, pass: pass});
   jqxhr.done(function(data, textStatus, jqXHR) {
-    alert("success");
+    confirm_transfer();
   })
   jqxhr.fail(function(jqXHR, textStatus, errorThrown) {
-    alert("failure");
+    alert("Incorrect username or password. Please try again.");
   })
+}
+
+function confirm_transfer() {
+  msg = "Are you sure you want to transfer your GPO account to this account?";
+  if (confirm(msg)) {
+          var user = $("#gpo_user").val();
+          var pass = $("#gpo_pass").val();
+          // alert("User " + user + " with pass " + pass);
+          var jqxhr = $.post("dotransfer.php", {user: user, pass: pass});
+          jqxhr.done(function(data, textStatus, jqXHR) {
+            alert("Transfer is complete.");
+            // Go to home screen?
+          })
+          jqxhr.fail(function(jqXHR, textStatus, errorThrown) {
+            alert("Transfer failed. Please send email to help@geni.net");
+          })
+  }
 }
 
 $(document).ready(function() {

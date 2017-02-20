@@ -96,6 +96,7 @@ dist_svcweb_DATA = \
 	www/portal/do-user-admin.php \
 	www/portal/do-user-search.php \
 	www/portal/dologout.php \
+	www/portal/dotransfer.php \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
 	www/portal/downloadputtykey.php \

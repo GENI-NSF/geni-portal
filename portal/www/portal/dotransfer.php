@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 require_once("user.php");
-require_once("header.php");
+include_once('/etc/geni-ch/settings.php');
 
 // Get the authenticated user for logging
 $user = geni_loadUser();
@@ -31,27 +31,33 @@ if (! isset($user)) {
         exit;
 }
 
-show_header('GENI Portal: Transfer Identity');
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
-?>
-<script src="transfer.js"></script>
-<h1>Transfer Identity</h1>
-<p>
-This is where you will transfer your identity.
-</p>
+$KEY_USER = "user";
+$KEY_PASS = "pass";
 
-<label for="gpo_user">User:</label>
-<input type="text" name="gpo_user" id="gpo_user"><br/>
-<label for="gpo_pass">Password:</label>
-<input type="password" name="gpo_pass" id="gpo_pass"><br/>
-<button id="gpo_verify">Verify User</button>
+// Get these from the request
+$gpo_user = null;
+if (array_key_exists($KEY_USER, $_REQUEST)) {
+        $gpo_user = $_REQUEST[$KEY_USER];
+} else {
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
 
-<div id="confirm_div" style="display:none;">
-  <p>Confirmation text and an execute button go here.</p>
-  <button id="confirm_transfer">Confirm</button>
-</div>
+$gpo_pass = null;
+if (array_key_exists($KEY_PASS, $_REQUEST)) {
+        $gpo_pass = $_REQUEST[$KEY_PASS];
+} else {
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
 
-<?php
-include("footer.php");
+$response_code = verify_idp_user($gpo_user, $gpo_pass);
+if ($response_code != 200) {
+        error_log("Failed to verify user");
+        // Return whatever the IdP returned for status
+        header("X-PHP-Response-Code: $response_code", true, $response_code);
+}
+
+// We're good to transfer accounts - do that here
+
 ?>

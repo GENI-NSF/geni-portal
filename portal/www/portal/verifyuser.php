@@ -51,36 +51,10 @@ if (array_key_exists($KEY_PASS, $_REQUEST)) {
         exit;
 }
 
-
-// These must be present in /etc/geni-ch/settings.php
-if (! (isset($idp_user) && isset($idp_pass) && isset($idp_host))) {
-        error_log("IdP configuration missing from /etc/geni-ch/settings.php");
-        header('X-PHP-Response-Code: 400', true, 400);
-        exit;
-}
-
-$url = "https://$idp_host/manage/verifyuser.php?user=$gpo_user&pass=$gpo_pass";
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_USERPWD, "$idp_user:$idp_pass");
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // enable this
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-
-$output = curl_exec($ch);
-if ($output === FALSE) {
-        $err = curl_error($ch);
-        error_log("curl_exec has failed. error: $err");
-        curl_close($ch);
-        header('X-PHP-Response-Code: 400', true, 400);
-        exit;
-}
-
-$info = curl_getinfo($ch);
-$response_code = $info["http_code"];
+$response_code = verify_idp_user($gpo_user, $gpo_pass);
 if ($response_code != 200) {
         error_log("Failed to verify user");
 }
-curl_close($ch);
 
 // Return whatever the IdP returned for status
 header("X-PHP-Response-Code: $response_code", true, $response_code);
