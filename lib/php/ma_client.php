@@ -951,4 +951,13 @@ function get_member_urn($ma_url, $signer, $id) {
   }
 }
 
+function ma_swap_identities($ma_url, $signer, $source_urn, $dest_urn) {
+    $client = XMLRPCClient::get_client($ma_url, $signer);
+    $options = array();
+    $options = array_merge($options, $client->options());
+    $r = $client->swap_identities($source_urn, $dest_urn, $client->creds(),
+                                  $options);
+    return $r;
+}
+
 ?>
