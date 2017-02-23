@@ -31,21 +31,28 @@ if (! isset($user)) {
         exit;
 }
 
-show_header('GENI Portal: Transfer Identity');
+show_header('GENI Portal: Transfer GPO Account');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 ?>
 <script src="transfer.js"></script>
-<h1>Transfer Identity</h1>
+<h1>Transfer GENI Project Office Account</h1>
 <p>
-This is where you will transfer your identity.
+In order to transfer the projects and slices from your GENI Project
+Office account to this account, please enter your GENI Project Office
+username and password below, then click on the "Transfer Account" button.
+</p>
+<p>
+<i>Note: you will no longer have access to any projects or slices on
+this account after the transfer.</i> If you have any questions, please
+write to <a href="mailto:help@geni.net">help@geni.net</a> for help.
 </p>
 
 <label for="gpo_user">User:</label>
 <input type="text" name="gpo_user" id="gpo_user"><br/>
 <label for="gpo_pass">Password:</label>
 <input type="password" name="gpo_pass" id="gpo_pass"><br/>
-<button id="gpo_verify">Verify User</button>
+<button id="gpo_verify">Transfer Account</button>
 
 <div id="confirm_div" style="display:none;">
   <p>Confirmation text and an execute button go here.</p>
