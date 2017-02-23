@@ -20,7 +20,7 @@ function confirm_transfer() {
           var jqxhr = $.post("dotransfer.php", {user: user, pass: pass});
           jqxhr.done(function(data, textStatus, jqXHR) {
             alert("Transfer is complete.");
-            // Go to home screen?
+            window.location.href = "profile.php";
           })
           jqxhr.fail(function(jqXHR, textStatus, errorThrown) {
             alert("Transfer failed. Please send email to help@geni.net");
