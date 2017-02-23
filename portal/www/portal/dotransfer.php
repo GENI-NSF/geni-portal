@@ -89,6 +89,8 @@ if ($result === null) {
 if ($result === TRUE) {
         error_log("swap succeeded");
         header('X-PHP-Response-Code: 200', true, 200);
+        $msg = "Your GENI Project Account has been transferred.";
+        $_SESSION['lastmessage'] = $msg;
 } else {
         error_log("clearinghouse could not swap " . print_r($result, true));
         header('X-PHP-Response-Code: 400', true, 400);
