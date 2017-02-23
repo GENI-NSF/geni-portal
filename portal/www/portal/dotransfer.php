@@ -60,34 +60,29 @@ if ($response_code != 200) {
 }
 
 // We're good to transfer accounts - do that here
-error_log("Starting to swap");
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $signer = Portal::getInstance();
 $source_eppn = "$gpo_user@gpolab.bbn.com";
 $source = ma_lookup_member_by_eppn($ma_url, $signer, $source_eppn);
 $source_urn = $source->{"urn"};
-error_log("source urn = $source_urn");
 $dest_urn = $user->urn();
-error_log("dest urn = $dest_urn");
 
 // We want the raw result, we don't want to redirect to the error page.
 $put_message_result_handler = 'no_redirect_result_handler';
 $result = ma_swap_identities($ma_url, $signer, $source_urn, $dest_urn);
 unset($put_message_result_handler);
-error_log("swap result = " . print_r($result, true));
 
 if ($result === null) {
         // This signals an error was received from the clearinghouse
         // Why, oh why, don't we propagate these things out of the
         // chapi client? Why?
-        error_log("swap result is null");
+        error_log("swap result is null, clearinghouse error");
         header('X-PHP-Response-Code: 400', true, 400);
         exit;
 }
 
 // At this point we've gotten a valid result, but was it success?
 if ($result === TRUE) {
-        error_log("swap succeeded");
         header('X-PHP-Response-Code: 200', true, 200);
         $msg = "Your GENI Project Account has been transferred.";
         $_SESSION['lastmessage'] = $msg;
