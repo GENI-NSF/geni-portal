@@ -65,7 +65,7 @@ END;
     <li><a class='tab' data-tabindex=8 href='#preferences'>Preferences</a></li>
 	</ul>
 </div>
-		
+
 <?php
 
   // BEGIN the tabContent class
@@ -141,7 +141,7 @@ else
         $fingerprint_array = explode(' ', $result);
         $fingerprint = $fingerprint_array[1]; // store fingerprint
         unlink($fingerprint_key_filename);
-      
+
       $args['id'] = $key['id'];
       $query = http_build_query($args);
       if (is_null($key['private_key'])) {
@@ -458,7 +458,7 @@ $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close
 ?>
 
 <h2>Configure <code>omni</code></h2>
-<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool intended for experienced users. 
+<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool intended for experienced users.
 </p>
 
 <h3>Option 1: Automatic <code>omni</code> configuration</h3>
@@ -560,12 +560,12 @@ echo "</div>";
     });
   });
   function save_preferences(user_urn) {
-    params = { 
+    params = {
       user_urn: user_urn,
     <?php
       foreach($possible_prefs as $pref_name => $pref_values) {
         echo "$pref_name: $('#default_{$pref_name}').val(), \n";
-      }        
+      }
     ?>
     };
     $.post("do-update-user-preferences", params, function(data){
@@ -575,7 +575,7 @@ echo "</div>";
   }
 </script>
 
-<?php 
+<?php
 echo "<div class='card' id='preferences'>";
 echo "<h2>Portal preferences</h2>";
 
