@@ -404,6 +404,12 @@ if ($user->phone() != "")
 print "</table></div>\n";
 print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
 
+// FIXME: Change this to === 0 to present the button only for non-GPO logins
+if (preg_match('/@gpolab.bbn.com$/', $user->eppn) === 1) {
+  print "<p><button onClick=\"window.location='transfer.php'\">";
+  print "Transfer GENI Project Office account</button></p>";
+}
+
 $sfcred = $user->speaksForCred();
 if ($sfcred) {
   $sf_expires = $sfcred->expires();
