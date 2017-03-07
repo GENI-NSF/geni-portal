@@ -4,11 +4,23 @@
 
 ## Changes
 
-* None
+* Support migrating accounts from GPO IdP to NCSA IdP
+  ([#1786](https://github.com/GENI-NSF/geni-portal/issues/1786))
 
 ## Installation Notes
 
-* None
+* In order to enable the account transfer functionality, add the
+  following new settings to /etc/geni-ch/settings.php. Adjust the
+  values to suit the environment.
+
+  ```
+  /* Username for IdP admin pages */
+  $idp_user = "scott";
+  /* Password for IdP admin pages */
+  $idp_pass = "tiger";
+  /* IdP host */
+  $idp_host = "idp.example.com";
+  ```
 
 # [Release 3.22](https://github.com/GENI-NSF/geni-portal/milestones/3.22)
 
