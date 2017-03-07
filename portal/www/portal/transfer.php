@@ -31,21 +31,49 @@ if (! isset($user)) {
         exit;
 }
 
+
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+$projects = get_projects_for_member($sa_url, $user, $user->account_id, true);
+
+
 show_header('GENI Portal: Transfer GPO Account');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 ?>
 <script src="transfer.js"></script>
 <h1>Transfer GENI Project Office Account</h1>
+
+<?php
+if (count($projects) > 0) {
+  // -------------------------------------------------------------
+  // The user is in at least one project. They'll need to manually
+  // migrate their account.
+  // -------------------------------------------------------------
+?>
+<p>
+You cannnot transfer your GENI Project Office account to this account
+because this account is a member of
+<a href="dashboard.php#projects">at least one project</a>.
+If your GENI Project Office account is a member of any additional projects
+you will need to request to be added to those projects via the
+<a href="join-project.php">Join Project</a> page.
+</p>
+<p>
+If you need further assistance, please write to
+<a href="mailto:help@geni.net">help@geni.net</a>
+</p>
+<?php
+  exit;
+}
+
+// -------------------------------------------------------------------
+// Below here is executed if the user is NOT a member of any projects.
+// -------------------------------------------------------------------
+?>
 <p>
 In order to transfer the projects and slices from your GENI Project
 Office account to this account, please enter your GENI Project Office
 username and password below, then click on the "Transfer Account" button.
-</p>
-<p>
-<i>Note: you will no longer have access to any projects or slices on
-this account after the transfer.</i> If you have any questions, please
-write to <a href="mailto:help@geni.net">help@geni.net</a> for help.
 </p>
 
 <label for="gpo_user">User:</label>
