@@ -354,6 +354,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/do-user-admin.php
 %{webdir}/secure/do-user-search.php
 %{webdir}/secure/dologout.php
+%{webdir}/secure/dotransfer.php
 %{webdir}/secure/downloadkeycert.php
 %{webdir}/secure/downloadomnibundle.php
 %{webdir}/secure/downloadputtykey.php
@@ -463,11 +464,14 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/tool-omniconfig.php
 %{webdir}/secure/tool-slices.js
 %{webdir}/secure/tools-user.js
+%{webdir}/secure/transfer.js
+%{webdir}/secure/transfer.php
 %{webdir}/secure/updatekeys.js
 %{webdir}/secure/updatekeys.php
 %{webdir}/secure/upload-file.php
 %{webdir}/secure/upload-project-members.php
 %{webdir}/secure/uploadsshkey.php
+%{webdir}/secure/verifyuser.php
 %{webdir}/secure/wimax-enable.php
 %{webdir}/secure/wireless_operations.php
 %{webdir}/secure/wireless_redirect.php

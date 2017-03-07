@@ -96,6 +96,7 @@ dist_svcweb_DATA = \
 	www/portal/do-user-admin.php \
 	www/portal/do-user-search.php \
 	www/portal/dologout.php \
+	www/portal/dotransfer.php \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
 	www/portal/downloadputtykey.php \
@@ -193,11 +194,14 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-slices.js \
 	www/portal/tools-user.js \
+	www/portal/transfer.js \
+	www/portal/transfer.php \
 	www/portal/updatekeys.js \
 	www/portal/updatekeys.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
+	www/portal/verifyuser.php \
 	www/portal/wimax-enable.php \
 	www/portal/wireless_operations.php \
 	www/portal/wireless_redirect.php

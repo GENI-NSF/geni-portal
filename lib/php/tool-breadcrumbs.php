@@ -113,7 +113,8 @@ $parents = array("profile.php" => "home.php",
 		 "tool-aggwarning.php" => "slice.php",
 		 "send_bug_report.php" => "slice.php",
 		 "contact-us.php" => "home.php",
-                 "updatekeys.php" => "slice.php");
+                 "updatekeys.php" => "slice.php",
+                 "transfer.php" => "profile.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -180,7 +181,8 @@ $names = array("home.php" => "Home",
 	       "tool-aggwarning.php" => "Query All Aggregates",
 	       "send_bug_report.php" => "Send Problem Report",
 	       "contact-us.php" => "Contact Us",
-               "updatekeys.php" => "Update SSH Keys");
+               "updatekeys.php" => "Update SSH Keys",
+               "transfer.php" => "Transfer Identity");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
