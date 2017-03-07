@@ -32,6 +32,14 @@ if (! isset($user)) {
         exit;
 }
 
+// Redirect GPO users to the home page. They are not eligible
+// for the transfer.
+if (preg_match('/@gpolab.bbn.com$/', $user->eppn) !== 0) {
+        error_log("dotransfer rejecting GPO user " . $user->eppn);
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
+
 $KEY_USER = "user";
 $KEY_PASS = "pass";
 

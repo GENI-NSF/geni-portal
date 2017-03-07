@@ -27,8 +27,14 @@ require_once("header.php");
 // Get the authenticated user for logging
 $user = geni_loadUser();
 if (! isset($user)) {
-        header('X-PHP-Response-Code: 400', true, 400);
-        exit;
+        relative_redirect('home.php');
+}
+
+// Redirect GPO users to the home page. They are not eligible
+// for the transfer.
+if (preg_match('/@gpolab.bbn.com$/', $user->eppn) !== 0) {
+        error_log("transfer rejecting GPO user " . $user->eppn);
+        relative_redirect('home.php');
 }
 
 
