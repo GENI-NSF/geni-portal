@@ -283,7 +283,8 @@ Content-Disposition: attachment
     $message .= "\r\n";
     $message .= "--PHP-mixed-$boundary_string--\r\n";
 
-    $retVal = mail($to, $subject, $message, implode("\r\n", $headers));
+    $retVal = mail($to, $subject, $message, implode("\r\n", $headers),
+                   "-f $portal_from_email");
 
     if($retVal) {
         if($cc) {
