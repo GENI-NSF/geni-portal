@@ -39,7 +39,7 @@ if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, nu
   exit();
 }
 
-// Handle the HTTP request to figure out which LEAD request we're dealing with 
+// Handle the HTTP request to figure out which LEAD request we're dealing with
 if (array_key_exists('request_id', $_REQUEST) && array_key_exists('new_status', $_REQUEST) && array_key_exists('user_uid', $_REQUEST)) {
   $request_id = $_REQUEST['request_id'];
   $new_status = $_REQUEST['new_status'];
@@ -60,7 +60,7 @@ if (array_key_exists('request_id', $_REQUEST) && array_key_exists('new_status', 
 }
 
 // Update the lead_request db row identified by $request_id with $new_note
-function add_request_note($request_id, $new_note) 
+function add_request_note($request_id, $new_note)
 {
   $conn = portal_conn();
   $sql = "UPDATE lead_request set "
@@ -76,9 +76,9 @@ function add_request_note($request_id, $new_note)
   }
 }
 
-// Update the lead_request db row identified by $request_id with $new_status, 
+// Update the lead_request db row identified by $request_id with $new_status,
 // $approver, $user_uid, and $reason
-function handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason, $signer) 
+function handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason, $signer)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   $conn = portal_conn();
@@ -106,7 +106,7 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
 }
 
 // Send email to admins about the fact that $new_lead was approved because of $reason
-function send_approved_mail($new_lead, $reason, $approver) 
+function send_approved_mail($new_lead, $reason, $approver)
 {
   global $portal_admin_email;
   $pretty_name = $new_lead->prettyName();
