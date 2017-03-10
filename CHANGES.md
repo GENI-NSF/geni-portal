@@ -4,6 +4,8 @@
 
 ## Changes
 
+* Use configured from address in all portal emails
+  ([#1777](https://github.com/GENI-NSF/geni-portal/issues/1777))
 * Support migrating accounts from GPO IdP to NCSA IdP
   ([#1786](https://github.com/GENI-NSF/geni-portal/issues/1786))
 
