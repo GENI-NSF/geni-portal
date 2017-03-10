@@ -34,7 +34,7 @@ require_once('sr_client.php');
 
 
 // Check the selections from the handle-project-request are valid
-// If so, add the approved members, resolve the requests and 
+// If so, add the approved members, resolve the requests and
 // send emails (positive or negative) to the requestors.
 
 
@@ -173,11 +173,11 @@ foreach($selections as $select_id => $attribs) {
   $resolution_status_label = "approved (see " . relative_url("project.php?project_id=".$project_id) . ")";
   $resolution_description = "";
   $email_subject = "Request to join GENI project $project_name";
-  //  $email_subject = "GENI Request " . print_r($request_id, true) . 
+  //  $email_subject = "GENI Request " . print_r($request_id, true) .
   //    " to join project " . $project_name;
   if ($role <= 0) {
     // This is a 'do not add' selection
-    // Send rejection letter 
+    // Send rejection letter
     // FIXME: Allow custom deny letter
     $num_members_rejected = $num_members_rejected + 1;
     $resolution_description = "Request rejected";
@@ -199,7 +199,7 @@ foreach($selections as $select_id => $attribs) {
       }
     }
     // This is an 'add' selection
-    // Add member 
+    // Add member
     add_project_member($sa_url, $user, $project_id, $member_id, $role);
     // I _believe_ we'll have been redirected to the error page if the add fails
 
@@ -215,7 +215,7 @@ foreach($selections as $select_id => $attribs) {
 
   // Send acceptance/rejection letter
   $hostname = $_SERVER['SERVER_NAME'];
-  $email_message  = "Your request to join GENI project " . $project_name . 
+  $email_message  = "Your request to join GENI project " . $project_name .
     " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\n";
   if (isset($reason) && $reason != '') {
     $email_message = $email_message . "
@@ -230,9 +230,8 @@ $reason
 
 } // end of loop over rows to process
 
-$_SESSION['lastmessage'] = "Added $num_members_added members; Rejected $num_members_rejected members"; 
+$_SESSION['lastmessage'] = "Added $num_members_added members; Rejected $num_members_rejected members";
 
-relative_redirect("project.php?project_id=".$project_id); 
+relative_redirect("project.php?project_id=".$project_id);
 
 ?>
-
