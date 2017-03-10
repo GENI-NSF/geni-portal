@@ -422,6 +422,8 @@ function send_attribute_fail_email()
 {
   // From /etc/geni-ch/settings.php
   global $portal_admin_email;
+  global $portal_from_email;
+  global $portal_help_email;
   $server_host = $_SERVER['SERVER_NAME'];
   $body = "An access attempt on $server_host failed";
   if (array_key_exists("Shib-Identity-Provider", $_SERVER)) {
@@ -435,10 +437,13 @@ function send_attribute_fail_email()
   foreach ($array as $var => $value) {
     $body .= "$var = $value\n";
   }
-  $headers = "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
+  $headers = "From: \"The GENI Portal\" <$portal_from_email>";
+  $headers .= "\r\nReply-To: $portal_help_email";
+  $headers .= "\r\nContent-Type: text/plain; charset=UTF-8";
+  $headers .= "\r\nContent-Transfer-Encoding: 8bit";
   mail($portal_admin_email,
           "Portal access failure on $server_host",
-       $body, $headers);
+       $body, $headers, "-f $portal_from_email");
 }
 
 function geni_load_user_by_eppn($eppn, $sfcred)
