@@ -225,8 +225,13 @@ $reason
   }
   $email_message = $email_message . "GENI Portal Operations";
 
-  $headers = "Cc: " . $user->prettyEmailAddress() . "\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
-  mail($email_address, $email_subject, $email_message,$headers);
+  $headers = "From: \"The GENI Portal\" <$portal_from_email>\r\n";
+  $headers .= "Cc: " . $user->prettyEmailAddress() . "\r\n";
+  $headers .= "Reply-To: $portal_help_email\r\n";
+  $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+  $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+  mail($email_address, $email_subject, $email_message, $headers,
+       "-f $portal_from_email");
 
 } // end of loop over rows to process
 
