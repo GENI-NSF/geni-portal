@@ -153,12 +153,14 @@ function get_user_conf_email_body($confirm_url) {
 // Note that we BCC portal admins
 function send_user_confirmation_email($user_email, $confirm_url) {
   global $portal_help_email;
+  global $portal_from_email;
   $subject = "GENI Account Email Confirmation";
   $body = get_user_conf_email_body($confirm_url);
-  $headers = "Reply-To: $portal_help_email";
+  $headers = "From: \"The GENI Portal\" <$portal_from_email>\r\n";
+  $headers .= "Reply-To: $portal_help_email";
   $headers .= "\r\nContent-Type: text/plain; charset=UTF-8";
   $headers .= "\r\nContent-Transfer-Encoding: 8bit";
-  return mail($user_email, $subject, $body, $headers);
+  return mail($user_email, $subject, $body, $headers, "-f $portal_from_email");
 }
 
 // Main body
