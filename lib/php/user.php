@@ -111,7 +111,7 @@ class GeniUser
   }
 
   // If we haven't re-read the permissions in this many seconds, re-read
-  //  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30; 
+  //  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30;
 
   // MSB : Disable the permission manager cache: it is ALWAYS stale
   const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = -1;
@@ -164,7 +164,7 @@ class GeniUser
       return null;
     }
   }
-  
+
   // Produce a pretty email name/address for sending like '"My Name" <my email>'
   function prettyEmailAddress() {
     return sprintf('"%s" <%s>', $this->prettyName(),
@@ -190,7 +190,7 @@ class GeniUser
     }
   }
 
-  // Is given permission (function/method/action) allowed in given 
+  // Is given permission (function/method/action) allowed in given
   // context_type/context_id for given user?
   function isAllowed($permission, $context_type, $context_id)
   {
@@ -215,10 +215,10 @@ class GeniUser
     //    error_log("PMT = " . $permission_manager_timestamp  . " " . $now);
 
     if (
-	($permission_manager == null) || 
+	($permission_manager == null) ||
 	($permission_manager_account_id != $this->account_id) ||
 	($now - $permission_manager_timestamp  > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
-	) 
+	)
       {
 	//	error_log("PM = " . $permission_manager . ", " . $this->account_id . ", " . $permission_manager_account_id);
 	//	error_log("PMT = " . $permission_manager_timestamp  . " " . $now);
@@ -228,8 +228,8 @@ class GeniUser
 	$permission_manager = get_permissions($cs_url, $this, $this->account_id);
 	$permission_manager_timestamp = $now;
 	$permission_manager_account_id = $this->account_id;
-	//	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " 
-	//		  . $permission_manager_account_id . " " 
+	//	error_log("Refreshing permission manager " . $permission_manager_timestamp . " "
+	//		  . $permission_manager_account_id . " "
 	//		  . print_r($permission_manager, true));
 	$_SESSION[PERMISSION_MANAGER_TAG] = $permission_manager;
 	$_SESSION[PERMISSION_MANAGER_TIMESTAMP_TAG] = $now;
@@ -506,9 +506,9 @@ function geni_loadUser()
   $user = geni_load_user_by_eppn($eppn, $sfcred);
 
   // Non-operators can't use the portal while in maintenance: they go to the 'Maintenance" page
-  if ($in_maintenance_mode && 
-      !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
-			null)) 
+  if ($in_maintenance_mode &&
+      !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER,
+			null))
     {
       error_log($user->prettyName() . " tried to access portal during maintenance");
       relative_redirect("maintenance_redirect_page.php");
