@@ -186,7 +186,7 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   mail($lead->prettyEmailAddress(),
        "Request to Join GENI project $project_name",
-       $message, $headers);
+       $message, $headers, "-f $portal_from_email");
 
   // We could supply the -f arg to make bounces go back to this portal user,
   // but we probably want to know if the lead's email address is bouncing.
