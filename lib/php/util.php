@@ -340,12 +340,16 @@ function verify_idp_user($gpo_user, $gpo_pass) {
                 return false;
         }
 
-        $url = "https://$idp_host/manage/verifyuser.php?user=$gpo_user&pass=$gpo_pass";
+        $url = "https://$idp_host/manage/verifyuser.php";
+        $args = array('user' => $gpo_user, 'pass' => $gpo_pass);
+        $data = http_build_query($args);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_USERPWD, "$idp_user:$idp_pass");
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // enable this
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
         $output = curl_exec($ch);
         if ($output === FALSE) {
