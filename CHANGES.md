@@ -6,6 +6,8 @@
 
 * Encode arguments when verifying a user
   ([#1794](https://github.com/GENI-NSF/geni-portal/issues/1794))
+* Add .php to RSpec related redirects
+  ([#1797](https://github.com/GENI-NSF/geni-portal/issues/1797))
 
 ## Installation Notes
 
