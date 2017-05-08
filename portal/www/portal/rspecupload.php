@@ -225,7 +225,7 @@ if (is_null($parse_results)) {
   error_log("Failed to parse uploaded RSpec '$actual_filename'");
   $msg = "ERROR. RSpec '$name' from file '$filename' failed to parse.";
   $_SESSION['lasterror'] = $msg;
-  relative_redirect('profile#rspecs');
+  relative_redirect('profile.php#rspecs');
   exit;
 }
 
@@ -239,7 +239,7 @@ if (rspec_name_exists($user, $visibility, $name, $rspec_id)) {
   /* This rspec name has already been taken. */
   $msg = "ERROR. A $visibility RSpec already exists with name \"$name \".";
   $_SESSION['lasterror'] = $msg;
-  relative_redirect('profile#rspecs');
+  relative_redirect('profile.php#rspecs');
   exit;
 }
 
@@ -278,5 +278,5 @@ if (! $result) {
   $_SESSION['lastmessage'] = "Uploaded Resource Specification " . $name;
 }
 
-relative_redirect('profile#rspecs');
+relative_redirect('profile.php#rspecs');
 ?>

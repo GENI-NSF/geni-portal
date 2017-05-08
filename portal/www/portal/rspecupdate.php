@@ -41,6 +41,6 @@ $rspec = $_POST['rspec'];
 $result = db_update_rspec_contents($rspec_id, $rspec);
 // error_log("RSPEC_UPDATE = " . print_r($result, true));
 
-relative_redirect('profile#rspecs');
+relative_redirect('profile.php#rspecs');
 
 ?>
