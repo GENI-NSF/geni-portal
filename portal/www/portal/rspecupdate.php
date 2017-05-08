@@ -29,7 +29,7 @@ require_once('db-util.php');
 
 // error_log("RSU: " . print_r($_POST, true));
 
-if (!array_key_exists('rspec_id', $_POST) || 
+if (!array_key_exists('rspec_id', $_POST) ||
     (!array_key_exists('rspec', $_POST))) {
   error_log("Invalid call to rspecupdate: no rspec_id or rspec provided");
   return;
