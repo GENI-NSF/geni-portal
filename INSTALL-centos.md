@@ -118,10 +118,11 @@ below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... --
 
 3b. Install Embedded Discovery Service
 ```bash
+export EDS_TAG=geni.4
 cd /tmp
-wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
-tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
-cd shibboleth-embedded-ds-1.1.0-geni.3
+wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-${EDS_TAG}/shibboleth-embedded-ds-1.1.0-${EDS_TAG}.tar.gz
+tar xvfz shibboleth-embedded-ds-1.1.0-${EDS_TAG}.tar.gz
+cd shibboleth-embedded-ds-1.1.0-${EDS_TAG}
 sudo mkdir -p /var/www/eds
 sudo cp *.css *.js *.html *.gif *.png /var/www/eds
 
