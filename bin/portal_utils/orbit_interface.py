@@ -28,6 +28,7 @@
 # Interface routines for conecting to ORBIT Delegated Account Management API
 #----------------------------------------------------------------------
 
+import io
 import os
 import subprocess
 import sys
@@ -246,8 +247,9 @@ class ORBIT_Interface:
         save_user_url = "%s/saveUser" % self._base_orbit_url
 
         out_file, out_filename = tempfile.mkstemp()
-        os.write(out_file, user_ldif_data)
-        os.close(out_file)
+        utf8_file = io.open(out_file, mode='w', encoding='utf8')
+        utf8_file.write(user_ldif_data.decode('utf-8'))
+        utf8_file.close()
 
         ldif_arg = "ldif=@%s" % out_filename
         output = ""
