@@ -47,7 +47,7 @@ sys.path.append('/usr/share/geni-ch/gcf/src')
 
 try:
     from gcf.geni.util.secure_xmlrpc_client import make_client
-except:
+except ImportError:
     raise
 
 
@@ -55,17 +55,22 @@ def parse_args(argv):
     desc = 'Synchronize ORBIT and GENI CH sense of projects/groups and members'
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument("--holdingpen_group",
-                        help="Name of ORBIT 'holding pen' that is the primary" +
-                        " group for all GENI users in wimax-enabled projects [default: %(default)s]",
+                        help=("Name of ORBIT 'holding pen' that is the" +
+                              " primary group for all GENI users in" +
+                              " wimax-enabled projects" +
+                              " [default: %(default)s]"),
                         default="geni-HOLDINGPEN")
     parser.add_argument("--holdingpen_admin",
-                        help="GENI username of admin of ORBIT 'holding pen' [default: %(default)s]",
+                        help=("GENI username of admin of ORBIT 'holding pen'" +
+                              " [default: %(default)s]"),
                         default="agosain")
     parser.add_argument("--project", help="specific project name to sync",
                         default=None)
-    parser.add_argument("--user", help="specific username to sync", default=None)
+    parser.add_argument("--user", help="specific username to sync",
+                        default=None)
     parser.add_argument("--cleanup",
-                        help="delete obsolete groups and group memberships [default: %(default)s]",
+                        help=("delete obsolete groups and group memberships" +
+                              " [default: %(default)s]"),
                         dest='cleanup', action='store_true',
                         default=False)
     parser.add_argument('-c', '--certificate',
