@@ -8,6 +8,8 @@
   ([#1794](https://github.com/GENI-NSF/geni-portal/issues/1794))
 * Add .php to RSpec related redirects
   ([#1797](https://github.com/GENI-NSF/geni-portal/issues/1797))
+* Fix a UTF-8 encoding error in geni-sync-wireless
+  ([#1799](https://github.com/GENI-NSF/geni-portal/issues/1799))
 
 ## Installation Notes
 
