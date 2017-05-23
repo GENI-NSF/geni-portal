@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- Mode: python -*-
 #
-#----------------------------------------------------------------------
-# Copyright (c) 2015-2016 Raytheon BBN Technologies
+# ----------------------------------------------------------------------
+# Copyright (c) 2015-2017 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
@@ -22,11 +22,11 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 # IN THE WORK.
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Interface routines for conecting to ORBIT Delegated Account Management API
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 import io
 import os
@@ -56,7 +56,6 @@ class CODES:
     # local and portal created groups? Huh?
     # FIXME FIXME
     ERROR4 = 'ERROR 4: UID and OU match but DC is different'
-
 
     # Handled explicitly when trying to deleteUser, changeLeader, changeProject
     ERROR5 = 'ERROR 5: Unknown username:'
@@ -114,6 +113,7 @@ class CODES:
            ERROR12, ERROR17, ERROR20, ERROR21, ERROR22,
            ERROR30, ERROR31, ERROR32, ERROR33]
 
+
 #  Class to manage interactions with ORBIT through
 #  Delegated Account Management API
 class ORBIT_Interface:
@@ -122,15 +122,14 @@ class ORBIT_Interface:
         self._base_orbit_url = base_orbit_url
         self._DEVNULL = open(os.devnull, 'w')
 
-    MAX_TIMEOUT = "20" # Number of seconds to wait for a curl command to complete
-
+    MAX_TIMEOUT = "20"  # Number of seconds to wait for a curl command to complete
 
     # Does given string contain one of the defined errors?
     # If so, return the error, otherwise, return None
     def find_error_code(self, str):
         for cd in CODES.ALL:
             if str.find(cd) >= 0:
-                return cd;
+                return cd
         return None
 
     # Return value from CURL on URL
@@ -141,14 +140,14 @@ class ORBIT_Interface:
             out_file, out_filename = tempfile.mkstemp()
             raw_curl_output = \
                 subprocess.check_output(["timeout", self.MAX_TIMEOUT, "curl", "-k", query_url],
-                                        stderr = out_file
+                                        stderr=out_file
                                         )
             os.unlink(out_filename)
         except subprocess.CalledProcessError as e:
             error_text = open(out_filename, 'r').read()
             os.unlink(out_filename)
-            syslog("Error invoking CURL on %s: Error %s Msg %s" % \
-                (query_url, e.returncode, error_text))
+            syslog("Error invoking CURL on %s: Error %s Msg %s" %
+                   (query_url, e.returncode, error_text))
             sys.exit(e.returncode)
         return raw_curl_output
 
@@ -156,7 +155,7 @@ class ORBIT_Interface:
     # Create url, make call via curl
     #   and exit if an (untolerated) error returned
     def invoke_orbit_method(self, method, args,
-                            tolerated_error_codes = []):
+                            tolerated_error_codes=[]):
         url = "%s/%s?%s" % (self._base_orbit_url, method, args)
         output = self.get_curl_output(url)
         code = self.find_error_code(output)
@@ -164,40 +163,42 @@ class ORBIT_Interface:
             syslog("Error in %s call: %s" % (method, output))
             sys.exit(code)
 
-
     # Add ORBIT user to ORBIT group
     # NOTE: No error trying to add a user to a group to which it already exists
     def add_user_to_group(self, group_name, user_name):
         self.invoke_orbit_method("addMemberToGroup",
-                                 "groupname=%s&username=%s" % \
-                                     (group_name, user_name))
+                                 "groupname=%s&username=%s" %
+                                 (group_name, user_name))
 
     # Remove ORBIT user to ORBIT group
     def remove_user_from_group(self, group_name, user_name):
         self.invoke_orbit_method("removeMemberFromGroup",
-                                 "groupname=%s&username=%s" %  \
-                                     (group_name, user_name),
+                                 "groupname=%s&username=%s" %
+                                 (group_name, user_name),
                                  [CODES.ERROR5])
 
     # Change ORBIT group admin
     def change_group_admin(self, group_name, admin_name):
         self.invoke_orbit_method("changeGroupAdmin",
-                                 "groupname=%s&username=%s" % \
-                                     (group_name, admin_name))
+                                 "groupname=%s&username=%s" %
+                                 (group_name, admin_name))
 
     # Enable ORBIT user
     def enable_user(self, user_name):
         self.invoke_orbit_method("enableUser",
-                                 "username=%s" % user_name, [CODES.ERROR5, CODES.ERROR6])
+                                 "username=%s" % user_name,
+                                 [CODES.ERROR5, CODES.ERROR6])
 
     # Disable ORBIT user
     def disable_user(self, user_name):
         self.invoke_orbit_method("disableUser",
-                                 "username=%s" % user_name, [CODES.ERROR6, CODES.ERROR5])
+                                 "username=%s" % user_name,
+                                 [CODES.ERROR6, CODES.ERROR5])
 
     # Delete ORBIT group
     def delete_group(self, group_name):
-        self.invoke_orbit_method("deleteGroup", "groupname=%s"% group_name, [CODES.ERROR7])
+        self.invoke_orbit_method("deleteGroup", "groupname=%s" % group_name,
+                                 [CODES.ERROR7])
 
 
 # Get ORBIT group/user info
@@ -225,7 +226,7 @@ class ORBIT_Interface:
         for group_node in group_nodes:
             group_name = group_node.getAttribute('groupname')
             group_admin = group_node.getAttribute('admin')
-            groups[group_name] = {'admin' : group_admin, 'users' : []}
+            groups[group_name] = {'admin': group_admin, 'users': []}
         for user_node in user_nodes:
             user_name = user_node.getAttribute('username')
             users.append(user_name)
@@ -263,8 +264,8 @@ class ORBIT_Interface:
             os.unlink(err_filename)
         except subprocess.CalledProcessError as e:
             error_text = open(err_filename, 'r'). read()
-            syslog("Error invoking curl LDIF saveUser command: %s: Error %s Msg %s" \
-                (save_user_url, e.returncode, error_text))
+            syslog("Error invoking curl LDIF saveUser command: %s: Error %s Msg %s"
+                   (save_user_url, e.returncode, error_text))
             os.unlink(err_fileame)
             sys.exit(e.returncode)
 
@@ -276,9 +277,9 @@ class ORBIT_Interface:
 
             os.unlink(out_filename)
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Routines to create LDIF for project/group, user/member and admin
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
     # DN base element defining ch.geni.net namespace
     def ldif_dn_base(self):
@@ -331,12 +332,13 @@ class ORBIT_Interface:
         ssh_entries = ""
         for i in range(len(user_ssh_keys)):
             prefix = "sshpublickey"
-            if i > 0: prefix = "%s%d" % (prefix, i+1)
+            if i > 0:
+                prefix = "%s%d" % (prefix, i+1)
             ssh_entries = ssh_entries + \
                 ("%s: %s\n" % (prefix, user_ssh_keys[i]))
 
         user_ldif_template = "# LDIF for user %s \n" + \
-            "dn: %s\n"  + \
+            "dn: %s\n" + \
             "cn: %s\n" + \
             "givenname: %s\n" + \
             "mail: %s\n" + \
