@@ -10,6 +10,8 @@
   ([#1797](https://github.com/GENI-NSF/geni-portal/issues/1797))
 * Fix a UTF-8 encoding error in geni-sync-wireless
   ([#1799](https://github.com/GENI-NSF/geni-portal/issues/1799))
+* Fix exceptions when using `--user` arg to geni-sync-wireless
+  ([#1801](https://github.com/GENI-NSF/geni-portal/issues/1801))
 
 ## Installation Notes
 

@@ -511,6 +511,8 @@ class WirelessProjectManager:
             project_name = project_info['project_name']
             orbit_group_name = self.to_orbit_name(project_name)
             lead_id = project_info['lead_id']
+            if lead_id not in self._geni_members:
+                continue
             lead_username = self._geni_members[lead_id]['username']
             orbit_lead_username = self.to_orbit_name(lead_username)
             orbit_group_admin = self._orbit_groups[orbit_group_name]['admin']
