@@ -10,10 +10,14 @@
   ([#1797](https://github.com/GENI-NSF/geni-portal/issues/1797))
 * Fix a UTF-8 encoding error in geni-sync-wireless
   ([#1799](https://github.com/GENI-NSF/geni-portal/issues/1799))
+* Switch to vanilla Shibboleth EDS
+  ([#1802](https://github.com/GENI-NSF/geni-portal/issues/1802))
 
 ## Installation Notes
 
-* None
+* Install Shibboleth EDS per INSTALL-centos.md
+* Update Shibboleth SP configuration to use new discovery page
+  portal-ds.php instead of the EDS page.
 
 # [Release 3.23](https://github.com/GENI-NSF/geni-portal/milestones/3.23)
 
