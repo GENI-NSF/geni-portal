@@ -110,23 +110,37 @@ sudo cp /tmp/hosts /etc/hosts
 
 # 3. Install Shibboleth Software
 
-3a. Edit shibboleth attribute-map.xml
-```
-Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
-below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
-```
+## 3a. Edit shibboleth attribute-map.xml
 
-3b. Install Embedded Discovery Service
+Edit `/etc/shibboleth/attribute-map.xml` and uncomment the block
+of <Attribute> entries below
+
+    <!-- Examples of LDAP-based attributes, uncomment to use these ... -->
+
+## 3b. Install Embedded Discovery Service (EDS)
 ```bash
-export EDS_TAG=geni.4
-cd /tmp
-wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-${EDS_TAG}/shibboleth-embedded-ds-1.1.0-${EDS_TAG}.tar.gz
-tar xvfz shibboleth-embedded-ds-1.1.0-${EDS_TAG}.tar.gz
-cd shibboleth-embedded-ds-1.1.0-${EDS_TAG}
-sudo mkdir -p /var/www/eds
-sudo cp *.css *.js *.html *.gif *.png /var/www/eds
-
+sudo yum install -y shibboleth-embedded-ds
 ```
+
+## 3c. Edit Shibboleth EDS Apache configuration
+
+There is a bug in the Shibboleth EDS configuration file for Apache on
+CentOS 7. In `/etc/httpd/conf.d/shibboleth-ds.conf`, change the line:
+
+    ```
+    Allow from all
+    ```
+
+To:
+
+    ```
+    Require all granted
+    ```
+
+## 3d. Edit Shibboleth EDS config file
+
+Edit the file `/etc/shibboleth-ds/idpselect_config.js` and set the
+`helpURL` to a valid web page or email link.
 
 # 4. Set up Variables
 ```bash
