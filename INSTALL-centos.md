@@ -113,7 +113,7 @@ sudo cp /tmp/hosts /etc/hosts
 ## 3a. Edit shibboleth attribute-map.xml
 
 Edit `/etc/shibboleth/attribute-map.xml` and uncomment the block
-of <Attribute> entries below
+of <Attribute> entries below the following line:
 
     <!-- Examples of LDAP-based attributes, uncomment to use these ... -->
 
@@ -127,15 +127,11 @@ sudo yum install -y shibboleth-embedded-ds
 There is a bug in the Shibboleth EDS configuration file for Apache on
 CentOS 7. In `/etc/httpd/conf.d/shibboleth-ds.conf`, change the line:
 
-    ```
     Allow from all
-    ```
 
 To:
 
-    ```
     Require all granted
-    ```
 
 ## 3d. Edit Shibboleth EDS config file
 
