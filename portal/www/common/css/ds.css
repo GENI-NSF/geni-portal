@@ -1,0 +1,40 @@
+/*
+  CSS Style Sheet for GENI Portal discover service
+
+*/
+
+body {
+  background-color: #BBDEFB;
+  text-align: center;
+  font-family: 'Open Sans';
+}
+
+#loginArea {
+  display: inline-block;
+  margin: 30px auto;
+  background-color: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  padding: 5px;
+}
+
+#logo {
+  height: 100px;
+  margin: 20px;
+}
+
+#footer {
+  background-color: #616161;
+  width: 400px;
+  margin: 0 auto 20px auto;
+  color: white;
+  padding: 20px 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+#footer a {
+    color: white;
+}
+
+#idpSelect {
+  display: inline-block;
+}

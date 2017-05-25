@@ -262,6 +262,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/portal_utils/orbit_interface.pyc
 %{python_sitelib}/portal_utils/orbit_interface.pyo
 %{webdir}/amstatus.php
+%{webdir}/common/css/ds.css
 %{webdir}/common/css/kmtool.css
 %{webdir}/common/css/mobile-portal.css
 %{webdir}/common/css/newportal.css
@@ -273,6 +274,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/common/topbar_gradient.png
 %{webdir}/common/topbar_gradient2.png
 %{webdir}/favicon.ico
+%{webdir}/images/ds-logo.png
+%{webdir}/images/ds-nsf1.gif
 %{webdir}/images/EG-VM-noTxt-centered.svg
 %{webdir}/images/EG-VM-noTxt.svg
 %{webdir}/images/EG-VM.svg
@@ -309,6 +312,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/index.php
 %{webdir}/login-help.php
 %{webdir}/policy/privacy.html
+%{webdir}/portal-ds.php
 %{webdir}/secure/accept-project-invite.php
 %{webdir}/secure/admin.php
 %{webdir}/secure/aggregates.php
