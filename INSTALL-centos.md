@@ -59,22 +59,44 @@ wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/se
 sudo cp security\:shibboleth.repo /etc/yum.repos.d/
 ```
 
-Add GENI repository:
+Install the EPEL release
 
-```bash
-wget http://www.gpolab.bbn.com/experiment-support/gposw/centos/geni.repo
-sudo cp geni.repo /etc/yum.repos.d/
-```
-
-Install GENI portal software
-
-These must be done separately in order to fullfill the geni-portal dependencies that are in the EPEL repository.
+The GENI software depends on
+[Fedora Extra Packages for Enterprise Linux (EPEL)](https://fedoraproject.org/wiki/EPEL)
+packages. To install EPEL:
 
 ```bash
 sudo yum install -y epel-release
-sudo yum install -y --nogpgcheck geni-portal
-
 ```
+
+Install GENI Tools
+
+GENI Tools RPMs are available on [GitHub](https://github.com).
+`yum` can download and install these RPMs.
+
+_N.B. The link in the example below may not be the latest RPM.
+You can find the URL of the latest RPM at_
+https://github.com/GENI-NSF/geni-tools/releases/latest
+
+```Shell
+sudo yum install -y \
+    https://github.com/GENI-NSF/geni-tools/releases/download/v2.9/geni-tools-2.9-1.el7.centos.noarch.rpm
+```
+
+Install GENI Portal software
+
+GENI Portal RPMs are available on [GitHub](https://github.com).
+`yum` can download and install these RPMs.
+
+_N.B. The link in the example below may not be the latest RPM.
+You can find the URL of the latest RPM at_
+https://github.com/GENI-NSF/geni-portal/releases/latest
+
+```Shell
+sudo yum install -y \
+    https://github.com/GENI-NSF/geni-portal/releases/download/v3.23/geni-portal-3.23-1.el7.centos.noarch.rpm
+```
+
 
 ```bash
 # If there are updates on a development machine not in the RPM, do this:
