@@ -12,10 +12,14 @@
   ([#1799](https://github.com/GENI-NSF/geni-portal/issues/1799))
 * Fix exceptions when using `--user` arg to geni-sync-wireless
   ([#1801](https://github.com/GENI-NSF/geni-portal/issues/1801))
+* Switch to vanilla Shibboleth EDS
+  ([#1802](https://github.com/GENI-NSF/geni-portal/issues/1802))
 
 ## Installation Notes
 
-* None
+* Install Shibboleth EDS per INSTALL-centos.md
+* Update Shibboleth SP configuration to use new discovery page
+  portal-ds.php instead of the EDS page.
 
 # [Release 3.23](https://github.com/GENI-NSF/geni-portal/milestones/3.23)
 

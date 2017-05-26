@@ -207,6 +207,8 @@ dist_svcweb_DATA = \
 	www/portal/wireless_redirect.php
 
 dist_svcwebimages_DATA = \
+	www/images/ds-logo.png \
+	www/images/ds-nsf1.gif \
 	www/images/EG-VM-noTxt-centered.svg \
 	www/images/EG-VM-noTxt.svg \
 	www/images/EG-VM.svg \
@@ -248,6 +250,7 @@ dist_svcwebcommon_DATA = \
 	www/common/topbar_gradient2.png
 
 dist_svcwebcss_DATA =  \
+	www/common/css/ds.css \
 	www/common/css/mobile-portal.css \
 	www/common/css/newportal.css \
 	www/common/css/portal.css
@@ -260,7 +263,8 @@ dist_svcwebtop_DATA = \
 	www/amstatus.php \
 	www/index.php \
 	www/login-help.php \
-	www/favicon.ico
+	www/favicon.ico \
+	www/portal-ds.php
 
 dist_svcwebpolicy_DATA = \
 	www/policy/privacy.html
