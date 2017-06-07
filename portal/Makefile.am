@@ -96,6 +96,7 @@ dist_svcweb_DATA = \
 	www/portal/do-user-admin.php \
 	www/portal/do-user-search.php \
 	www/portal/dologout.php \
+	www/portal/dotransfer.php \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
 	www/portal/downloadputtykey.php \
@@ -119,7 +120,6 @@ dist_svcweb_DATA = \
 	www/portal/index.php \
 	www/portal/home.php \
 	www/portal/image_operations.php \
-	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \
         www/portal/jacks-app.css \
         www/portal/jacks-app.js \
@@ -132,9 +132,12 @@ dist_svcweb_DATA = \
 	www/portal/jacks-editor-app-expanded.php \
 	www/portal/jacks-lib.js \
 	www/portal/jfed.php \
+	www/portal/join-project.css \
+	www/portal/join-project.js \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
+	www/portal/lookup-project.php \
 	www/portal/listresources_plain.php \
 	www/portal/maintenance_redirect_page.php \
 	www/portal/modify.php \
@@ -191,16 +194,21 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-slices.js \
 	www/portal/tools-user.js \
+	www/portal/transfer.js \
+	www/portal/transfer.php \
 	www/portal/updatekeys.js \
 	www/portal/updatekeys.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
+	www/portal/verifyuser.php \
 	www/portal/wimax-enable.php \
 	www/portal/wireless_operations.php \
 	www/portal/wireless_redirect.php
 
 dist_svcwebimages_DATA = \
+	www/images/ds-logo.png \
+	www/images/ds-nsf1.gif \
 	www/images/EG-VM-noTxt-centered.svg \
 	www/images/EG-VM-noTxt.svg \
 	www/images/EG-VM.svg \
@@ -230,6 +238,7 @@ dist_svcwebimages_DATA = \
 	www/images/staticmap.png \
 	www/images/Symbols-Tips-icon-clear.png \
 	www/images/UseGENI.png \
+	www/images/VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
 	www/images/Xen-VM.svg
@@ -241,6 +250,7 @@ dist_svcwebcommon_DATA = \
 	www/common/topbar_gradient2.png
 
 dist_svcwebcss_DATA =  \
+	www/common/css/ds.css \
 	www/common/css/mobile-portal.css \
 	www/common/css/newportal.css \
 	www/common/css/portal.css
@@ -253,7 +263,8 @@ dist_svcwebtop_DATA = \
 	www/amstatus.php \
 	www/index.php \
 	www/login-help.php \
-	www/favicon.ico
+	www/favicon.ico \
+	www/portal-ds.php
 
 dist_svcwebpolicy_DATA = \
 	www/policy/privacy.html

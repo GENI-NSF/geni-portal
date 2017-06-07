@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2015-2016 Raytheon BBN Technologies
+// Copyright (c) 2017 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,35 +21,41 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-
 require_once("user.php");
-require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("aggstatus.php");
+include_once('/etc/geni-ch/settings.php');
 
-show_html_head('GENI Aggregate Status');
-?>
+// Get the authenticated user for logging
+$user = geni_loadUser();
+if (! isset($user)) {
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
 
-<div id="content-outer" class="one-card">
-<div id="content">
-<h1>GENI Aggregate Status</h1>
-  <?php print agg_status_monitoring_section(); ?>
-  <?php print agg_status_legend_section(); ?>
-  <section>
-    <h3>Aggregate Status</h3>
-    <div class='tablecontainer'>
-      <?php print agg_status_table(); ?>
-    </div>
-  </section>
+$KEY_USER = "user";
+$KEY_PASS = "pass";
 
-<script type="text/javascript">
-$(document).ready(function () {
-    $('#aggtable').DataTable({paging: false});
-  });
-</script>
-</div> <!-- content -->
-</div> <!-- content-outer -->
-<?php
-include("footer.php");
+// Get these from the request
+$gpo_user = null;
+if (array_key_exists($KEY_USER, $_REQUEST)) {
+        $gpo_user = $_REQUEST[$KEY_USER];
+} else {
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
+
+$gpo_pass = null;
+if (array_key_exists($KEY_PASS, $_REQUEST)) {
+        $gpo_pass = $_REQUEST[$KEY_PASS];
+} else {
+        header('X-PHP-Response-Code: 400', true, 400);
+        exit;
+}
+
+$response_code = verify_idp_user($gpo_user, $gpo_pass);
+if ($response_code != 200) {
+        error_log("Failed to verify user");
+}
+
+// Return whatever the IdP returned for status
+header("X-PHP-Response-Code: $response_code", true, $response_code);
 ?>

@@ -2,7 +2,7 @@
 %define legacy_name geni-ch
 
 Name:           geni-portal
-Version:        3.17
+Version:        3.25
 Release:        1%{?dist}
 Summary:        GENI Experimenter Portal
 BuildArch:      noarch
@@ -133,6 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{legacy_name}/lib/php/util.php
 %{_datadir}/%{legacy_name}/openid/apache2-consumer.conf
 %{_datadir}/%{legacy_name}/openid/apache2.conf
+%{_datadir}/%{legacy_name}/openid/httpd-centos7.conf
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID.php
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID/Association.php
 %{_datadir}/%{legacy_name}/openid/Auth/OpenID/AX.php
@@ -261,6 +262,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/portal_utils/orbit_interface.pyc
 %{python_sitelib}/portal_utils/orbit_interface.pyo
 %{webdir}/amstatus.php
+%{webdir}/common/css/ds.css
 %{webdir}/common/css/kmtool.css
 %{webdir}/common/css/mobile-portal.css
 %{webdir}/common/css/newportal.css
@@ -272,6 +274,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/common/topbar_gradient.png
 %{webdir}/common/topbar_gradient2.png
 %{webdir}/favicon.ico
+%{webdir}/images/ds-logo.png
+%{webdir}/images/ds-nsf1.gif
 %{webdir}/images/EG-VM-noTxt-centered.svg
 %{webdir}/images/EG-VM-noTxt.svg
 %{webdir}/images/EG-VM.svg
@@ -301,12 +305,14 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/images/Symbols-Tips-icon-clear.png
 %{webdir}/images/UseGENI.png
 %{webdir}/images/witest-logo-white.png
+%{webdir}/images/VM-noTxt-centered.svg
 %{webdir}/images/Xen-VM-noTxt-centered.svg
 %{webdir}/images/Xen-VM-noTxt.svg
 %{webdir}/images/Xen-VM.svg
 %{webdir}/index.php
 %{webdir}/login-help.php
 %{webdir}/policy/privacy.html
+%{webdir}/portal-ds.php
 %{webdir}/secure/accept-project-invite.php
 %{webdir}/secure/admin.php
 %{webdir}/secure/aggregates.php
@@ -352,6 +358,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/do-user-admin.php
 %{webdir}/secure/do-user-search.php
 %{webdir}/secure/dologout.php
+%{webdir}/secure/dotransfer.php
 %{webdir}/secure/downloadkeycert.php
 %{webdir}/secure/downloadomnibundle.php
 %{webdir}/secure/downloadputtykey.php
@@ -374,7 +381,6 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/home.php
 %{webdir}/secure/image_operations.php
 %{webdir}/secure/index.php
-%{webdir}/secure/invite-to-geni.php
 %{webdir}/secure/invite-to-project.php
 %{webdir}/secure/irods.php
 %{webdir}/secure/jacks-app-details.php
@@ -388,6 +394,8 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/jacks-editor-app.js
 %{webdir}/secure/jacks-lib.js
 %{webdir}/secure/jfed.php
+%{webdir}/secure/join-project.css
+%{webdir}/secure/join-project.js
 %{webdir}/secure/join-project.php
 %{webdir}/secure/join-this-project.php
 %{webdir}/secure/km_utils.php
@@ -400,6 +408,7 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/kmsendemail.php
 %{webdir}/secure/kmconfirmemail.php
 %{webdir}/secure/listresources.php
+%{webdir}/secure/lookup-project.php
 %{webdir}/secure/listresources_plain.php
 %{webdir}/secure/loadcert.js
 %{webdir}/secure/loadcert.php
@@ -459,11 +468,14 @@ rm -rf $RPM_BUILD_ROOT
 %{webdir}/secure/tool-omniconfig.php
 %{webdir}/secure/tool-slices.js
 %{webdir}/secure/tools-user.js
+%{webdir}/secure/transfer.js
+%{webdir}/secure/transfer.php
 %{webdir}/secure/updatekeys.js
 %{webdir}/secure/updatekeys.php
 %{webdir}/secure/upload-file.php
 %{webdir}/secure/upload-project-members.php
 %{webdir}/secure/uploadsshkey.php
+%{webdir}/secure/verifyuser.php
 %{webdir}/secure/wimax-enable.php
 %{webdir}/secure/wireless_operations.php
 %{webdir}/secure/wireless_redirect.php

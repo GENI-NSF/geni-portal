@@ -1,5 +1,5 @@
 # Specify package name, version, bug report URL, tar name, and URL
-AC_INIT([GENI Portal], [3.17],
+AC_INIT([GENI Portal], [3.25],
         [https://github.com/GENI-NSF/geni-portal/issues], [geni-ch],
         [https://github.com/GENI-NSF/geni-portal])
 #AM_INIT_AUTOMAKE([foreign -Wall -Werror])
@@ -56,8 +56,6 @@ AC_ARG_ENABLE([gpo_lab],
   *) AC_MSG_ERROR([bad value ${enableval} for --enable-gpo-lab]) ;;
 esac],[gpo_lab=false])
 AM_CONDITIONAL([GPO_LAB], [test x$gpo_lab = xtrue])
-
-AM_CONDITIONAL(INSTALL_GITHASH, [test -f bin/geni-ch-githash])
 
 AC_CONFIG_FILES([Makefile etc/Makefile bin/Makefile])
 AC_CONFIG_FILES([sr/Makefile lib/Makefile])

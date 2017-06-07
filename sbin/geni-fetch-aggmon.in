@@ -56,7 +56,7 @@ def getIsAvailableEvents(agg_list):
     # end = datetime.datetime.utcnow()
     now = datetime.datetime.now()
     end = now + datetime.timedelta(minutes=0)
-    start = end - datetime.timedelta(minutes=30)
+    start = end - datetime.timedelta(minutes=60)
     end_ts = int(time.mktime(end.timetuple()) * 1000)
     start_ts = int(time.mktime(start.timetuple()) * 1000)
     query = buildMonQuery(eventType=['is_available'],

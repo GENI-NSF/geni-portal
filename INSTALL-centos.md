@@ -4,7 +4,7 @@
 
 For installing the GENI Portal Software, shell windows on three servers are required:
 
- * The Portal host 
+ * The Portal host
  * The IdP host
  * The development host (from which the user can scp from/to the other hosts)
 
@@ -59,22 +59,44 @@ wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/se
 sudo cp security\:shibboleth.repo /etc/yum.repos.d/
 ```
 
-Add GENI repository:
+Install the EPEL release
 
-```bash
-wget http://www.gpolab.bbn.com/experiment-support/gposw/centos/geni.repo
-sudo cp geni.repo /etc/yum.repos.d/
-```
-
-Install GENI portal software
-
-These must be done separately in order to fullfill the geni-portal dependencies that are in the EPEL repository.
+The GENI software depends on
+[Fedora Extra Packages for Enterprise Linux (EPEL)](https://fedoraproject.org/wiki/EPEL)
+packages. To install EPEL:
 
 ```bash
 sudo yum install -y epel-release
-sudo yum install -y --nogpgcheck geni-portal
-
 ```
+
+Install GENI Tools
+
+GENI Tools RPMs are available on [GitHub](https://github.com).
+`yum` can download and install these RPMs.
+
+_N.B. The link in the example below may not be the latest RPM.
+You can find the URL of the latest RPM at_
+https://github.com/GENI-NSF/geni-tools/releases/latest
+
+```Shell
+sudo yum install -y \
+    https://github.com/GENI-NSF/geni-tools/releases/download/v2.9/geni-tools-2.9-1.el7.centos.noarch.rpm
+```
+
+Install GENI Portal software
+
+GENI Portal RPMs are available on [GitHub](https://github.com).
+`yum` can download and install these RPMs.
+
+_N.B. The link in the example below may not be the latest RPM.
+You can find the URL of the latest RPM at_
+https://github.com/GENI-NSF/geni-portal/releases/latest
+
+```Shell
+sudo yum install -y \
+    https://github.com/GENI-NSF/geni-portal/releases/download/v3.24/geni-portal-3.24-1.el7.centos.noarch.rpm
+```
+
 
 ```bash
 # If there are updates on a development machine not in the RPM, do this:
@@ -108,24 +130,35 @@ sudo cp /tmp/hosts /etc/hosts
 ```
 
 
-# 3. Install Shibboleth Software 
+# 3. Install Shibboleth Software
 
-3a. Edit shibboleth attribute-map.xml
-```
-Edit /etc/shibboleth/attribute-map.xml and uncomment the block of <Attribute> entries
-below the "<!-- Examples of LDAP-based attributes, uncomment to use these ... -->
-```
+## 3a. Edit shibboleth attribute-map.xml
 
-3b. Install Embedded Discovery Service
+Edit `/etc/shibboleth/attribute-map.xml` and uncomment the block
+of <Attribute> entries below the following line:
+
+    <!-- Examples of LDAP-based attributes, uncomment to use these ... -->
+
+## 3b. Install Embedded Discovery Service (EDS)
 ```bash
-cd /tmp
-wget https://github.com/GENI-NSF/geni-eds/releases/download/v1.1.0-geni.3/shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
-tar xvfz shibboleth-embedded-ds-1.1.0-geni.3.tar.gz
-cd shibboleth-embedded-ds-1.1.0-geni.3
-sudo mkdir -p /var/www/eds
-sudo cp *.css *.js *.html *.gif *.png /var/www/eds
-
+sudo yum install -y shibboleth-embedded-ds
 ```
+
+## 3c. Edit Shibboleth EDS Apache configuration
+
+There is a bug in the Shibboleth EDS configuration file for Apache on
+CentOS 7. In `/etc/httpd/conf.d/shibboleth-ds.conf`, change the line:
+
+    Allow from all
+
+To:
+
+    Require all granted
+
+## 3d. Edit Shibboleth EDS config file
+
+Edit the file `/etc/shibboleth-ds/idpselect_config.js` and set the
+`helpURL` to a valid web page or email link.
 
 # 4. Set up Variables
 ```bash
@@ -165,11 +198,11 @@ sudo service tomcat6 restart
 
 ```
 # On development host:
-scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /tmp/idp-metadata-$IDP_HOST.xml 
+scp $IDP_HOST:/opt/shibboleth-idp/metadata/idp-metadata.xml  /tmp/idp-metadata-$IDP_HOST.xml
 scp /tmp/idp-metadata-$IDP_HOST.xml $PORTAL_HOST:/tmp
 ```
 
-``` 
+```
 # On portal host:
 # Add host-specific extensions to IDP metadata for GENI logo, name, etc.
 sed -e "/<Extensions>/r /tmp/idp-metadata-extension.xml" /tmp/idp-metadata-$IDP_HOST.xml > /tmp/idp-metadata-$IDP_HOST.extended.xml
@@ -204,7 +237,44 @@ sudo cp /tmp/portal-*.pem /usr/share/geni-ch/portal
 sudo cp /tmp/km-*.pem /usr/share/geni-ch/km
 ```
 
-# 9. Restart HTTPD service
-```bash
+# 9. Disable HTTPD private tmp directory
+
+The portal uses /tmp to communicate between the portal and launched
+omni/stitcher commands. Depending on the installation, CentOS may enable
+a private /tmp directory for httpd which will hide the necessary files
+from launched omni/stitcher processes.
+
+To disable private tmp directory for httpd, edit the file:
+
+    /etc/systemd/system/multi-user.target.wants/httpd.service
+
+and set `PrivateTmp` to false:
+
+````
+PrivateTmp=false
+````
+
+# 10. Enable HTTPD and SHIBD services to start at boot time
+
+The following commands will enable the services to start at boot time:
+
+````sh
+sudo systemctl enable httpd.service
+
+sudo systemctl enable shibd.service
+````
+
+The following commands will verify that the services are set to start
+at boot time. These should report "enabled".
+
+````sh
+sudo systemctl is-enabled httpd.service
+
+sudo systemctl is-enabled shibd.service
+````
+
+# 11. Restart HTTPD service
+
+```sh
 sudo systemctl restart httpd.service
 ```

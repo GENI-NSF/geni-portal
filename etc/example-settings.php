@@ -37,6 +37,16 @@ $db_dsn = 'pgsql://scott:tiger@localhost/portal';
 $portal_admin_email = 'portal-admin@example.com';
 
 /*
+ * How users can get help via email.
+ */
+$portal_help_email = 'help@example.com'
+
+/*
+ * Address from which portal emails are sent.
+ */
+$portal_from_email = 'no-reply@example.com'
+
+/*
  * Bootstrap the service registry. All other services are discovered
  * via the service registry.
  */

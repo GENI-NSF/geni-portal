@@ -204,9 +204,9 @@ function get_time_diff($exp_date) {
   return $num_hours;
 }
 
-// Return a red if $num_hours is small, an orange if medium, a green if large 
+// Return a red if $num_hours is small, an orange if medium, a green if large
 function get_urgency_color($num_hours) {
-  if ($num_hours < 24) { 
+  if ($num_hours < 24) {
     return "#EE583A";
   } else if ($num_hours < 48) {
     return "#FBC02D";
@@ -217,7 +217,7 @@ function get_urgency_color($num_hours) {
 
 // Return name of icons by same ideas as get_urgency_color
 function get_urgency_icon($num_hours) {
-  if ($num_hours < 24) { 
+  if ($num_hours < 24) {
     return "report";
   } else if ($num_hours < 48) {
     return "warning";
@@ -240,7 +240,7 @@ function already_in_list($candidates, $members, $true_if_any)
   $all_members = true;
   foreach($candidates as $candidate) {
     if (in_array($candidate, $members)) {
-	if ($true_if_any) 
+	if ($true_if_any)
 	  return true;
       } else {
       $all_emmbers = false;
@@ -322,4 +322,48 @@ function getBrowser() {
 	       'pattern'    => $pattern
 	       );
 }
+
+/**
+ * Verify a username/password at the GPO IdP.
+ *
+ * This is used to transfer accounts away from the GPO IdP.
+ */
+function verify_idp_user($gpo_user, $gpo_pass) {
+        global $idp_user;
+        global $idp_pass;
+        global $idp_host;
+
+        // These must be present in /etc/geni-ch/settings.php
+        if (! (isset($idp_user) && isset($idp_pass) && isset($idp_host))) {
+                error_log("IdP configuration missing from /etc/geni-ch/settings.php");
+                header('X-PHP-Response-Code: 400', true, 400);
+                return false;
+        }
+
+        $url = "https://$idp_host/manage/verifyuser.php";
+        $args = array('user' => $gpo_user, 'pass' => $gpo_pass);
+        $data = http_build_query($args);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_USERPWD, "$idp_user:$idp_pass");
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // enable this
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        $output = curl_exec($ch);
+        if ($output === FALSE) {
+                $err = curl_error($ch);
+                error_log("curl_exec has failed. error: $err");
+                curl_close($ch);
+                header('X-PHP-Response-Code: 400', true, 400);
+                return false;
+        }
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+        $response_code = $info["http_code"];
+        return $response_code;
+}
+
 ?>

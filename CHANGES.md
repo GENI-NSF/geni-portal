@@ -1,5 +1,141 @@
 # GENI Portal Release Notes
 
+# [Release 3.25](https://github.com/GENI-NSF/geni-portal/milestones/3.25)
+
+## Changes
+
+* None
+
+## Installation Notes
+
+* None
+
+# [Release 3.24](https://github.com/GENI-NSF/geni-portal/milestones/3.24)
+
+## Changes
+
+* Encode arguments when verifying a user
+  ([#1794](https://github.com/GENI-NSF/geni-portal/issues/1794))
+* Add .php to RSpec related redirects
+  ([#1797](https://github.com/GENI-NSF/geni-portal/issues/1797))
+* Fix a UTF-8 encoding error in geni-sync-wireless
+  ([#1799](https://github.com/GENI-NSF/geni-portal/issues/1799))
+* Fix exceptions when using `--user` arg to geni-sync-wireless
+  ([#1801](https://github.com/GENI-NSF/geni-portal/issues/1801))
+* Switch to vanilla Shibboleth EDS
+  ([#1802](https://github.com/GENI-NSF/geni-portal/issues/1802))
+
+## Installation Notes
+
+* Install Shibboleth EDS per INSTALL-centos.md
+* Update Shibboleth SP configuration to use new discovery page
+  portal-ds.php instead of the EDS page.
+
+# [Release 3.23](https://github.com/GENI-NSF/geni-portal/milestones/3.23)
+
+## Changes
+
+* Use configured from address in all portal emails
+  ([#1777](https://github.com/GENI-NSF/geni-portal/issues/1777))
+* Support migrating accounts from GPO IdP to NCSA IdP
+  ([#1786](https://github.com/GENI-NSF/geni-portal/issues/1786))
+
+## Installation Notes
+
+* In order to enable the account transfer functionality, add the
+  following new settings to /etc/geni-ch/settings.php. Adjust the
+  values to suit the environment.
+
+  ```
+  /* Username for IdP admin pages */
+  $idp_user = "scott";
+  /* Password for IdP admin pages */
+  $idp_pass = "tiger";
+  /* IdP host */
+  $idp_host = "idp.example.com";
+  ```
+
+# [Release 3.22](https://github.com/GENI-NSF/geni-portal/milestones/3.22)
+
+## Changes
+
+* Email Admins on Join Requests
+  ([#1672](https://github.com/GENI-NSF/geni-portal/issues/1672))
+* Use a placeholder ssh key in geni-sync-wireless
+  ([#1726](https://github.com/GENI-NSF/geni-portal/issues/1726))
+* Fix redirect on upload ssh key
+  ([#1778](https://github.com/GENI-NSF/geni-portal/issues/1778))
+* Remove githash file
+  ([#1781](https://github.com/GENI-NSF/geni-portal/issues/1781))
+
+## Installation Notes
+
+* None
+
+# [Release 3.21](https://github.com/GENI-NSF/geni-portal/milestones/3.21)
+
+## Changes
+
+* Set envelope sender to the portal's own email address
+  ([#1774](https://github.com/GENI-NSF/geni-portal/issues/1774))
+
+## Installation Notes
+
+* None
+
+# [Release 3.20](https://github.com/GENI-NSF/geni-portal/milestones/3.20)
+
+## Changes
+
+* Update packaging and cron documentation
+  ([#1765](https://github.com/GENI-NSF/geni-portal/issues/1765))
+* Switch to GitHub Flow
+  ([#1766](https://github.com/GENI-NSF/geni-portal/issues/1766))
+* Add cert and key to geni-sync-wireless call to sync one project
+  ([#1767](https://github.com/GENI-NSF/geni-portal/issues/1767))
+* Add from email address to settings instead of hard coded
+  ([#1769](https://github.com/GENI-NSF/geni-portal/issues/1769))
+
+## Installation Notes
+
+* Add `$portal_from_email` to `/etc/geni-ch/settings.php`
+
+# [Release 3.19](https://github.com/GENI-NSF/geni-portal/milestones/3.19)
+
+## Changes
+
+* Add CentOS 7 httpd config for OpenID
+  ([#1755](https://github.com/GENI-NSF/geni-portal/issues/1755))
+* Install Jacks icon file VM-noTxt-centered
+  ([#1756](https://github.com/GENI-NSF/geni-portal/issues/1756))
+* Make geni-fetch-aggmon request more data
+  ([#1762](https://github.com/GENI-NSF/geni-portal/issues/1762))
+
+## Installation Notes
+
+* None
+
+# [Release 3.18](https://github.com/GENI-NSF/geni-portal/milestones/3.18)
+
+## Changes
+
+* Rework the 'Join A Project' page for better privacy
+  ([#1743](https://github.com/GENI-NSF/geni-portal/issues/1743))
+* Remove cc to admins on self-asserted email address
+  ([#1744](https://github.com/GENI-NSF/geni-portal/issues/1744))
+* Use GENI Monitoring for Jacks AM status
+  ([#1747](https://github.com/GENI-NSF/geni-portal/issues/1747))
+* Change the Disk Image JSON URL for the Genidesktop
+  ([#1748](https://github.com/GENI-NSF/geni-portal/issues/1748))
+* Add Links to GENI monitoring on aggregate status pages
+  ([#1751](https://github.com/GENI-NSF/geni-portal/issues/1751))
+* Adopt unaffiliated identity provider for login
+  ([#1753](https://github.com/GENI-NSF/geni-portal/issues/1753))
+
+## Installation Notes
+
+* None
+
 # [Release 3.17](https://github.com/GENI-NSF/geni-portal/milestones/3.17)
 
 ## Changes

@@ -170,7 +170,12 @@ if (isset($log_msg)) {
     $body .= "(Duplicate request)";
   }
 
-  mail($portal_admin_email, $subject, $body);
+  $headers = "From: \"The GENI Portal\" <$portal_from_email>\r\n";
+  $headers .= "Reply-To: $portal_help_email\r\n";
+  $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+  $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+
+  mail($portal_admin_email, $subject, $body, $headers, "-f $portal_from_email");
 }
 
 // Now email them to say we got their lead request (if this is a new request)
@@ -190,14 +195,15 @@ if (! $duplicateRequest and $pi_request and ! $is_pi) {
   $body .= "GENI Experimenter Support\n";
   $body .= "help@geni.net\n";
 
-  $headers = "Reply-To: help@geni.net\r\n";
+  $headers = "From: \"The GENI Portal\" <$portal_from_email>\r\n";
+  $headers .= "Reply-To: $portal_help_email\r\n";
   $headers .= "Bcc: $portal_admin_email\r\n";
   $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
   $headers .= "Content-Transfer-Encoding: 8bit\r\n";
 
   $to = $user->prettyEmailAddress();
   $subject = "Your GENI Project Lead request has been received";
-  mail($to, $subject, $body, $headers);
+  mail($to, $subject, $body, $headers, "-f $portal_from_email");
 }
 
 /*
@@ -237,7 +243,13 @@ if (! empty($change_text)) {
   if ($req_name !== $user->prettyName()) {
     $subject = "GENI name change posted";
   }
-  mail($portal_admin_email, $subject, $body);
+
+  $headers = "From: \"The GENI Portal\" <$portal_from_email>\r\n";
+  $headers .= "Reply-To: $portal_help_email\r\n";
+  $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+  $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+
+  mail($portal_admin_email, $subject, $body, $headers, "-f $portal_from_email");
 }
 
 /*

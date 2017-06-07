@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2016 Raytheon BBN Technologies
+// Copyright (c) 2011-2017 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -39,16 +39,16 @@ require_once 'tool-rspec-parse.php';
 //
 // We can differentiate between these cases:
 //  1a) The module is invoked with empty $_REQUEST/$_POST arguments
-//  1b) The module is invoked with a full set of rspec_id, group1, 
+//  1b) The module is invoked with a full set of rspec_id, group1,
 //       description, name $_REQUEST arguments (not $_POST)
 //       (on the URL rspecupload.php?rspec_id=x&....
 //  2a) The group1, description name fields are set in $_REQUEST and $_POST
-//      but the rspec_id is blank 
+//      but the rspec_id is blank
 //  2b) The group1, description name fields are set in $_REQUEST and $_POST
 //      and the rspec_id is set as well
-// Note, if the $_FILES variable contains no files 
+// Note, if the $_FILES variable contains no files
 //    (an error = UPLOAD_ERR_NO_FILE, it is an error for uploading a new
-//    rspec but allowed for updating an existing rpsec 
+//    rspec but allowed for updating an existing rpsec
 //    (leave the existing RSPEC alone)
 
 
@@ -119,7 +119,7 @@ if ($error != NULL || count($_POST) == 0) {
   include("tool-showmessage.php");
 
   $msg = "Upload experiment Resource Specification (RSpec)";
-  if($rspec_id != "") 
+  if($rspec_id != "")
     $msg = "Update experiment Resource Specification (RSpec)";
   print("<h1 style=\"line-height: 1.2em\">$msg</h1>\n");
 
@@ -225,7 +225,7 @@ if (is_null($parse_results)) {
   error_log("Failed to parse uploaded RSpec '$actual_filename'");
   $msg = "ERROR. RSpec '$name' from file '$filename' failed to parse.";
   $_SESSION['lasterror'] = $msg;
-  relative_redirect('profile#rspecs');
+  relative_redirect('profile.php#rspecs');
   exit;
 }
 
@@ -239,7 +239,7 @@ if (rspec_name_exists($user, $visibility, $name, $rspec_id)) {
   /* This rspec name has already been taken. */
   $msg = "ERROR. A $visibility RSpec already exists with name \"$name \".";
   $_SESSION['lasterror'] = $msg;
-  relative_redirect('profile#rspecs');
+  relative_redirect('profile.php#rspecs');
   exit;
 }
 
@@ -278,5 +278,5 @@ if (! $result) {
   $_SESSION['lastmessage'] = "Uploaded Resource Specification " . $name;
 }
 
-relative_redirect('profile#rspecs');
+relative_redirect('profile.php#rspecs');
 ?>

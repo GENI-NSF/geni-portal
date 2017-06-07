@@ -1,0 +1,11 @@
+Alias /server @svcdatadir@/src/server-direct
+<Directory @svcdatadir@/src/server-direct>
+  AllowOverride None
+  Require all granted
+</Directory>
+
+Alias /secure/openid @svcdatadir@/src/server-indirect
+<Directory @svcdatadir@/src/server-indirect>
+  AllowOverride None
+  Require all granted
+</Directory>

@@ -84,7 +84,6 @@ $parents = array("profile.php" => "home.php",
 		 "sliverdelete.php" => "slice.php",
 		 "downloadkeycert.php" => "profile.php",
 		 "downloadputtykey.php" => "profile.php",
-		 "invite-to-geni.php" => "home.php",
 		 "invite-to-project.php" => "project.php",
 		 "ask-for-project.php" => "home.php",
 		 "join-project.php" => "home.php",
@@ -114,7 +113,8 @@ $parents = array("profile.php" => "home.php",
 		 "tool-aggwarning.php" => "slice.php",
 		 "send_bug_report.php" => "slice.php",
 		 "contact-us.php" => "home.php",
-                 "updatekeys.php" => "slice.php");
+                 "updatekeys.php" => "slice.php",
+                 "transfer.php" => "profile.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -152,7 +152,6 @@ $names = array("home.php" => "Home",
 		 "do-renew-slice.php" => "Renew Slice %slice_name",
 	         "downloadkeycert.php" => "Download Certificate and Key",
 	         "downloadputtykey.php" => "Download PuTTY Key",
-		 "invite-to-geni.php" => "Invite People to GENI",
 		 "invite-to-project.php" => "Invite People to Project %project_name",
 		 "ask-for-project.php" => "Ask for a GENI Project",
 		 "join-project.php" => "Join a Project",
@@ -182,7 +181,8 @@ $names = array("home.php" => "Home",
 	       "tool-aggwarning.php" => "Query All Aggregates",
 	       "send_bug_report.php" => "Send Problem Report",
 	       "contact-us.php" => "Contact Us",
-               "updatekeys.php" => "Update SSH Keys");
+               "updatekeys.php" => "Update SSH Keys",
+               "transfer.php" => "Transfer Identity");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
