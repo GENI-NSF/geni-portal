@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Change spelling of EXPIRED
+  ([#1809](https://github.com/GENI-NSF/geni-portal/issues/1809))
 
 ## Installation Notes
 

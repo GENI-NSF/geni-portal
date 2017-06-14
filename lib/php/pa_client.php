@@ -397,7 +397,7 @@ function get_project_info_for_member($sa_url, $signer, $member_id,
 
   $result = array();
   foreach($rows as $row) {
-    $expired = $row['EXPIRED'];
+    $expired = $row['PROJECT_EXPIRED'];
     if ($expired && (!$include_expired)) continue;
     //    error_log("ROW = " . print_r($row, true));
     $new_row = project_details_chapi2portal($row);
@@ -436,7 +436,7 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member)
   // if not a member
   $current = array();
   foreach ($rows as $row) {
-    if ($row['EXPIRED'] == false) {
+    if ($row['PROJECT_EXPIRED'] == false) {
       $current[] = $row;
     }
   }

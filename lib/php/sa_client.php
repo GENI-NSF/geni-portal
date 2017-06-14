@@ -519,8 +519,8 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
   $converted_results = array();
   foreach($results as $row) {
     $converted_row = array(SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID => $row['SLICE_UID'],
-			   SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE => $row['SLICE_ROLE'],
-			   SA_SLICE_TABLE_FIELDNAME::EXPIRED => $row['EXPIRED']);
+                           SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE => $row['SLICE_ROLE'],
+                           SA_SLICE_TABLE_FIELDNAME::EXPIRED => $row['SLICE_EXPIRED']);
     $converted_row = convert_role($converted_row);
     $converted_results[] = $converted_row;
   }
