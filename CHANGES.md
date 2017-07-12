@@ -4,7 +4,8 @@
 
 ## Changes
 
-* None
+* Update displayed copyright to 2017
+  ([#1812](https://github.com/GENI-NSF/geni-portal/issues/1812))
 
 ## Installation Notes
 
