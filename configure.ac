@@ -1,5 +1,5 @@
 # Specify package name, version, bug report URL, tar name, and URL
-AC_INIT([GENI Portal], [3.26],
+AC_INIT([GENI Portal], [3.27],
         [https://github.com/GENI-NSF/geni-portal/issues], [geni-ch],
         [https://github.com/GENI-NSF/geni-portal])
 #AM_INIT_AUTOMAKE([foreign -Wall -Werror])

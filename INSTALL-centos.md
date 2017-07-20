@@ -94,7 +94,7 @@ https://github.com/GENI-NSF/geni-portal/releases/latest
 
 ```Shell
 sudo yum install -y \
-    https://github.com/GENI-NSF/geni-portal/releases/download/v3.25/geni-portal-3.25-1.el7.centos.noarch.rpm
+    https://github.com/GENI-NSF/geni-portal/releases/download/v3.26/geni-portal-3.26-1.el7.centos.noarch.rpm
 ```
 
 
