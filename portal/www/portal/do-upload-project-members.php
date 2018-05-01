@@ -101,7 +101,7 @@ foreach($selections as $email_name => $attribs) {
     // If not, send an inviation email
     $email_subject = "Invitation to GENI project: " . $project_name;
     $hostname = $_SERVER['SERVER_NAME'];
-    $confirmation_url = "https://$hostname/secure/accept-project-invite?invite_id=$invite_id&project_name=$project_name";
+    $confirmation_url = "https://$hostname/secure/accept-project-invite.php?invite_id=$invite_id&project_name=$project_name";
     $email_text = "Dear $user_name, \n" .
       "You are invited to join GENI project $project_name whose lead is $lead_name. \n\n" .
       "If you would like to join the project, click on this URL " . $confirmation_url . ". " .
