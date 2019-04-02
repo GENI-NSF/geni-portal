@@ -273,9 +273,10 @@ function write_logger_configuration_file($dir) {
  */
 function write_agg_nick_cache($dest)
 {
-  $anc = '[omni_default]' . PHP_EOL;
-  $anc .= 'scs_url=https://geni-scs.net.internet2.edu:8443/geni/xmlrpc' . PHP_EOL;
-  $anc .= 'latest_omni_version=2.9,No newer omni version available' . PHP_EOL;
+  $anc = '[omni_defaults]' . PHP_EOL;
+  //$anc .= 'scs_url=https://geni-scs.net.internet2.edu:8443/geni/xmlrpc' . PHP_EOL;
+  $anc .= 'scs_url=https://scs.geni.net:8443/geni/xmlrpc' . PHP_EOL;
+  $anc .= 'latest_omni_version=2.10,No newer omni version available' . PHP_EOL;
   $anc .= PHP_EOL;
   $anc .= '[aggregate_nicknames]' . PHP_EOL;
 
