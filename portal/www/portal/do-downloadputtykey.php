@@ -78,7 +78,7 @@ if (is_null($private_key)) {
   file_put_contents($private_key_filename, $private_key);
 
   // Run the comand to generate the puttygen command
-  $cmd = "echo $passphrase | puttygen $private_key_filename -o $putty_key_filename";
+  $cmd = "echo ".escapeshellarg($passphrase)." | puttygen $private_key_filename -o $putty_key_filename";
   //  error_log("CMD = " . $cmd);
   system($cmd);
   
