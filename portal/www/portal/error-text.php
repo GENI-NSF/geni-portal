@@ -44,7 +44,7 @@ if (key_exists("error", $_GET)) {
   $error_text = urldecode($_GET["error"]);
 //  error_log("ET = " . $error_text);
 //  if ($system_error) {
-    $error_text = htmlentities($error_text);
+    $error_text = htmlentities($error_text, ENT_QUOTES | ENT_HTML5, $encoding = 'UTF-8');
 //  }
   echo "<p class='warn'>" . $error_text . "</p><br/>\n";
 } else {
