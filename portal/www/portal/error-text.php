@@ -29,7 +29,7 @@ $referer = "";
 if (key_exists($referer_key, $_SERVER)) {
   $referer = $_SERVER[$referer_key];
 }
-$system_error = false;
+ $system_error = false;
 if (key_exists("system_error", $_GET)) {
   $system_error = true;
 }
@@ -43,9 +43,9 @@ $error_text = "";
 if (key_exists("error", $_GET)) {
   $error_text = urldecode($_GET["error"]);
 //  error_log("ET = " . $error_text);
-  if ($system_error) {
+//  if ($system_error) {
     $error_text = htmlentities($error_text);
-  }
+//  }
   echo "<p class='warn'>" . $error_text . "</p><br/>\n";
 } else {
   // error_log('$_SERVER = ' . print_r($_SERVER, true));
