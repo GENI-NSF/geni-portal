@@ -62,6 +62,15 @@ if ($result == FALSE) {
   header("HTTP/1.0 400 Too Large");
   return;
 } else {
+$dom = new DOMDocument();
+$dom->loadXML($result);
+$script_nodes = $dom->getElementsByTagName('script');
+if($script_nodes->length > 0)
+{
+  error_log("upload-file: Refusing to serve as it contains SCRIPT tags: $url");
+  header("HTTP/1.0 400 Bad Request");
+  return;
+}
   // Return the contents of the file itself
   print $result;
 }
