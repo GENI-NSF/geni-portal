@@ -60,8 +60,8 @@ $rspec_desc = "";
 $rspec_sn = "";
 if (array_key_exists('rspec_id', $_REQUEST)) {
   $rspec_id = $_REQUEST['rspec_id'];
-  $rspec_sn = $_REQUEST['name'];
-  $rspec_desc = $_REQUEST['description'];
+  $rspec_sn = htmlentities(urldecode($_REQUEST['name']), ENT_QUOTES | ENT_HTML5, $encoding = 'UTF-8');
+  $rspec_desc = htmlentities(urldecode($_REQUEST['description']), ENT_QUOTES | ENT_HTML5, $encoding = 'UTF-8');
   $rspec_visibility = $_REQUEST['group1'];
 }
 
@@ -215,9 +215,9 @@ if ($error != NULL || count($_POST) == 0) {
 $actual_filename = $_FILES["file"]["tmp_name"];
 $filename = $_FILES["file"]["name"];
 $description = NULL;
-$name = $_POST["name"];
+$name = htmlspecialchars($_POST["name"], ENT_QUOTES | ENT_HTML5, $encoding = 'UTF-8');
 $visibility = $_POST["group1"];
-$description = $_POST["description"];
+$description = htmlspecialchars($_POST["description"], ENT_QUOTES | ENT_HTML5, $encoding = 'UTF-8');
 $rspec_id = $_POST['rspec_id'];
 
 $parse_results = parseRequestRSpec($actual_filename);

@@ -62,6 +62,10 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
         array_key_exists("invocation_user", $_REQUEST)) {
     $invocation_user = $_REQUEST['invocation_user'];
     $invocation_id = $_REQUEST['invocation_id'];
+    if(!ctype_alnum($invocation_id) || !ctype_alnum($invocation_user))
+    {
+      relative_redirect('dashboard.php#slices');
+    }
 }
 else {
     no_invocation_id_error();
