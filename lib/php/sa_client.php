@@ -505,8 +505,13 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
   if ($is_member) {
     $options = array();
     if (!is_null($role)) {
-      $options = array('match'=>array('SLICE_ROLE'=>$role));
+      $options = array('match'=>array('SLICE_ROLE'=>$role,'SLICE_EXPIRED'=>'f'));
     }
+    else
+    {
+      $options = array('match'=>array('SLICE_EXPIRED'=>'f'));
+    }
+
     $options = array_merge($options, $client->options());
     $results = $client->lookup_slices_for_member($member_urn, $client->creds(), $options);
   } else {
